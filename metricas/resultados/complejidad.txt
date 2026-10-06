@@ -1,0 +1,116 @@
+main.py
+    F 103:0 escuchar - C (12)
+    F 269:0 iniciar - B (9)
+    F 234:0 _revisar_sugerencia_pendiente - B (6)
+    F 178:0 procesar_comando - A (5)
+    F 61:0 _vigilar_recordatorios - A (4)
+    F 80:0 calibrar_umbral - A (4)
+    F 217:0 _vigilar_perfil - A (3)
+    C 33:0 SoundDeviceMicrophone - A (2)
+    F 326:0 main - A (1)
+    M 34:4 SoundDeviceMicrophone.__init__ - A (1)
+    M 38:4 SoundDeviceMicrophone.__enter__ - A (1)
+    M 41:4 SoundDeviceMicrophone.__exit__ - A (1)
+    M 44:4 SoundDeviceMicrophone.read - A (1)
+    M 49:4 SoundDeviceMicrophone.CHUNK - A (1)
+    M 53:4 SoundDeviceMicrophone.SAMPLE_RATE - A (1)
+    M 57:4 SoundDeviceMicrophone.SAMPLE_WIDTH - A (1)
+estado.py
+    F 88:0 _vigilante - A (4)
+    F 42:0 set_estado - A (3)
+    F 64:0 log - A (3)
+    F 101:0 asegurar_instancia_unica - A (2)
+    F 53:0 obtener_estado - A (1)
+servidor.py
+    F 44:0 ejecutar_accion - D (27)
+    F 25:0 home - A (2)
+    F 34:0 obtener_estado - A (1)
+    F 38:0 _terminar - A (1)
+    F 149:0 vista_reloj - A (1)
+app_desktop.py
+    F 31:0 _log_arranque - A (2)
+    F 40:0 iniciar_servidor - A (2)
+    F 47:0 iniciar_escucha_voz - A (2)
+    F 57:0 _al_cerrar_ventana - A (1)
+basedatos.py
+    F 18:0 conectar - A (1)
+    F 30:0 _crear_tablas - A (1)
+voice.py
+    F 35:0 hablar - A (3)
+    F 23:0 _hablar_con_windows - A (2)
+migrar_json_a_sqlite.py
+    F 47:0 migrar_recordatorios - B (9)
+    F 106:0 migrar_habitos - B (6)
+    F 30:0 migrar_notas - A (5)
+    F 75:0 migrar_memoria - A (5)
+    F 140:0 migrar_perfil - A (5)
+    F 92:0 migrar_contactos - A (4)
+    F 22:0 _leer_json - A (2)
+cerebro.py
+    F 115:0 actualizar_perfil_si_toca - C (12)
+    F 85:0 preguntar - B (7)
+    F 50:0 _construir_system_prompt - A (4)
+    F 43:0 _obtener_cliente - A (2)
+    F 75:0 _extraer_y_guardar_memoria - A (2)
+    F 110:0 borrar_historial - A (1)
+skills/sistema.py
+    F 7:0 intentar - A (2)
+skills/notas.py
+    F 13:0 intentar - B (8)
+skills/habitos.py
+    F 98:0 sugerir_por_hora - C (11)
+    F 142:0 registrar_respuesta_sugerencia - A (5)
+    F 175:0 resumen_para_perfil - A (5)
+    F 201:0 intentar - A (4)
+    F 76:0 registrar_uso - A (3)
+    F 63:0 _obtener_meta - A (2)
+    F 68:0 _set_meta - A (1)
+skills/pestanas.py
+    F 33:0 intentar - C (13)
+    F 21:0 _enfocar_navegador - B (7)
+skills/memoria.py
+    F 61:0 intentar - C (12)
+    F 42:0 guardar_hecho - A (5)
+    F 23:0 _parecidos - A (3)
+    F 31:0 recordar_todo - A (3)
+skills/interfaz.py
+    F 24:0 estado - A (3)
+    F 37:0 log - A (3)
+    F 18:0 conectar - A (1)
+skills/multimedia.py
+    F 31:0 intentar - C (13)
+    F 19:0 _enfocar_navegador - B (7)
+skills/tiempo.py
+    F 11:0 _obtener_clima - B (6)
+    F 48:0 intentar - A (4)
+skills/ayuda.py
+    F 8:0 intentar - A (2)
+skills/__init__.py
+    F 24:0 procesar - A (3)
+skills/aplicaciones.py
+    F 120:0 intentar - D (24)
+    F 99:0 _abrir_simple - B (6)
+    F 81:0 limpiar_texto_voz - A (4)
+    F 95:0 _limpiar_nombre - A (1)
+skills/contactos.py
+    F 45:0 intentar - B (7)
+    F 25:0 normalizar_numero - A (3)
+    F 35:0 buscar - A (2)
+skills/web.py
+    F 54:0 intentar - C (12)
+    F 14:0 _abrir_whatsapp - B (6)
+    F 36:0 _resolver_numero - A (3)
+skills/recordatorios.py
+    F 96:0 intentar - C (14)
+    F 170:0 revisar_pendientes - C (12)
+    F 43:0 _calcular_hora_objetivo - B (6)
+    F 73:0 _extraer_dias - A (5)
+    F 61:0 _parsear - A (3)
+    F 90:0 _describir_dias - A (3)
+skills/perfil.py
+    F 18:0 obtener_perfil_actual - A (4)
+    F 29:0 toca_actualizar - A (4)
+    F 43:0 guardar_perfil - A (2)
+
+90 blocks (classes, functions, methods) analyzed.
+Average complexity: A (4.7)

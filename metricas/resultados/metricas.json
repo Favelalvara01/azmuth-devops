@@ -1,0 +1,425 @@
+{
+  "generado": "2026-10-06 18:34",
+  "producto": {
+    "complejidad": {
+      "funciones_analizadas": 96,
+      "promedio": 4.46,
+      "mediana": 3.0,
+      "maxima": 27,
+      "distribucion_rangos": {
+        "A": 72,
+        "B": 13,
+        "C": 9,
+        "D": 2,
+        "E": 0,
+        "F": 0
+      },
+      "porcentaje_A_B": 88.54,
+      "top10": [
+        {
+          "archivo": "servidor.py",
+          "funcion": "ejecutar_accion",
+          "linea": 44,
+          "complejidad": 27,
+          "rango": "D"
+        },
+        {
+          "archivo": "skills/aplicaciones.py",
+          "funcion": "intentar",
+          "linea": 120,
+          "complejidad": 24,
+          "rango": "D"
+        },
+        {
+          "archivo": "skills/recordatorios.py",
+          "funcion": "intentar",
+          "linea": 96,
+          "complejidad": 14,
+          "rango": "C"
+        },
+        {
+          "archivo": "skills/multimedia.py",
+          "funcion": "intentar",
+          "linea": 31,
+          "complejidad": 13,
+          "rango": "C"
+        },
+        {
+          "archivo": "skills/pestanas.py",
+          "funcion": "intentar",
+          "linea": 33,
+          "complejidad": 13,
+          "rango": "C"
+        },
+        {
+          "archivo": "cerebro.py",
+          "funcion": "actualizar_perfil_si_toca",
+          "linea": 115,
+          "complejidad": 12,
+          "rango": "C"
+        },
+        {
+          "archivo": "main.py",
+          "funcion": "escuchar",
+          "linea": 103,
+          "complejidad": 12,
+          "rango": "C"
+        },
+        {
+          "archivo": "skills/memoria.py",
+          "funcion": "intentar",
+          "linea": 61,
+          "complejidad": 12,
+          "rango": "C"
+        },
+        {
+          "archivo": "skills/recordatorios.py",
+          "funcion": "revisar_pendientes",
+          "linea": 170,
+          "complejidad": 12,
+          "rango": "C"
+        },
+        {
+          "archivo": "skills/web.py",
+          "funcion": "intentar",
+          "linea": 54,
+          "complejidad": 12,
+          "rango": "C"
+        }
+      ]
+    },
+    "lineas": {
+      "archivos": 24,
+      "loc": 2889,
+      "sloc": 2059,
+      "kloc": 2.06,
+      "por_archivo": {
+        "app_desktop.py": {
+          "loc": 81,
+          "sloc": 53,
+          "comentarios": 9,
+          "mi": 72.41
+        },
+        "basedatos.py": {
+          "loc": 88,
+          "sloc": 61,
+          "comentarios": 14,
+          "mi": 100.0
+        },
+        "cerebro.py": {
+          "loc": 150,
+          "sloc": 104,
+          "comentarios": 22,
+          "mi": 62.85
+        },
+        "config.py": {
+          "loc": 30,
+          "sloc": 16,
+          "comentarios": 10,
+          "mi": 92.99
+        },
+        "estado.py": {
+          "loc": 123,
+          "sloc": 57,
+          "comentarios": 45,
+          "mi": 73.61
+        },
+        "main.py": {
+          "loc": 335,
+          "sloc": 235,
+          "comentarios": 38,
+          "mi": 44.95
+        },
+        "migrar_json_a_sqlite.py": {
+          "loc": 166,
+          "sloc": 136,
+          "comentarios": 10,
+          "mi": 52.14
+        },
+        "servidor.py": {
+          "loc": 468,
+          "sloc": 429,
+          "comentarios": 7,
+          "mi": 39.69
+        },
+        "voice.py": {
+          "loc": 59,
+          "sloc": 35,
+          "comentarios": 14,
+          "mi": 92.48
+        },
+        "skills/__init__.py": {
+          "loc": 33,
+          "sloc": 8,
+          "comentarios": 20,
+          "mi": 66.4
+        },
+        "skills/aplicaciones.py": {
+          "loc": 192,
+          "sloc": 150,
+          "comentarios": 17,
+          "mi": 54.17
+        },
+        "skills/ayuda.py": {
+          "loc": 61,
+          "sloc": 53,
+          "comentarios": 4,
+          "mi": 100.0
+        },
+        "skills/contactos.py": {
+          "loc": 87,
+          "sloc": 50,
+          "comentarios": 24,
+          "mi": 79.05
+        },
+        "skills/habitos.py": {
+          "loc": 217,
+          "sloc": 153,
+          "comentarios": 38,
+          "mi": 60.7
+        },
+        "skills/interfaz.py": {
+          "loc": 49,
+          "sloc": 23,
+          "comentarios": 15,
+          "mi": 90.7
+        },
+        "skills/memoria.py": {
+          "loc": 105,
+          "sloc": 62,
+          "comentarios": 27,
+          "mi": 71.96
+        },
+        "skills/multimedia.py": {
+          "loc": 76,
+          "sloc": 54,
+          "comentarios": 8,
+          "mi": 68.18
+        },
+        "skills/notas.py": {
+          "loc": 50,
+          "sloc": 32,
+          "comentarios": 10,
+          "mi": 81.64
+        },
+        "skills/perfil.py": {
+          "loc": 49,
+          "sloc": 27,
+          "comentarios": 14,
+          "mi": 83.41
+        },
+        "skills/pestanas.py": {
+          "loc": 84,
+          "sloc": 58,
+          "comentarios": 10,
+          "mi": 66.81
+        },
+        "skills/recordatorios.py": {
+          "loc": 203,
+          "sloc": 142,
+          "comentarios": 29,
+          "mi": 53.24
+        },
+        "skills/sistema.py": {
+          "loc": 15,
+          "sloc": 8,
+          "comentarios": 3,
+          "mi": 100.0
+        },
+        "skills/tiempo.py": {
+          "loc": 60,
+          "sloc": 40,
+          "comentarios": 8,
+          "mi": 75.04
+        },
+        "skills/web.py": {
+          "loc": 108,
+          "sloc": 73,
+          "comentarios": 18,
+          "mi": 68.81
+        }
+      }
+    },
+    "cobertura": {
+      "total": 72.52,
+      "por_archivo": {
+        "app_desktop.py": 0.0,
+        "basedatos.py": 100.0,
+        "cerebro.py": 67.21,
+        "config.py": 100.0,
+        "estado.py": 73.47,
+        "main.py": 27.95,
+        "servidor.py": 98.43,
+        "skills/__init__.py": 100.0,
+        "skills/aplicaciones.py": 79.55,
+        "skills/ayuda.py": 100.0,
+        "skills/contactos.py": 97.44,
+        "skills/habitos.py": 85.56,
+        "skills/interfaz.py": 0.0,
+        "skills/memoria.py": 94.64,
+        "skills/multimedia.py": 74.07,
+        "skills/notas.py": 100.0,
+        "skills/perfil.py": 82.61,
+        "skills/pestanas.py": 87.93,
+        "skills/recordatorios.py": 95.0,
+        "skills/sistema.py": 100.0,
+        "skills/tiempo.py": 96.77,
+        "skills/web.py": 91.3,
+        "voice.py": 60.0
+      },
+      "lineas_cubiertas": 921,
+      "lineas_ejecutables": 1270
+    },
+    "densidad_defectos": {
+      "defectos_totales": 15,
+      "por_kloc": 7.29,
+      "abiertos": 5,
+      "abiertos_por_kloc": 2.43,
+      "por_archivo": {
+        "app_desktop.py": 1,
+        "main.py": 4,
+        "skills/__init__.py": 1,
+        "estado.py": 3,
+        "skills/web.py": 1,
+        "config.py": 1,
+        "skills/ayuda.py": 1,
+        "skills/habitos.py": 1,
+        "skills/multimedia.py": 1,
+        "servidor.py": 1
+      }
+    },
+    "mantenibilidad_promedio": 72.97
+  },
+  "proceso": {
+    "mttd_horas": 279.62,
+    "mttd_dias": 11.65,
+    "mttr_horas": 0.82,
+    "mttr_minutos": 49,
+    "defectos_reparados": 10,
+    "defectos_por_fase": {
+      "revision": 3,
+      "pruebas": 5,
+      "produccion": 7
+    },
+    "eficacia_pruebas": {
+      "detectados_en_pruebas": 5,
+      "graves_detectados_en_pruebas": 0,
+      "graves_totales": 4,
+      "dre_porcentaje": 53.33,
+      "porcentaje_pruebas_vs_produccion": 41.67
+    },
+    "ejecucion_pruebas": {
+      "total": 112,
+      "aprobadas": 109,
+      "fallidas": 0,
+      "defectos_conocidos_xfail": 3,
+      "tiempo_seg": 2.55
+    }
+  },
+  "proyecto": {
+    "eficacia_revision": {
+      "defectos_en_revision": 3,
+      "defectos_totales": 15,
+      "porcentaje": 20.0
+    },
+    "desviacion": {
+      "horas_estimadas": 72.0,
+      "horas_reales": 90.0,
+      "desviacion_porcentaje": 25.0,
+      "velocidad_puntos_por_sprint": 7.86,
+      "por_modulo": [
+        {
+          "sprint": 1,
+          "modulo": "Nucleo de voz",
+          "horas_estimadas": 10.0,
+          "horas_reales": 14.0,
+          "desviacion_horas": 4.0,
+          "desviacion_porcentaje": 40.0,
+          "puntos_historia": 8,
+          "sloc": 286,
+          "defectos": 5,
+          "densidad_defectos_kloc": 17.48,
+          "horas_por_punto": 1.75
+        },
+        {
+          "sprint": 2,
+          "modulo": "Skills basicas",
+          "horas_estimadas": 12.0,
+          "horas_reales": 15.0,
+          "desviacion_horas": 3.0,
+          "desviacion_porcentaje": 25.0,
+          "puntos_historia": 8,
+          "sloc": 275,
+          "defectos": 1,
+          "densidad_defectos_kloc": 3.64,
+          "horas_por_punto": 1.88
+        },
+        {
+          "sprint": 3,
+          "modulo": "Control del sistema",
+          "horas_estimadas": 14.0,
+          "horas_reales": 18.0,
+          "desviacion_horas": 4.0,
+          "desviacion_porcentaje": 28.57,
+          "puntos_historia": 13,
+          "sloc": 335,
+          "defectos": 2,
+          "densidad_defectos_kloc": 5.97,
+          "horas_por_punto": 1.38
+        },
+        {
+          "sprint": 4,
+          "modulo": "IA y memoria",
+          "horas_estimadas": 12.0,
+          "horas_reales": 13.0,
+          "desviacion_horas": 1.0,
+          "desviacion_porcentaje": 8.33,
+          "puntos_historia": 8,
+          "sloc": 396,
+          "defectos": 1,
+          "densidad_defectos_kloc": 2.53,
+          "horas_por_punto": 1.62
+        },
+        {
+          "sprint": 5,
+          "modulo": "Interfaz y servidor",
+          "horas_estimadas": 10.0,
+          "horas_reales": 16.0,
+          "desviacion_horas": 6.0,
+          "desviacion_porcentaje": 60.0,
+          "puntos_historia": 8,
+          "sloc": 562,
+          "defectos": 5,
+          "densidad_defectos_kloc": 8.9,
+          "horas_por_punto": 2.0
+        },
+        {
+          "sprint": 6,
+          "modulo": "Persistencia SQLite",
+          "horas_estimadas": 6.0,
+          "horas_reales": 5.0,
+          "desviacion_horas": -1.0,
+          "desviacion_porcentaje": -16.67,
+          "puntos_historia": 5,
+          "sloc": 197,
+          "defectos": 0,
+          "densidad_defectos_kloc": 0.0,
+          "horas_por_punto": 1.0
+        },
+        {
+          "sprint": 7,
+          "modulo": "DevOps",
+          "horas_estimadas": 8.0,
+          "horas_reales": 9.0,
+          "desviacion_horas": 1.0,
+          "desviacion_porcentaje": 12.5,
+          "puntos_historia": 5,
+          "sloc": 0,
+          "defectos": 0,
+          "densidad_defectos_kloc": null,
+          "horas_por_punto": 1.8
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,295 @@
+{
+  "juicio_expertos": {
+    "expertos": [
+      "Alumno desarrollador",
+      "Companero con experiencia",
+      "IA (Claude) - analisis del codigo"
+    ],
+    "por_modulo": [
+      {
+        "modulo": "Nucleo de voz",
+        "valores": [
+          10,
+          12,
+          14
+        ],
+        "promedio": 12
+      },
+      {
+        "modulo": "Skills basicas",
+        "valores": [
+          12,
+          14,
+          13
+        ],
+        "promedio": 13
+      },
+      {
+        "modulo": "Control del sistema",
+        "valores": [
+          14,
+          16,
+          17
+        ],
+        "promedio": 15.67
+      },
+      {
+        "modulo": "IA y memoria",
+        "valores": [
+          12,
+          12,
+          13
+        ],
+        "promedio": 12.33
+      },
+      {
+        "modulo": "Interfaz y servidor",
+        "valores": [
+          10,
+          14,
+          15
+        ],
+        "promedio": 13
+      },
+      {
+        "modulo": "Persistencia SQLite",
+        "valores": [
+          6,
+          5,
+          5
+        ],
+        "promedio": 5.33
+      },
+      {
+        "modulo": "DevOps",
+        "valores": [
+          8,
+          10,
+          9
+        ],
+        "promedio": 9
+      }
+    ],
+    "totales_por_experto": {
+      "Alumno desarrollador": 72,
+      "Companero con experiencia": 83,
+      "IA (Claude) - analisis del codigo": 86
+    },
+    "total_horas": 80.33
+  },
+  "analoga": {
+    "proyecto_referencia": "Easy Learning (proyecto integrador DSM31, C#/MySQL)",
+    "sloc_referencia": 1800,
+    "horas_referencia": 80,
+    "factor_ajuste": 1.1,
+    "justificacion_factor": "+10 %: Azmuth integra APIs externas (Claude, ElevenLabs) y voz, más complejas que un CRUD",
+    "sloc_actual": 2059,
+    "productividad_sloc_por_hora": 22.5,
+    "total_horas": 100.66
+  },
+  "tres_puntos": {
+    "por_modulo": [
+      {
+        "modulo": "Nucleo de voz",
+        "O": 8,
+        "M": 12,
+        "P": 20,
+        "pert": 12.67,
+        "triangular": 13.33,
+        "desv_std": 2.0
+      },
+      {
+        "modulo": "Skills basicas",
+        "O": 9,
+        "M": 13,
+        "P": 20,
+        "pert": 13.5,
+        "triangular": 14.0,
+        "desv_std": 1.83
+      },
+      {
+        "modulo": "Control del sistema",
+        "O": 10,
+        "M": 15,
+        "P": 24,
+        "pert": 15.67,
+        "triangular": 16.33,
+        "desv_std": 2.33
+      },
+      {
+        "modulo": "IA y memoria",
+        "O": 9,
+        "M": 12,
+        "P": 18,
+        "pert": 12.5,
+        "triangular": 13.0,
+        "desv_std": 1.5
+      },
+      {
+        "modulo": "Interfaz y servidor",
+        "O": 8,
+        "M": 13,
+        "P": 22,
+        "pert": 13.67,
+        "triangular": 14.33,
+        "desv_std": 2.33
+      },
+      {
+        "modulo": "Persistencia SQLite",
+        "O": 3,
+        "M": 5,
+        "P": 8,
+        "pert": 5.17,
+        "triangular": 5.33,
+        "desv_std": 0.83
+      },
+      {
+        "modulo": "DevOps",
+        "O": 6,
+        "M": 8,
+        "P": 14,
+        "pert": 8.67,
+        "triangular": 9.33,
+        "desv_std": 1.33
+      }
+    ],
+    "total_horas": 81.85,
+    "desv_std_total": 4.79,
+    "rango_95": [
+      72.26,
+      91.44
+    ]
+  },
+  "puntos_funcion": {
+    "detalle": [
+      {
+        "tipo": "EI",
+        "complejidad": "simple",
+        "cantidad": 10,
+        "peso": 3,
+        "subtotal": 30
+      },
+      {
+        "tipo": "EI",
+        "complejidad": "media",
+        "cantidad": 4,
+        "peso": 4,
+        "subtotal": 16
+      },
+      {
+        "tipo": "EI",
+        "complejidad": "compleja",
+        "cantidad": 1,
+        "peso": 6,
+        "subtotal": 6
+      },
+      {
+        "tipo": "EO",
+        "complejidad": "simple",
+        "cantidad": 0,
+        "peso": 4,
+        "subtotal": 0
+      },
+      {
+        "tipo": "EO",
+        "complejidad": "media",
+        "cantidad": 4,
+        "peso": 5,
+        "subtotal": 20
+      },
+      {
+        "tipo": "EO",
+        "complejidad": "compleja",
+        "cantidad": 3,
+        "peso": 7,
+        "subtotal": 21
+      },
+      {
+        "tipo": "EQ",
+        "complejidad": "simple",
+        "cantidad": 6,
+        "peso": 3,
+        "subtotal": 18
+      },
+      {
+        "tipo": "EQ",
+        "complejidad": "media",
+        "cantidad": 3,
+        "peso": 4,
+        "subtotal": 12
+      },
+      {
+        "tipo": "EQ",
+        "complejidad": "compleja",
+        "cantidad": 0,
+        "peso": 6,
+        "subtotal": 0
+      },
+      {
+        "tipo": "ILF",
+        "complejidad": "simple",
+        "cantidad": 3,
+        "peso": 7,
+        "subtotal": 21
+      },
+      {
+        "tipo": "ILF",
+        "complejidad": "media",
+        "cantidad": 3,
+        "peso": 10,
+        "subtotal": 30
+      },
+      {
+        "tipo": "ILF",
+        "complejidad": "compleja",
+        "cantidad": 0,
+        "peso": 15,
+        "subtotal": 0
+      },
+      {
+        "tipo": "EIF",
+        "complejidad": "simple",
+        "cantidad": 3,
+        "peso": 5,
+        "subtotal": 15
+      },
+      {
+        "tipo": "EIF",
+        "complejidad": "media",
+        "cantidad": 3,
+        "peso": 7,
+        "subtotal": 21
+      },
+      {
+        "tipo": "EIF",
+        "complejidad": "compleja",
+        "cantidad": 0,
+        "peso": 10,
+        "subtotal": 0
+      }
+    ],
+    "pf_no_ajustados": 210,
+    "suma_factores": 42,
+    "vaf": 1.07,
+    "pf_ajustados": 224.7,
+    "horas_por_pf": 0.45,
+    "total_horas": 101.12,
+    "factores": {
+      "1 Comunicacion de datos": 4,
+      "2 Procesamiento distribuido": 2,
+      "3 Rendimiento": 3,
+      "4 Configuracion muy usada": 2,
+      "5 Tasa de transacciones": 1,
+      "6 Entrada de datos en linea": 4,
+      "7 Eficiencia del usuario final": 4,
+      "8 Actualizacion en linea": 3,
+      "9 Procesamiento complejo": 3,
+      "10 Reusabilidad": 3,
+      "11 Facilidad de instalacion": 3,
+      "12 Facilidad de operacion": 4,
+      "13 Multiples sitios": 2,
+      "14 Facilidad de cambio": 4
+    }
+  },
+  "horas_reales": 90.0
+}
