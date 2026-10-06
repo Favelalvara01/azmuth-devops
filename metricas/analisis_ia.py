@@ -86,7 +86,7 @@ def main():
     cliente = anthropic.Anthropic(api_key=clave)
     respuesta = cliente.messages.create(
         model=MODELO,
-        max_tokens=3000,
+        max_tokens=8000,
         system=INSTRUCCIONES,
         messages=[{"role": "user", "content": "Datos del pipeline:\n```json\n"
                    + json.dumps(contexto, ensure_ascii=False, indent=1) + "\n```"}],
