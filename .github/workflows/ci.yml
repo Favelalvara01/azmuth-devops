@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write   # para guardar las métricas en metricas/resultados/
 
 jobs:
   calidad:
@@ -52,7 +52,7 @@ jobs:
           radon raw . -s -e "tests/*,metricas/*" > reports/lineas.txt
 
       - name: Calcular métricas de producto, proceso y proyecto
-        run: python metricas/calcular_metricas.py --reportes reports
+        run: python metricas/calcular_metricas.py --reportes reports --historial metricas/resultados/historial.csv
 
       - name: Técnicas de estimación (expertos, análoga, tres puntos, puntos de función)
         run: python metricas/estimacion.py --reportes reports
@@ -68,6 +68,22 @@ jobs:
           cat reports/metricas.md >> "$GITHUB_STEP_SUMMARY" || true
           cat reports/estimacion.md >> "$GITHUB_STEP_SUMMARY" || true
           cat reports/analisis_ia.md >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Guardar métricas en el repositorio (metricas/resultados)
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p metricas/resultados
+          cp reports/metricas.md reports/metricas.json reports/estimacion.md reports/estimacion.json \
+             reports/analisis_ia.md reports/complejidad.txt reports/mantenibilidad.txt reports/ruff.txt \
+             metricas/resultados/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add metricas/resultados
+          if ! git diff --cached --quiet; then
+            git commit -m "Métricas automáticas del commit ${GITHUB_SHA::7} [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
 
       - name: Guardar reportes como artefacto
         if: always()

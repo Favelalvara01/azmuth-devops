@@ -238,9 +238,41 @@ def a_markdown(m):
     return "\n".join(L) + "\n"
 
 
+def guardar_historial(m, ruta):
+    """Agrega una fila por ejecución del pipeline: así se ve la tendencia de la
+    calidad a lo largo del tiempo (cada push = un punto en el historial)."""
+    import subprocess
+    commit = os.getenv("GITHUB_SHA", "")[:7]
+    if not commit:
+        try:
+            commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True,
+                                    text=True, cwd=RAIZ).stdout.strip()
+        except Exception:
+            commit = "local"
+    p, pr = m["producto"], m["proceso"]
+    t = pr.get("ejecucion_pruebas") or {}
+    fila = {
+        "fecha": m["generado"], "commit": commit,
+        "pruebas_total": t.get("total", ""), "pruebas_aprobadas": t.get("aprobadas", ""), "pruebas_fallidas": t.get("fallidas", ""),
+        "cobertura_pct": p["cobertura"]["total"], "cc_promedio": p["complejidad"]["promedio"], "cc_maxima": p["complejidad"]["maxima"],
+        "sloc": p["lineas"]["sloc"], "defectos_totales": p["densidad_defectos"]["defectos_totales"],
+        "defectos_abiertos": p["densidad_defectos"]["abiertos"], "densidad_kloc": p["densidad_defectos"]["por_kloc"],
+        "mttd_h": pr["mttd_horas"], "mttr_h": pr["mttr_horas"], "dre_pct": pr["eficacia_pruebas"]["dre_porcentaje"],
+        "mantenibilidad": p["mantenibilidad_promedio"],
+    }
+    os.makedirs(os.path.dirname(ruta), exist_ok=True)
+    nuevo = not os.path.exists(ruta)
+    with open(ruta, "a", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(fila))
+        if nuevo:
+            w.writeheader()
+        w.writerow(fila)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--reportes", default="reports")
+    ap.add_argument("--historial", help="CSV donde se agrega una fila con las métricas de esta ejecución")
     args = ap.parse_args()
     os.makedirs(args.reportes, exist_ok=True)
 
@@ -254,6 +286,8 @@ def main():
     }
     with open(os.path.join(args.reportes, "metricas.json"), "w", encoding="utf-8") as f:
         json.dump(resultado, f, ensure_ascii=False, indent=2)
+    if args.historial:
+        guardar_historial(resultado, args.historial)
     md = a_markdown(resultado)
     with open(os.path.join(args.reportes, "metricas.md"), "w", encoding="utf-8") as f:
         f.write(md)
