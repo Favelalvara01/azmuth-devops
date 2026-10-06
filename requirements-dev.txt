@@ -10,4 +10,5 @@ uvicorn
 pytest>=8
 pytest-cov
 radon
+matplotlib
 ruff

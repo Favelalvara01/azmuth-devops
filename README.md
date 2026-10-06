@@ -80,6 +80,29 @@ docker run --rm azmuth pytest -q            # pruebas
 docker run -p 8080:8080 azmuth              # API en http://localhost:8080/estado
 ```
 
+## Comandos para calcular las métricas en la terminal
+
+Desde la carpeta `jarvis-agent` (en Windows usa `py -3.13 -m` en lugar de `python -m`):
+
+```bash
+pip install -r requirements-dev.txt                       # 1. herramientas (una sola vez)
+mkdir reports                                              # 2. carpeta de reportes
+
+python -m ruff check . --select E9,F63,F7,F82              # 3. validación estática (gate)
+python -m pytest --cov --cov-report=term --cov-report=json:reports/coverage.json --junitxml=reports/pruebas.xml   # 4. pruebas + cobertura
+python -m radon cc . -s -a -e "tests/*,metricas/*"         # 5. complejidad ciclomática
+python -m radon mi . -s -e "tests/*,metricas/*"            #    índice de mantenibilidad
+python metricas/calcular_metricas.py --reportes reports --historial metricas/resultados/historial.csv   # 6. producto, proceso, proyecto
+python metricas/estimacion.py --reportes reports           # 7. 4 técnicas de estimación
+python metricas/graficas.py --reportes reports             # 8. gráficas → metricas/resultados/graficas/
+python metricas/analisis_ia.py --reportes reports          # 9. dictamen con IA (usa ANTHROPIC_API_KEY del .env)
+```
+
+O todo de una vez en Windows: `pipeline_local.bat`.
+
+Las gráficas y métricas también se regeneran **solas en cada push**: GitHub Actions las
+recalcula y las sube a `metricas/resultados/` (haz `git pull` para verlas en tu compu).
+
 ## Defectos conocidos
 
 Las pruebas marcadas `xfail` documentan defectos detectados por las pruebas automatizadas

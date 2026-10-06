@@ -57,6 +57,9 @@ jobs:
       - name: Técnicas de estimación (expertos, análoga, tres puntos, puntos de función)
         run: python metricas/estimacion.py --reportes reports
 
+      - name: Gráficas de calidad
+        run: python metricas/graficas.py --reportes reports --salida reports/graficas
+
       - name: Análisis de calidad con IA (Claude)
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -76,6 +79,8 @@ jobs:
           cp reports/metricas.md reports/metricas.json reports/estimacion.md reports/estimacion.json \
              reports/analisis_ia.md reports/complejidad.txt reports/mantenibilidad.txt reports/ruff.txt \
              metricas/resultados/
+          mkdir -p metricas/resultados/graficas
+          cp reports/graficas/*.png metricas/resultados/graficas/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add metricas/resultados

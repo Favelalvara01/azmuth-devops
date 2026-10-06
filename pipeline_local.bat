@@ -13,9 +13,10 @@ py -3.13 -m pytest --cov --cov-report=term --cov-report=json:reports/coverage.js
 echo === 4/6 Complejidad ciclomatica (radon) ===
 py -3.13 -m radon cc . -s -a -e "tests/*,metricas/*" > reports\complejidad.txt
 py -3.13 -m radon mi . -s -e "tests/*,metricas/*" > reports\mantenibilidad.txt
-echo === 5/6 Metricas y estimacion ===
+echo === 5/6 Metricas, estimacion y graficas ===
 py -3.13 metricas\calcular_metricas.py --reportes reports --historial metricas\resultados\historial.csv
 py -3.13 metricas\estimacion.py --reportes reports
+py -3.13 metricas\graficas.py --reportes reports --salida metricas\resultados\graficas
 echo === 6/6 Analisis con IA (Claude) ===
 py -3.13 metricas\analisis_ia.py --reportes reports
 if not exist metricas\resultados mkdir metricas\resultados
