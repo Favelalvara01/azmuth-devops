@@ -1,0 +1,15 @@
+anthropic
+elevenlabs
+python-dotenv
+SpeechRecognition
+pyaudio
+pyttsx3
+pyautogui
+requests
+pygetwindow
+fastapi
+uvicorn[standard]
+pywebview
+sounddevice
+numpy
+pyngrok

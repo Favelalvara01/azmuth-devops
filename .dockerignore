@@ -1,0 +1,12 @@
+.env
+.git
+datos/*.db
+datos/*.log
+datos/*.json
+__pycache__
+.pytest_cache
+.ruff_cache
+.coverage*
+reports
+*.bat
+*.vbs

@@ -1,0 +1,98 @@
+# Pipeline CI/CD de Azmuth — se ejecuta en cada push y pull request.
+# Etapas: 1) Validación estática  2) Pruebas + cobertura  3) Métricas
+#         4) Análisis de calidad con IA (Claude)  5) Build y prueba en Docker
+name: CI Azmuth
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  calidad:
+    name: Validación, pruebas y métricas
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Instalar Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Instalar dependencias de desarrollo
+        run: pip install -r requirements-dev.txt
+
+      - name: "Validación estática (gate): errores de sintaxis y nombres indefinidos"
+        run: ruff check . --select E9,F63,F7,F82
+
+      - name: Reporte completo de estilo (no bloquea)
+        run: |
+          mkdir -p reports
+          ruff check . --exit-zero --output-format=concise | tee reports/ruff.txt
+
+      - name: Pruebas automatizadas con cobertura
+        run: |
+          pytest --cov --cov-report=term --cov-report=xml:reports/coverage.xml \
+                 --cov-report=json:reports/coverage.json --junitxml=reports/pruebas.xml
+
+      - name: Complejidad ciclomática y mantenibilidad (radon)
+        run: |
+          radon cc . -s -a -e "tests/*,metricas/*" | tee reports/complejidad.txt
+          radon cc . -j -e "tests/*,metricas/*" > reports/complejidad.json
+          radon mi . -s -e "tests/*,metricas/*" | tee reports/mantenibilidad.txt
+          radon raw . -s -e "tests/*,metricas/*" > reports/lineas.txt
+
+      - name: Calcular métricas de producto, proceso y proyecto
+        run: python metricas/calcular_metricas.py --reportes reports
+
+      - name: Técnicas de estimación (expertos, análoga, tres puntos, puntos de función)
+        run: python metricas/estimacion.py --reportes reports
+
+      - name: Análisis de calidad con IA (Claude)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python metricas/analisis_ia.py --reportes reports
+
+      - name: Publicar resumen en GitHub
+        if: always()
+        run: |
+          cat reports/metricas.md >> "$GITHUB_STEP_SUMMARY" || true
+          cat reports/estimacion.md >> "$GITHUB_STEP_SUMMARY" || true
+          cat reports/analisis_ia.md >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Guardar reportes como artefacto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reportes-calidad
+          path: reports/
+
+  docker:
+    name: Build y prueba en contenedor
+    needs: calidad
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Construir la imagen
+        run: docker build -t azmuth:${{ github.sha }} .
+
+      - name: Correr las pruebas dentro del contenedor
+        run: docker run --rm azmuth:${{ github.sha }} pytest -q
+
+      - name: Prueba de humo del servidor (API /estado)
+        run: |
+          docker run -d --name azmuth -p 8080:8080 azmuth:${{ github.sha }}
+          for i in $(seq 1 20); do curl -fs http://localhost:8080/estado && break || sleep 1; done
+          curl -fs http://localhost:8080/estado
+          docker logs azmuth
+          docker rm -f azmuth

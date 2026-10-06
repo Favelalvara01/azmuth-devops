@@ -1,0 +1,8 @@
+sprint,modulo,archivos,historia_usuario,horas_estimadas,horas_reales,puntos_historia
+1,Nucleo de voz,main.py;voice.py;config.py,Como usuario quiero activar a Azmuth con una palabra clave y que me responda con voz,10,14,8
+2,Skills basicas,skills/tiempo.py;skills/notas.py;skills/recordatorios.py;skills/ayuda.py;skills/sistema.py,Como usuario quiero pedir hora/clima y guardar notas y recordatorios por voz,12,15,8
+3,Control del sistema,skills/aplicaciones.py;skills/multimedia.py;skills/pestanas.py;skills/web.py,Como usuario quiero abrir apps/controlar musica y pestañas sin tocar el teclado,14,18,13
+4,IA y memoria,cerebro.py;skills/memoria.py;skills/perfil.py;skills/habitos.py;skills/contactos.py,Como usuario quiero conversar con Claude y que Azmuth recuerde mis datos,12,13,8
+5,Interfaz y servidor,servidor.py;estado.py;app_desktop.py;skills/interfaz.py;azmuth.html,Como usuario quiero ver el nucleo animado y controlar Azmuth desde el celular,10,16,8
+6,Persistencia SQLite,basedatos.py;migrar_json_a_sqlite.py,Como usuario quiero que mis datos no se pierdan ni se corrompan (migrar de JSON a SQLite),6,5,5
+7,DevOps,tests;.github/workflows/ci.yml;Dockerfile;metricas,Como desarrollador quiero pruebas automaticas y CI/CD que validen cada cambio,8,9,5

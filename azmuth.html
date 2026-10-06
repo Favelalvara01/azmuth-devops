@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azmuth OS - JARVIS</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            background: radial-gradient(circle, #022314 0%, #010c07 100%);
+            color: #4ade80;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            padding: 10px;
+            margin: 0;
+            min-height: 100vh;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        h1 {
+            color: #facc15;
+            font-size: 16px;
+            margin: 8px 0;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.7);
+        }
+
+        /* ---------- Núcleo JARVIS Animado ---------- */
+        .reactor-container {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 12px auto 4px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: filter 0.4s ease;
+        }
+        .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px dashed rgba(0, 255, 102, 0.4);
+            transition: border-color 0.4s ease, animation-duration 0.4s ease;
+        }
+        .ring-1 { width: 140px; height: 140px; animation: spin 10s linear infinite; border-color: #00ff66 transparent #00ff66 transparent; }
+        .ring-2 { width: 105px; height: 105px; animation: spin-reverse 7s linear infinite; border-color: transparent #ff7700 transparent #ff7700; }
+        .core {
+            width: 50px; height: 50px;
+            background: radial-gradient(circle, #00ff66 0%, #ff7700 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 20px #00ff66, 0 0 40px #ff7700;
+            animation: pulse 2.4s ease-in-out infinite;
+            transition: background 0.4s ease, box-shadow 0.4s ease;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spin-reverse { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
+        @keyframes pulse { 0%, 100% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
+        @keyframes pulse-fast { 0%, 100% { transform: scale(0.92); opacity: 0.85; } 50% { transform: scale(1.12); opacity: 1; } }
+        @keyframes think { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.06) rotate(8deg); } }
+        @keyframes flash { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.6; } }
+
+        /* Estado: REPOSO (ambiental, esperando la palabra clave) */
+        .estado-reposo .core { animation: pulse 2.4s ease-in-out infinite; }
+
+        /* Estado: ESCUCHANDO (capturando la orden por el micrófono) */
+        .estado-escuchando .core {
+            background: radial-gradient(circle, #22d3ee 0%, #0ea5e9 100%);
+            box-shadow: 0 0 26px #22d3ee, 0 0 55px #0ea5e9;
+            animation: pulse-fast 0.9s ease-in-out infinite;
+        }
+        .estado-escuchando .ring-1 { border-color: #22d3ee transparent #22d3ee transparent; animation-duration: 4s; }
+        .estado-escuchando .ring-2 { border-color: transparent #0ea5e9 transparent #0ea5e9; animation-duration: 3s; }
+
+        /* Estado: PROCESANDO (interpretando el comando / pensando) */
+        .estado-procesando .core {
+            background: radial-gradient(circle, #c084fc 0%, #7c3aed 100%);
+            box-shadow: 0 0 26px #c084fc, 0 0 55px #7c3aed;
+            animation: think 0.9s ease-in-out infinite;
+        }
+        .estado-procesando .ring-1 { border-color: #c084fc transparent #c084fc transparent; animation-duration: 2.5s; }
+        .estado-procesando .ring-2 { border-color: transparent #7c3aed transparent #7c3aed; animation-duration: 1.8s; }
+
+        /* Estado: EJECUTANDO (realizando la acción / hablando) */
+        .estado-ejecutando .core {
+            background: radial-gradient(circle, #fb923c 0%, #ef4444 100%);
+            box-shadow: 0 0 30px #fb923c, 0 0 60px #ef4444;
+            animation: flash 0.5s ease-in-out infinite;
+        }
+        .estado-ejecutando .ring-1 { border-color: #fb923c transparent #fb923c transparent; animation-duration: 3s; }
+        .estado-ejecutando .ring-2 { border-color: transparent #ef4444 transparent #ef4444; animation-duration: 2s; }
+
+        #statusText {
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            color: #86efac;
+            margin: 2px 0 10px 0;
+            min-height: 14px;
+            transition: color 0.4s ease;
+        }
+        .estado-escuchando ~ #statusText, #statusText.escuchando { color: #22d3ee; }
+        .estado-procesando ~ #statusText, #statusText.procesando { color: #c084fc; }
+        .estado-ejecutando ~ #statusText, #statusText.ejecutando { color: #fb923c; }
+
+        .card {
+            background: rgba(2, 44, 24, 0.9);
+            border: 2px solid #22c55e;
+            border-radius: 14px;
+            padding: 12px;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.3);
+        }
+        .console-box {
+            margin-top: 4px;
+            background: rgba(1, 12, 7, 0.95);
+            border: 1px solid #059669;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 11px;
+            color: #34d399;
+            min-height: 90px;
+            max-height: 140px;
+            overflow-y: auto;
+            text-align: left;
+            box-shadow: inset 0 0 10px rgba(0, 255, 102, 0.1);
+        }
+        .log-line { margin-bottom: 3px; border-bottom: 1px solid rgba(5, 150, 105, 0.2); word-wrap: break-word; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>AZMUTH OS ONLINE</h1>
+
+        <!-- Núcleo Visual Estilo JARVIS: la clase estado-XXX cambia sola -->
+        <div class="reactor-container estado-reposo" id="reactorContainer">
+            <div class="ring ring-1"></div>
+            <div class="ring ring-2"></div>
+            <div class="core"></div>
+        </div>
+        <div id="statusText">EN ESPERA</div>
+
+        <!-- Consola Visual Interna (sustituye a la terminal negra) -->
+        <div class="console-box" id="consoleLog">
+            <div class="log-line">&gt; Sistema inicializado correctamente.</div>
+        </div>
+    </div>
+
+    <script>
+        const ETIQUETAS = {
+            reposo: "EN ESPERA",
+            escuchando: "ESCUCHANDO",
+            procesando: "PROCESANDO",
+            ejecutando: "EJECUTANDO ORDEN"
+        };
+
+        // Antes se comparaba contra log.length (el tamaño de la lista ya
+        // recortada por el backend a 40 líneas). En cuanto el historial
+        // llegaba a ese tope, su tamaño se quedaba fijo en 40 para
+        // siempre y la consola visual dejaba de actualizarse, aunque
+        // AZMUTH siguiera hablando (el bug que reportaste). Ahora se usa
+        // log_total, un contador que el backend nunca recorta.
+        let ultimoLogTotal = 0;
+
+        function aplicarEstado(nombreEstado, detalle) {
+            const contenedor = document.getElementById('reactorContainer');
+            const statusText = document.getElementById('statusText');
+            const claseValida = ETIQUETAS.hasOwnProperty(nombreEstado) ? nombreEstado : 'reposo';
+
+            contenedor.className = 'reactor-container estado-' + claseValida;
+            statusText.className = claseValida;
+            statusText.textContent = ETIQUETAS[claseValida] + (detalle ? ' — ' + detalle : '');
+        }
+
+        function actualizarConsola(log, logTotal) {
+            if (!log || typeof logTotal !== 'number' || logTotal <= ultimoLogTotal) return;
+
+            const nuevas = logTotal - ultimoLogTotal;
+            // Si hubo un hueco más grande que lo que el backend guarda
+            // (por ejemplo, la ventana estuvo cerrada un rato), mostramos
+            // lo más que tengamos disponible en vez de intentar leer
+            // líneas que ya se recortaron.
+            const desde = Math.max(0, log.length - nuevas);
+
+            const box = document.getElementById('consoleLog');
+            for (let i = desde; i < log.length; i++) {
+                const div = document.createElement('div');
+                div.className = 'log-line';
+                div.innerText = '> ' + log[i];
+                box.appendChild(div);
+            }
+            // No dejamos crecer infinito el DOM de la consola visual
+            while (box.children.length > 200) {
+                box.removeChild(box.firstChild);
+            }
+            box.scrollTop = box.scrollHeight;
+            ultimoLogTotal = logTotal;
+        }
+
+        async function actualizarTodo() {
+            try {
+                const resp = await fetch('/estado', { cache: 'no-store' });
+                if (!resp.ok) return;
+                const data = await resp.json();
+                aplicarEstado(data.estado, data.detalle);
+                actualizarConsola(data.log, data.log_total);
+            } catch (e) {
+                // Silencioso: si el servidor tarda un instante en levantar,
+                // simplemente reintentamos en el próximo intervalo.
+            }
+        }
+
+        setInterval(actualizarTodo, 500);
+        actualizarTodo();
+    </script>
+</body>
+</html>

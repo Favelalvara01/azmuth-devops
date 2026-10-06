@@ -1,0 +1,23 @@
+# --- Secretos: NUNCA subir claves ---
+.env
+*.env.local
+
+# --- Datos personales del usuario (se generan solos en cada compu) ---
+datos/*.db
+datos/*.log
+datos/*.json
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# --- Reportes generados por CI (se suben como artefactos, no al repo) ---
+.coverage*
+coverage.xml
+coverage.json
+htmlcov/
+reports/

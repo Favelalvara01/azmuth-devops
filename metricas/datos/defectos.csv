@@ -1,0 +1,16 @@
+id,descripcion,archivo,severidad,fase_deteccion,fecha_introducido,fecha_detectado,fecha_reparado,fuente
+DEF-001,Falta la libreria pyngrok: el tunel remoto no arrancaba,app_desktop.py,media,produccion,2026-08-31 22:00,2026-08-31 23:37,2026-09-01 00:10,datos/azmuth.log
+DEF-002,main.py levantaba un segundo servidor Flask que competia por el puerto con servidor.py,main.py,alta,revision,2026-08-28 18:00,2026-08-29 19:30,2026-08-29 21:00,comentario AGENTE.md / main.py
+DEF-003,La skill aplicaciones se robaba 'abre pestaña' y 'cierra pestaña' por estar antes en la lista,skills/__init__.py,media,produccion,2026-09-01 19:00,2026-09-02 20:15,2026-09-02 20:40,comentario skills/__init__.py
+DEF-004,La consola visual dejaba de mostrar lineas al llegar a 200 (contador recortado),estado.py,alta,produccion,2026-09-02 18:00,2026-09-04 21:10,2026-09-04 22:30,comentario estado.py
+DEF-005,El nucleo animado se quedaba pegado en un estado activo si algo fallaba,estado.py,baja,pruebas,2026-09-02 18:00,2026-09-03 19:00,2026-09-03 19:45,comentario estado.py
+DEF-006,Dos instancias de Azmuth corriendo a la vez (voz y comandos duplicados),estado.py,alta,produccion,2026-09-05 17:00,2026-09-07 08:30,2026-09-07 10:00,comentario estado.py
+DEF-007,'Azmuth recuerda que...' no hacia match porque la frase empezaba con el nombre,main.py,media,pruebas,2026-09-06 18:00,2026-09-06 21:00,2026-09-06 21:30,comentario main.py
+DEF-008,'Apagar' con sys.exit solo mataba el hilo y la ventana quedaba abierta,main.py,media,produccion,2026-09-06 18:00,2026-09-08 20:00,2026-09-08 20:30,comentario main.py
+DEF-009,WhatsApp abria dos ventanas (navegador y app de escritorio),skills/web.py,baja,produccion,2026-09-07 17:00,2026-09-08 19:00,2026-09-08 19:40,comentario skills/web.py
+DEF-010,Modelo claude-3-5-sonnet-20241022 retirado: error 404 y Claude no respondia,config.py,critica,produccion,2026-08-28 18:00,2026-09-10 07:30,2026-09-10 08:00,historial del proyecto
+DEF-011,La skill ayuda captura cualquier frase con 'manual' u 'opciones' (ej. 'abre youtube y busca manual de guitarra'),skills/ayuda.py,media,pruebas,2026-09-12 18:00,2026-10-06 17:30,,pytest (xfail)
+DEF-012,'pon mi playlist' (usada en ayuda y en ACCION_SUGERIDA de habitos) no la reconoce ninguna skill,skills/habitos.py,media,pruebas,2026-09-12 18:00,2026-10-06 17:30,,pytest (xfail)
+DEF-013,multimedia ('^siguiente') se roba 'siguiente pestaña' porque va antes que pestanas,skills/multimedia.py,media,pruebas,2026-09-02 18:00,2026-10-06 17:40,,pytest (xfail)
+DEF-014,Imports sin uso (difflib y sys en main.py; subprocess en web.py; re y unicodedata en voice.py) y f-string sin variables,main.py,baja,revision,2026-09-01 18:00,2026-10-06 17:35,,ruff (analisis estatico)
+DEF-015,Lineas de mas de 140 caracteres en comandos PowerShell (dificultan la revision),servidor.py,baja,revision,2026-09-01 18:00,2026-10-06 17:35,,ruff (analisis estatico)
