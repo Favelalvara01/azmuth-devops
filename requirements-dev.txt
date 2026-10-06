@@ -3,6 +3,7 @@
 anthropic>=0.40
 python-dotenv
 requests
+numpy
 fastapi
 httpx
 uvicorn
