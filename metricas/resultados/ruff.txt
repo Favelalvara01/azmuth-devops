@@ -9,9 +9,7 @@ servidor.py:231:141: E501 Line too long (373 > 140)
 servidor.py:245:141: E501 Line too long (368 > 140)
 servidor.py:249:141: E501 Line too long (247 > 140)
 servidor.py:253:141: E501 Line too long (245 > 140)
-skills/__init__.py:22:141: E501 Line too long (152 > 140)
-skills/__init__.py:24:141: E501 Line too long (149 > 140)
 skills/aplicaciones.py:53:141: E501 Line too long (233 > 140)
 skills/aplicaciones.py:54:141: E501 Line too long (221 > 140)
 skills/web.py:67:141: E501 Line too long (211 > 140)
-Found 16 errors.
+Found 14 errors.

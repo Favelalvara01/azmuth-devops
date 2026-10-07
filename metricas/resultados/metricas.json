@@ -1,20 +1,20 @@
 {
-  "generado": "2026-10-07 06:58",
+  "generado": "2026-10-07 07:05",
   "producto": {
     "complejidad": {
-      "funciones_analizadas": 148,
-      "promedio": 4.05,
-      "mediana": 3.0,
+      "funciones_analizadas": 149,
+      "promedio": 4.06,
+      "mediana": 3,
       "maxima": 27,
       "distribucion_rangos": {
-        "A": 117,
+        "A": 118,
         "B": 17,
         "C": 12,
         "D": 2,
         "E": 0,
         "F": 0
       },
-      "porcentaje_A_B": 90.54,
+      "porcentaje_A_B": 90.6,
       "top10": [
         {
           "archivo": "servidor.py",
@@ -90,9 +90,9 @@
     },
     "lineas": {
       "archivos": 28,
-      "loc": 3654,
-      "sloc": 2575,
-      "kloc": 2.58,
+      "loc": 3689,
+      "sloc": 2595,
+      "kloc": 2.6,
       "por_archivo": {
         "app_desktop.py": {
           "loc": 105,
@@ -161,10 +161,10 @@
           "mi": 76.41
         },
         "skills/__init__.py": {
-          "loc": 36,
-          "sloc": 8,
-          "comentarios": 22,
-          "mi": 61.84
+          "loc": 71,
+          "sloc": 28,
+          "comentarios": 32,
+          "mi": 77.63
         },
         "skills/aplicaciones.py": {
           "loc": 195,
@@ -265,7 +265,7 @@
       }
     },
     "cobertura": {
-      "total": 76.43,
+      "total": 76.62,
       "por_archivo": {
         "app_desktop.py": 0.0,
         "basedatos.py": 100.0,
@@ -295,18 +295,18 @@
         "skills/web.py": 91.18,
         "voice.py": 73.33
       },
-      "lineas_cubiertas": 1297,
-      "lineas_ejecutables": 1697
+      "lineas_cubiertas": 1311,
+      "lineas_ejecutables": 1711
     },
     "densidad_defectos": {
-      "defectos_totales": 15,
-      "por_kloc": 5.83,
+      "defectos_totales": 16,
+      "por_kloc": 6.17,
       "abiertos": 1,
       "abiertos_por_kloc": 0.39,
       "por_archivo": {
         "app_desktop.py": 1,
         "main.py": 4,
-        "skills/__init__.py": 1,
+        "skills/__init__.py": 2,
         "estado.py": 3,
         "skills/web.py": 1,
         "config.py": 1,
@@ -316,39 +316,39 @@
         "servidor.py": 1
       }
     },
-    "mantenibilidad_promedio": 71.26
+    "mantenibilidad_promedio": 71.83
   },
   "proceso": {
-    "mttd_horas": 279.62,
-    "mttd_dias": 11.65,
-    "mttr_horas": 2.69,
-    "mttr_minutos": 162,
-    "defectos_reparados": 14,
+    "mttd_horas": 262.18,
+    "mttd_dias": 10.92,
+    "mttr_horas": 2.52,
+    "mttr_minutos": 151,
+    "defectos_reparados": 15,
     "defectos_por_fase": {
       "revision": 3,
       "pruebas": 5,
-      "produccion": 7
+      "produccion": 8
     },
     "eficacia_pruebas": {
       "detectados_en_pruebas": 5,
       "graves_detectados_en_pruebas": 0,
       "graves_totales": 4,
-      "dre_porcentaje": 53.33,
-      "porcentaje_pruebas_vs_produccion": 41.67
+      "dre_porcentaje": 50.0,
+      "porcentaje_pruebas_vs_produccion": 38.46
     },
     "ejecucion_pruebas": {
-      "total": 157,
-      "aprobadas": 157,
+      "total": 167,
+      "aprobadas": 167,
       "fallidas": 0,
       "defectos_conocidos_xfail": 0,
-      "tiempo_seg": 3.66
+      "tiempo_seg": 3.18
     }
   },
   "proyecto": {
     "eficacia_revision": {
       "defectos_en_revision": 3,
-      "defectos_totales": 15,
-      "porcentaje": 20.0
+      "defectos_totales": 16,
+      "porcentaje": 18.75
     },
     "desviacion": {
       "horas_estimadas": 72.0,
