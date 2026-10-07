@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-07 06:26",
+  "generado": "2026-10-07 06:58",
   "producto": {
     "complejidad": {
       "funciones_analizadas": 148,
@@ -75,7 +75,7 @@
         {
           "archivo": "main.py",
           "funcion": "escuchar",
-          "linea": 104,
+          "linea": 102,
           "complejidad": 12,
           "rango": "C"
         },
@@ -90,9 +90,9 @@
     },
     "lineas": {
       "archivos": 28,
-      "loc": 3639,
-      "sloc": 2570,
-      "kloc": 2.57,
+      "loc": 3654,
+      "sloc": 2575,
+      "kloc": 2.58,
       "por_archivo": {
         "app_desktop.py": {
           "loc": 105,
@@ -131,10 +131,10 @@
           "mi": 69.25
         },
         "main.py": {
-          "loc": 333,
-          "sloc": 232,
+          "loc": 331,
+          "sloc": 230,
           "comentarios": 40,
-          "mi": 45.61
+          "mi": 45.76
         },
         "migrar_json_a_sqlite.py": {
           "loc": 166,
@@ -155,22 +155,22 @@
           "mi": 33.56
         },
         "voice.py": {
-          "loc": 81,
-          "sloc": 51,
+          "loc": 80,
+          "sloc": 50,
           "comentarios": 19,
-          "mi": 76.12
+          "mi": 76.41
         },
         "skills/__init__.py": {
-          "loc": 33,
+          "loc": 36,
           "sloc": 8,
-          "comentarios": 20,
-          "mi": 66.4
+          "comentarios": 22,
+          "mi": 61.84
         },
         "skills/aplicaciones.py": {
-          "loc": 192,
-          "sloc": 150,
-          "comentarios": 18,
-          "mi": 54.62
+          "loc": 195,
+          "sloc": 151,
+          "comentarios": 20,
+          "mi": 55.4
         },
         "skills/apps_instaladas.py": {
           "loc": 275,
@@ -179,9 +179,9 @@
           "mi": 41.14
         },
         "skills/ayuda.py": {
-          "loc": 61,
-          "sloc": 53,
-          "comentarios": 4,
+          "loc": 74,
+          "sloc": 61,
+          "comentarios": 7,
           "mi": 100.0
         },
         "skills/contactos.py": {
@@ -257,15 +257,15 @@
           "mi": 75.04
         },
         "skills/web.py": {
-          "loc": 108,
-          "sloc": 73,
+          "loc": 107,
+          "sloc": 72,
           "comentarios": 18,
-          "mi": 68.81
+          "mi": 69.05
         }
       }
     },
     "cobertura": {
-      "total": 76.28,
+      "total": 76.43,
       "por_archivo": {
         "app_desktop.py": 0.0,
         "basedatos.py": 100.0,
@@ -273,11 +273,11 @@
         "chats.py": 96.2,
         "config.py": 100.0,
         "estado.py": 79.45,
-        "main.py": 26.67,
+        "main.py": 26.01,
         "nucleo.py": 100.0,
         "servidor.py": 97.07,
         "skills/__init__.py": 100.0,
-        "skills/aplicaciones.py": 79.55,
+        "skills/aplicaciones.py": 82.95,
         "skills/apps_instaladas.py": 82.49,
         "skills/ayuda.py": 100.0,
         "skills/contactos.py": 97.44,
@@ -292,17 +292,17 @@
         "skills/recordatorios.py": 95.0,
         "skills/sistema.py": 100.0,
         "skills/tiempo.py": 96.77,
-        "skills/web.py": 91.3,
-        "voice.py": 73.91
+        "skills/web.py": 91.18,
+        "voice.py": 73.33
       },
-      "lineas_cubiertas": 1296,
-      "lineas_ejecutables": 1699
+      "lineas_cubiertas": 1297,
+      "lineas_ejecutables": 1697
     },
     "densidad_defectos": {
       "defectos_totales": 15,
-      "por_kloc": 5.84,
-      "abiertos": 5,
-      "abiertos_por_kloc": 1.95,
+      "por_kloc": 5.83,
+      "abiertos": 1,
+      "abiertos_por_kloc": 0.39,
       "por_archivo": {
         "app_desktop.py": 1,
         "main.py": 4,
@@ -316,14 +316,14 @@
         "servidor.py": 1
       }
     },
-    "mantenibilidad_promedio": 71.37
+    "mantenibilidad_promedio": 71.26
   },
   "proceso": {
     "mttd_horas": 279.62,
     "mttd_dias": 11.65,
-    "mttr_horas": 0.82,
-    "mttr_minutos": 49,
-    "defectos_reparados": 10,
+    "mttr_horas": 2.69,
+    "mttr_minutos": 162,
+    "defectos_reparados": 14,
     "defectos_por_fase": {
       "revision": 3,
       "pruebas": 5,
@@ -337,11 +337,11 @@
       "porcentaje_pruebas_vs_produccion": 41.67
     },
     "ejecucion_pruebas": {
-      "total": 150,
-      "aprobadas": 147,
+      "total": 157,
+      "aprobadas": 157,
       "fallidas": 0,
-      "defectos_conocidos_xfail": 3,
-      "tiempo_seg": 6.67
+      "defectos_conocidos_xfail": 0,
+      "tiempo_seg": 3.66
     }
   },
   "proyecto": {
@@ -364,9 +364,9 @@
           "desviacion_horas": 4.0,
           "desviacion_porcentaje": 40.0,
           "puntos_historia": 8,
-          "sloc": 299,
+          "sloc": 296,
           "defectos": 5,
-          "densidad_defectos_kloc": 16.72,
+          "densidad_defectos_kloc": 16.89,
           "horas_por_punto": 1.75
         },
         {
@@ -377,9 +377,9 @@
           "desviacion_horas": 3.0,
           "desviacion_porcentaje": 25.0,
           "puntos_historia": 8,
-          "sloc": 275,
+          "sloc": 283,
           "defectos": 1,
-          "densidad_defectos_kloc": 3.64,
+          "densidad_defectos_kloc": 3.53,
           "horas_por_punto": 1.88
         },
         {

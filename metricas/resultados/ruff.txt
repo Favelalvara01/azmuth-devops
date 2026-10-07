@@ -1,11 +1,3 @@
-app_desktop.py:105:20: W292 [*] No newline at end of file
-basedatos.py:126:17: W292 [*] No newline at end of file
-cerebro.py:171:71: W292 [*] No newline at end of file
-estado.py:169:81: W292 [*] No newline at end of file
-main.py:4:8: F401 [*] `difflib` imported but unused
-main.py:10:8: F401 [*] `sys` imported but unused
-main.py:333:35: W292 [*] No newline at end of file
-migrar_json_a_sqlite.py:166:60: W292 [*] No newline at end of file
 servidor.py:174:141: E501 Line too long (142 > 140)
 servidor.py:177:141: E501 Line too long (336 > 140)
 servidor.py:181:141: E501 Line too long (336 > 140)
@@ -17,29 +9,9 @@ servidor.py:231:141: E501 Line too long (373 > 140)
 servidor.py:245:141: E501 Line too long (368 > 140)
 servidor.py:249:141: E501 Line too long (247 > 140)
 servidor.py:253:141: E501 Line too long (245 > 140)
-servidor.py:585:22: W292 [*] No newline at end of file
-skills/__init__.py:19:141: E501 Line too long (152 > 140)
-skills/__init__.py:21:141: E501 Line too long (149 > 140)
-skills/__init__.py:33:22: W292 [*] No newline at end of file
+skills/__init__.py:22:141: E501 Line too long (152 > 140)
+skills/__init__.py:24:141: E501 Line too long (149 > 140)
 skills/aplicaciones.py:53:141: E501 Line too long (233 > 140)
 skills/aplicaciones.py:54:141: E501 Line too long (221 > 140)
-skills/aplicaciones.py:169:19: F541 [*] f-string without any placeholders
-skills/aplicaciones.py:192:16: W292 [*] No newline at end of file
-skills/ayuda.py:61:16: W292 [*] No newline at end of file
-skills/contactos.py:87:16: W292 [*] No newline at end of file
-skills/habitos.py:217:59: W292 [*] No newline at end of file
-skills/interfaz.py:49:60: W292 [*] No newline at end of file
-skills/memoria.py:105:16: W292 [*] No newline at end of file
-skills/multimedia.py:76:16: W292 [*] No newline at end of file
-skills/notas.py:50:16: W292 [*] No newline at end of file
-skills/perfil.py:49:10: W292 [*] No newline at end of file
-skills/pestanas.py:84:16: W292 [*] No newline at end of file
-skills/recordatorios.py:203:18: W292 [*] No newline at end of file
-skills/tiempo.py:60:16: W292 [*] No newline at end of file
-skills/web.py:7:8: F401 [*] `subprocess` imported but unused
-skills/web.py:68:141: E501 Line too long (211 > 140)
-skills/web.py:108:16: W292 [*] No newline at end of file
-voice.py:15:8: F401 [*] `unicodedata` imported but unused
-voice.py:81:39: W292 [*] No newline at end of file
-Found 43 errors.
-[*] 27 fixable with the `--fix` option.
+skills/web.py:67:141: E501 Line too long (211 > 140)
+Found 16 errors.
