@@ -79,6 +79,27 @@ def _crear_tablas(con):
         valor TEXT
     );
 
+    CREATE TABLE IF NOT EXISTS chats (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        titulo TEXT NOT NULL,
+        creado TEXT NOT NULL,
+        actualizado TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS mensajes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        chat_id INTEGER NOT NULL REFERENCES chats(id) ON DELETE CASCADE,
+        rol TEXT NOT NULL CHECK (rol IN ('user', 'assistant')),
+        texto TEXT NOT NULL,
+        origen TEXT NOT NULL DEFAULT 'texto',
+        fecha TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS ajustes (
+        clave TEXT PRIMARY KEY,
+        valor TEXT
+    );
+
     CREATE TABLE IF NOT EXISTS perfil (
         id INTEGER PRIMARY KEY CHECK (id = 1),
         texto TEXT,

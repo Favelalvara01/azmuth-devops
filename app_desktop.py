@@ -19,10 +19,14 @@ if sys.stdout is None or sys.stderr is None:
 import uvicorn
 import webview
 
+import chats
 import config
 import estado
 import main
 from servidor import app as servidor_app
+
+# Tamaño de la ventana en cada modo (ancho, alto)
+TAMANOS = {"voz": (380, 560), "escritorio": (1100, 720)}
 
 _CARPETA = os.path.dirname(os.path.abspath(__file__))
 _RUTA_LOG = os.path.join(_CARPETA, "datos", "azmuth.log")
@@ -67,15 +71,31 @@ if __name__ == '__main__':
     # 2. Motor de voz en hilo secundario independiente
     threading.Thread(target=iniciar_escucha_voz, daemon=True).start()
 
-    # 3. Creación y ejecución de la ventana gráfica (DEBE estar en el hilo principal)
+    # 3. Modo con el que se cerró la última vez (voz o escritorio)
+    estado.set_modo(chats.obtener_ajuste("modo", "voz"))
+    ancho, alto = TAMANOS[estado.obtener_modo()]
+
+    # 4. Creación y ejecución de la ventana gráfica (DEBE estar en el hilo principal)
     ventana = webview.create_window(
         'Azmuth OS - JARVIS',
         f'http://127.0.0.1:{config.PUERTO_SERVIDOR}',
-        width=380,
-        height=520,
+        width=ancho,
+        height=alto,
+        min_size=(380, 520),
         background_color='#050b05',
-        resizable=False,
+        resizable=True,
     )
     ventana.events.closed += _al_cerrar_ventana
+
+    def _al_cambiar_modo(modo):
+        """Por voz, por el botón o escrito: la ventana se agranda para el chat
+        o regresa a la ventana compacta del núcleo, y se recuerda el modo."""
+        chats.guardar_ajuste("modo", modo)
+        try:
+            ventana.resize(*TAMANOS[modo])
+        except Exception as e:
+            _log_arranque(f"No pude redimensionar la ventana: {e}")
+
+    estado.al_cambiar_modo(_al_cambiar_modo)
 
     webview.start()

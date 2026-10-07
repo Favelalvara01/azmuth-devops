@@ -74,7 +74,7 @@ def test_flujo_app_directa(main_sin_voz):
 
 
 def test_flujo_va_a_claude(main_sin_voz, monkeypatch):
-    monkeypatch.setattr(main_sin_voz.cerebro, "preguntar", lambda t: "Respuesta de Claude")
+    monkeypatch.setattr(main_sin_voz.cerebro, "preguntar", lambda t, **kw: "Respuesta de Claude")
     main_sin_voz.procesar_comando("explícame qué es DevOps")
     main_sin_voz.voice.hablar.assert_called_with("Respuesta de Claude")
 

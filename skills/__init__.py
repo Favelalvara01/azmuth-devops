@@ -16,9 +16,9 @@ Para agregar una skill nueva:
     "abre X" o "cierra X", ponla ANTES de aplicaciones en la lista.
 Ese es todo el contrato — no hay que tocar nada más del programa.
 """
-from . import tiempo, notas, recordatorios, memoria, contactos, habitos, web, sistema, multimedia, pestanas, ayuda, aplicaciones
+from . import modos, tiempo, notas, recordatorios, memoria, contactos, habitos, web, sistema, multimedia, pestanas, ayuda, aplicaciones
 
-SKILLS = [sistema, tiempo, notas, recordatorios, memoria, contactos, habitos, web, multimedia, pestanas, ayuda, aplicaciones]
+SKILLS = [modos, sistema, tiempo, notas, recordatorios, memoria, contactos, habitos, web, multimedia, pestanas, ayuda, aplicaciones]
 
 
 def procesar(texto: str):

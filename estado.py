@@ -34,6 +34,16 @@ _ultima_actualizacion = time.time()
 # queda animando algo que en realidad ya terminó.
 _TIMEOUT_AUTO_RESET = 8  # segundos
 
+# --- Modo de Azmuth: "voz" (ventana pequeña con el núcleo) o "escritorio"
+# (ventana grande con chat escrito). En ambos modos el micrófono sigue
+# escuchando; el modo solo cambia la interfaz y dónde se guardan las
+# respuestas. _version_chat sube cada vez que entra un mensaje nuevo al
+# chat activo, para que la interfaz sepa cuándo recargar los mensajes.
+_MODOS_VALIDOS = {"voz", "escritorio"}
+_modo_actual = "voz"
+_version_chat = 0
+_escuchas_modo = []  # funciones a llamar cuando cambia el modo (ej. redimensionar la ventana)
+
 _historial = []  # últimas líneas para la consola visual (reemplaza la terminal)
 _MAX_HISTORIAL = 200
 _total_historial = 0  # contador que SOLO crece, nunca se resetea ni se recorta
@@ -58,7 +68,43 @@ def obtener_estado():
             "detalle": _detalle_actual,
             "log": list(_historial),
             "log_total": _total_historial,
+            "modo": _modo_actual,
+            "version_chat": _version_chat,
         }
+
+
+def obtener_modo() -> str:
+    return _modo_actual
+
+
+def set_modo(nombre: str) -> str:
+    """Cambia entre "voz" y "escritorio" y avisa a quien esté escuchando
+    (app_desktop.py redimensiona la ventana). Regresa el modo final."""
+    global _modo_actual
+    if nombre not in _MODOS_VALIDOS:
+        return _modo_actual
+    with _lock:
+        cambio = nombre != _modo_actual
+        _modo_actual = nombre
+    if cambio:
+        for funcion in list(_escuchas_modo):
+            try:
+                funcion(nombre)
+            except Exception:
+                pass
+    return _modo_actual
+
+
+def al_cambiar_modo(funcion):
+    """Registra una función que recibe el nuevo modo cada vez que cambia."""
+    _escuchas_modo.append(funcion)
+
+
+def aviso_chat_nuevo():
+    """Llamado cada vez que se guarda un mensaje en el chat activo."""
+    global _version_chat
+    with _lock:
+        _version_chat += 1
 
 
 def log(texto: str):

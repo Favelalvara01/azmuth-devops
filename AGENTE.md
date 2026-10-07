@@ -61,6 +61,27 @@ y la velocidad del núcleo según lo que Azmuth esté haciendo:
 Si algo se traba a medio camino, el núcleo vuelve solo a "En espera"
 después de unos segundos — nunca se queda animando algo que ya terminó.
 
+## Los dos modos: VOZ y ESCRITORIO
+
+| | Modo voz | Modo escritorio |
+|---|---|---|
+| Ventana | Pequeña, con el núcleo animado | Grande, con chat (como ChatGPT/Claude) |
+| Cómo le hablas | Palabra clave + orden | Escribiendo **o** con la palabra clave |
+| Respuestas | Cortas, en voz | Completas en pantalla (con Markdown, tablas y código) y además en voz (se puede silenciar con el botón 🔊) |
+| Historial | Memoria de la conversación hablada | Varios chats guardados en `datos/azmuth.db` (tablas `chats` y `mensajes`) |
+
+**Cambiar de modo:** botón "⌨ MODO ESCRITORIO" / "◉ MODO VOZ", o diciendo/escribiendo
+"modo escritorio", "modo chat", "modo voz", "sal del modo escritorio". Azmuth recuerda el
+último modo al volver a abrirse.
+
+En modo escritorio las skills siguen funcionando escritas ("toma nota: ...", "abre
+calculadora", "recuérdame ..."); lo que no sea un comando se lo contesta Claude usando el
+historial de ESE chat. Lo que digas por voz en modo escritorio también aparece en el chat
+activo, marcado con 🎤.
+
+Archivos: `chats.py` (chats y mensajes), `nucleo.py` (decide skill o Claude para voz y
+texto), `skills/modos.py` (cambio de modo), endpoints `/modo` y `/chats` en `servidor.py`.
+
 ## Cómo debe completar tareas
 
 Cuando le dices un comando, JARVIS sigue este orden:

@@ -3,12 +3,15 @@ servidor.py — El ÚNICO servidor web de A.Z.M.U.T.H.
 """
 import os
 import subprocess
+import threading
 import webbrowser
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 
+import chats
 import estado
 
 app = FastAPI()
@@ -33,6 +36,120 @@ def home():
 @app.get("/estado")
 def obtener_estado():
     return estado.obtener_estado()
+
+
+# ====================== MODO ESCRITORIO (chat escrito) ======================
+# nucleo y voice se importan dentro de las funciones a propósito: cargan las
+# skills (pyautogui, etc.), que solo existen en Windows. Así este servidor
+# sigue arrancando en el contenedor Docker del pipeline para la prueba de humo.
+
+class CambioModo(BaseModel):
+    modo: str
+
+
+class NuevoMensaje(BaseModel):
+    texto: str
+
+
+class Renombrar(BaseModel):
+    titulo: str
+
+
+class VozChat(BaseModel):
+    activa: bool
+
+
+@app.get("/modo")
+def ver_modo():
+    return {"modo": estado.obtener_modo(), "voz_chat": chats.obtener_ajuste("voz_chat", "1") == "1"}
+
+
+@app.post("/modo")
+def cambiar_modo(datos: CambioModo):
+    if datos.modo not in ("voz", "escritorio"):
+        raise HTTPException(400, "Modo inválido: usa 'voz' o 'escritorio'")
+    modo = estado.set_modo(datos.modo)
+    estado.log(f"Modo {modo} activado")
+    return {"modo": modo}
+
+
+@app.post("/voz_chat")
+def cambiar_voz_chat(datos: VozChat):
+    chats.guardar_ajuste("voz_chat", "1" if datos.activa else "0")
+    return {"voz_chat": datos.activa}
+
+
+@app.get("/chats")
+def ver_chats():
+    return {"chats": chats.listar_chats(), "activo": chats.obtener_activo(crear_si_no_hay=False)}
+
+
+@app.post("/chats")
+def nuevo_chat():
+    # Si ya hay un chat vacío, se reutiliza en vez de llenar la lista de "Nuevo chat"
+    vacio = next((c for c in chats.listar_chats() if c["mensajes"] == 0), None)
+    if vacio:
+        chats.fijar_activo(vacio["id"])
+        return {"id": vacio["id"]}
+    return {"id": chats.crear_chat()}
+
+
+def _chat_o_404(chat_id: int):
+    if not chats.existe(chat_id):
+        raise HTTPException(404, "Ese chat no existe")
+
+
+@app.post("/chats/{chat_id}/activar")
+def activar_chat(chat_id: int):
+    _chat_o_404(chat_id)
+    chats.fijar_activo(chat_id)
+    return {"activo": chat_id}
+
+
+@app.patch("/chats/{chat_id}")
+def renombrar_chat(chat_id: int, datos: Renombrar):
+    _chat_o_404(chat_id)
+    return {"titulo": chats.renombrar_chat(chat_id, datos.titulo)}
+
+
+@app.delete("/chats/{chat_id}")
+def borrar_chat(chat_id: int):
+    _chat_o_404(chat_id)
+    chats.borrar_chat(chat_id)
+    return {"borrado": chat_id}
+
+
+@app.get("/chats/{chat_id}/mensajes")
+def ver_mensajes(chat_id: int):
+    _chat_o_404(chat_id)
+    return {"mensajes": chats.obtener_mensajes(chat_id)}
+
+
+@app.post("/chats/{chat_id}/mensajes")
+def enviar_mensaje(chat_id: int, datos: NuevoMensaje):
+    texto = (datos.texto or "").strip()
+    if not texto:
+        raise HTTPException(400, "El mensaje está vacío")
+    _chat_o_404(chat_id)
+    import nucleo
+    estado.log(f"USTED (texto): {texto[:100]}")
+    estado.set_estado("procesando", texto)
+    try:
+        respuesta, categoria, chat_id = nucleo.responder_en_chat(texto, chat_id, origen="texto")
+    finally:
+        estado.set_estado("reposo")
+    estado.log(f"AZMUTH (texto): {respuesta[:100]}")
+    if chats.obtener_ajuste("voz_chat", "1") == "1":
+        threading.Thread(target=_hablar_en_segundo_plano, args=(respuesta,), daemon=True).start()
+    return {"respuesta": respuesta, "categoria": categoria, "chat_id": chat_id, "modo": estado.obtener_modo()}
+
+
+def _hablar_en_segundo_plano(respuesta: str):
+    try:
+        import voice
+        voice.hablar(voice.texto_para_voz(respuesta))
+    except Exception as e:
+        estado.log(f"[voz] {e}")
 
 
 def _terminar(mensaje: str, status: str = "ok"):

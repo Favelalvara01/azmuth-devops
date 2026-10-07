@@ -34,6 +34,14 @@ Si no hay nada nuevo que valga la pena recordar, no agregues ninguna línea [MEM
 El usuario nunca ve estas líneas -se recortan antes de mostrárselas-, así que escríbelas \
 tal cual, sin explicarlas ni comentarlas en el resto de tu respuesta."""
 
+EXTRA_ESCRITORIO = """
+
+MODO ESCRITORIO: ahora el usuario te está ESCRIBIENDO en una ventana de chat (como \
+ChatGPT o Claude), no hablando. Aquí sí puedes dar respuestas completas y del largo que \
+pida la pregunta, y usar Markdown cuando ayude a leer mejor: listas, **negritas**, \
+tablas y bloques de código con su lenguaje (```python). Sigue siendo AZMUTH, con el \
+mismo tono. Las reglas de [MEMORIA: ...] y de no fingir acciones siguen aplicando."""
+
 _RE_MEMORIA = re.compile(r"\[MEMORIA:\s*(.+?)\]", re.IGNORECASE)
 
 _cliente = None
@@ -82,26 +90,39 @@ def _extraer_y_guardar_memoria(texto: str) -> str:
     return _RE_MEMORIA.sub("", texto).strip()
 
 
-def preguntar(texto_usuario: str) -> str:
-    """Manda el mensaje a Claude junto con el historial reciente y regresa la respuesta en texto."""
+def preguntar(texto_usuario: str, mensajes=None, modo: str = "voz") -> str:
+    """Manda el mensaje a Claude y regresa la respuesta en texto.
+
+    - Modo voz (por defecto): usa el historial en memoria de la conversación
+      hablada, con respuestas cortas para decirlas en voz alta.
+    - Modo escritorio: recibe en `mensajes` el historial del chat escrito
+      (ya incluye el mensaje actual del usuario) y permite respuestas largas
+      con Markdown. Ese historial vive en la base de datos (ver chats.py)."""
     if not config.ANTHROPIC_API_KEY:
         return "No tengo configurada mi clave de Anthropic todavía. Revise su archivo .env, por favor."
 
     cliente = _obtener_cliente()
-    _historial.append({"role": "user", "content": texto_usuario})
-    mensajes = _historial[-12:]
+    usar_historial_voz = mensajes is None
+    if usar_historial_voz:
+        _historial.append({"role": "user", "content": texto_usuario})
+        mensajes = _historial[-12:]
+
+    system = _construir_system_prompt()
+    if modo == "escritorio":
+        system += EXTRA_ESCRITORIO
 
     try:
         respuesta = cliente.messages.create(
             model=config.MODELO_CLAUDE,
-            max_tokens=800,
-            system=_construir_system_prompt(),
+            max_tokens=2000 if modo == "escritorio" else 800,
+            system=system,
             messages=mensajes,
         )
         texto = "".join(bloque.text for bloque in respuesta.content if bloque.type == "text").strip()
         texto = _extraer_y_guardar_memoria(texto) if texto else texto
         texto = texto or "No logré generar una respuesta. ¿Puede intentarlo de nuevo?"
-        _historial.append({"role": "assistant", "content": texto})
+        if usar_historial_voz:
+            _historial.append({"role": "assistant", "content": texto})
         return texto
     except Exception as e:
         return f"Tuve un problema conectando con mi cerebro: {e}"

@@ -19,6 +19,28 @@ import estado
 
 _lock = threading.Lock()
 
+_MAX_CARACTERES_VOZ = 320
+
+
+def texto_para_voz(texto: str) -> str:
+    """Prepara una respuesta del chat (que puede venir en Markdown y ser
+    larga) para decirla en voz alta: quita símbolos de formato, no lee
+    bloques de código y, si es muy larga, dice solo el principio."""
+    t = texto or ""
+    t = re.sub(r"```.*?```", " (le dejé el código en pantalla) ", t, flags=re.DOTALL)
+    t = re.sub(r"`([^`]*)`", r"\1", t)
+    t = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", t)          # [texto](url) -> texto
+    t = re.sub(r"^\s*(#{1,6}|>|[-*+]|\d+\.)\s+", "", t, flags=re.MULTILINE)
+    t = re.sub(r"^\s*\|.*\|\s*$", "", t, flags=re.MULTILINE)   # tablas
+    t = t.replace("**", "").replace("__", "").replace("*", "")
+    t = re.sub(r"\s+", " ", t).strip()
+    if len(t) <= _MAX_CARACTERES_VOZ:
+        return t
+    corte = t[:_MAX_CARACTERES_VOZ]
+    fin = max(corte.rfind(". "), corte.rfind("? "), corte.rfind("! "))
+    corte = corte[:fin + 1] if fin > 80 else corte.rsplit(" ", 1)[0] + "…"
+    return corte + " El resto se lo dejé en pantalla."
+
 
 def _hablar_con_windows(texto: str):
     """Voz de reserva usando pyttsx3 (siempre disponible, sin internet)."""

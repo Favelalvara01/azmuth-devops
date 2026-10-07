@@ -127,9 +127,144 @@
             box-shadow: inset 0 0 10px rgba(0, 255, 102, 0.1);
         }
         .log-line { margin-bottom: 3px; border-bottom: 1px solid rgba(5, 150, 105, 0.2); word-wrap: break-word; }
+
+        /* ================= MODO ESCRITORIO (chat escrito) ================= */
+        body.modo-escritorio { padding: 0; text-align: left; }
+        body.modo-escritorio #vistaVoz { display: none; }
+        body:not(.modo-escritorio) #vistaEscritorio { display: none; }
+
+        .btn-modo {
+            margin-top: 10px; width: 100%; padding: 7px 10px; cursor: pointer;
+            background: rgba(250, 204, 21, 0.08); color: #facc15; border: 1px solid #a16207;
+            border-radius: 8px; font-family: inherit; font-size: 11px; letter-spacing: 1px;
+        }
+        .btn-modo:hover { background: rgba(250, 204, 21, 0.18); }
+
+        #vistaEscritorio {
+            display: grid; grid-template-columns: 250px 1fr; height: 100vh;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #d1fae5;
+            -webkit-user-select: text; user-select: text;
+        }
+        .lateral {
+            background: rgba(1, 16, 9, 0.96); border-right: 1px solid #065f46;
+            display: flex; flex-direction: column; min-height: 0;
+        }
+        .lateral-top { padding: 14px 12px 10px; border-bottom: 1px solid rgba(6, 95, 70, 0.6); }
+        .marca { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .mini-core {
+            width: 26px; height: 26px; border-radius: 50%; flex: none;
+            background: radial-gradient(circle, #00ff66 0%, #ff7700 100%);
+            box-shadow: 0 0 10px #00ff66, 0 0 18px #ff7700; animation: pulse 2.4s ease-in-out infinite;
+        }
+        .mini-core.estado-escuchando { background: radial-gradient(circle, #22d3ee, #0ea5e9); box-shadow: 0 0 12px #22d3ee; animation: pulse-fast .9s infinite; }
+        .mini-core.estado-procesando { background: radial-gradient(circle, #c084fc, #7c3aed); box-shadow: 0 0 12px #c084fc; animation: think .9s infinite; }
+        .mini-core.estado-ejecutando { background: radial-gradient(circle, #fb923c, #ef4444); box-shadow: 0 0 12px #fb923c; animation: flash .5s infinite; }
+        .marca-texto b { display: block; color: #facc15; font-family: 'Courier New', monospace; letter-spacing: 2px; font-size: 14px; }
+        .marca-texto span { font-size: 10px; color: #86efac; letter-spacing: 1px; font-family: 'Courier New', monospace; }
+        .btn-nuevo {
+            width: 100%; padding: 9px; border-radius: 9px; cursor: pointer; font-weight: 600; font-size: 13px;
+            background: #14532d; color: #bbf7d0; border: 1px solid #22c55e; font-family: inherit;
+        }
+        .btn-nuevo:hover { background: #166534; }
+        .lista-chats { flex: 1; overflow-y: auto; padding: 8px; min-height: 0; }
+        .chat-item {
+            display: flex; align-items: center; gap: 6px; padding: 8px 9px; border-radius: 8px;
+            cursor: pointer; font-size: 13px; color: #a7f3d0; margin-bottom: 2px;
+        }
+        .chat-item:hover { background: rgba(34, 197, 94, 0.10); }
+        .chat-item.activo { background: rgba(34, 197, 94, 0.20); color: #ecfdf5; }
+        .chat-item .titulo { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .chat-item .acciones { display: none; gap: 2px; }
+        .chat-item:hover .acciones { display: flex; }
+        .icono-btn {
+            background: none; border: none; color: #6ee7b7; cursor: pointer; font-size: 13px;
+            padding: 2px 5px; border-radius: 5px;
+        }
+        .icono-btn:hover { background: rgba(110, 231, 183, 0.15); color: #fff; }
+        .lateral-pie { border-top: 1px solid rgba(6, 95, 70, 0.6); padding: 10px 12px; display: flex; flex-direction: column; gap: 7px; }
+        .lateral-pie .btn-modo { margin-top: 0; }
+        .fila-pie { display: flex; gap: 6px; }
+        .fila-pie .btn-modo { flex: 1; }
+
+        .principal { display: flex; flex-direction: column; min-width: 0; min-height: 0;
+            background: radial-gradient(ellipse at top, #022314 0%, #010c07 75%); }
+        .barra {
+            padding: 10px 22px; border-bottom: 1px solid rgba(6, 95, 70, 0.6); display: flex; align-items: center; gap: 10px;
+        }
+        .barra h2 { margin: 0; font-size: 15px; color: #ecfdf5; font-weight: 600; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #estadoChat { font-family: 'Courier New', monospace; font-size: 11px; color: #86efac; letter-spacing: 1px; }
+        #estadoChat.procesando { color: #c084fc; } #estadoChat.escuchando { color: #22d3ee; } #estadoChat.ejecutando { color: #fb923c; }
+
+        .mensajes { flex: 1; overflow-y: auto; padding: 22px 0 10px; min-height: 0; }
+        .columna { max-width: 780px; margin: 0 auto; padding: 0 22px; }
+        .msg { display: flex; gap: 12px; margin-bottom: 18px; }
+        .msg.user { justify-content: flex-end; }
+        .avatar {
+            width: 30px; height: 30px; border-radius: 50%; flex: none; display: grid; place-items: center;
+            font-family: 'Courier New', monospace; font-weight: bold; font-size: 11px; color: #052e16;
+            background: radial-gradient(circle, #4ade80, #f97316);
+        }
+        .burbuja { line-height: 1.6; font-size: 14.5px; max-width: 100%; overflow-wrap: anywhere; }
+        .msg.user .burbuja {
+            background: #14532d; border: 1px solid #22c55e; color: #f0fdf4;
+            padding: 9px 14px; border-radius: 16px 16px 4px 16px; max-width: 75%; white-space: pre-wrap;
+        }
+        .msg.assistant .burbuja { color: #e7fbe9; padding-top: 4px; flex: 1; }
+        .etiqueta-voz { font-size: 10px; color: #67e8f9; margin-top: 3px; text-align: right; font-family: 'Courier New', monospace; }
+        .burbuja p { margin: 0 0 10px; } .burbuja p:last-child { margin-bottom: 0; }
+        .burbuja h1, .burbuja h2, .burbuja h3 { color: #facc15; margin: 14px 0 8px; font-size: 16px; text-shadow: none; letter-spacing: 0; }
+        .burbuja ul, .burbuja ol { margin: 4px 0 10px; padding-left: 22px; }
+        .burbuja li { margin-bottom: 3px; }
+        .burbuja a { color: #67e8f9; }
+        .burbuja strong { color: #fff; }
+        .burbuja code { background: rgba(0, 0, 0, 0.45); border: 1px solid #065f46; border-radius: 5px; padding: 1px 5px; font-family: Consolas, 'Courier New', monospace; font-size: 13px; color: #fde68a; }
+        .bloque-codigo { position: relative; margin: 8px 0 12px; border: 1px solid #065f46; border-radius: 9px; overflow: hidden; background: #020a06; }
+        .bloque-codigo .cab { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; background: rgba(6, 95, 70, 0.35); font-size: 11px; color: #86efac; font-family: 'Courier New', monospace; }
+        .bloque-codigo pre { margin: 0; padding: 12px; overflow-x: auto; }
+        .bloque-codigo pre code { background: none; border: none; padding: 0; color: #d1fae5; }
+        .btn-copiar { background: none; border: 1px solid #047857; color: #86efac; border-radius: 5px; cursor: pointer; font-size: 10px; padding: 2px 7px; }
+        .burbuja table { border-collapse: collapse; margin: 8px 0 12px; font-size: 13px; }
+        .burbuja th, .burbuja td { border: 1px solid #065f46; padding: 5px 9px; text-align: left; }
+        .burbuja th { background: rgba(6, 95, 70, 0.45); color: #ecfdf5; }
+
+        .pensando { display: flex; gap: 5px; padding-top: 10px; }
+        .pensando span { width: 7px; height: 7px; border-radius: 50%; background: #c084fc; animation: pulse-fast 1s infinite; }
+        .pensando span:nth-child(2) { animation-delay: .15s; } .pensando span:nth-child(3) { animation-delay: .3s; }
+
+        .vacio { text-align: center; padding-top: 12vh; }
+        .vacio .reactor-container { transform: scale(0.8); }
+        .vacio h3 { color: #facc15; font-family: 'Courier New', monospace; letter-spacing: 2px; margin: 4px 0 6px; }
+        .vacio p { color: #86efac; font-size: 13.5px; margin: 0 0 18px; }
+        .sugerencias { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 620px; margin: 0 auto; }
+        .sugerencia { background: rgba(2, 44, 24, 0.8); border: 1px solid #047857; color: #bbf7d0; border-radius: 18px; padding: 7px 13px; font-size: 12.5px; cursor: pointer; font-family: inherit; }
+        .sugerencia:hover { border-color: #22c55e; background: rgba(20, 83, 45, 0.9); }
+
+        .entrada { padding: 10px 0 16px; }
+        .caja-entrada {
+            display: flex; align-items: flex-end; gap: 8px; background: rgba(2, 30, 16, 0.95);
+            border: 1px solid #047857; border-radius: 14px; padding: 8px 8px 8px 14px;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.12);
+        }
+        .caja-entrada:focus-within { border-color: #22c55e; }
+        #textoEntrada {
+            flex: 1; background: none; border: none; outline: none; resize: none; color: #f0fdf4;
+            font-family: inherit; font-size: 14.5px; line-height: 1.5; max-height: 180px; padding: 5px 0;
+        }
+        #textoEntrada::placeholder { color: #4d7c63; }
+        #btnEnviar {
+            width: 36px; height: 36px; border-radius: 10px; border: none; cursor: pointer; flex: none;
+            background: #22c55e; color: #052e16; font-size: 17px; font-weight: bold;
+        }
+        #btnEnviar:disabled { background: #14532d; color: #4d7c63; cursor: default; }
+        .ayuda-entrada { text-align: center; font-size: 11px; color: #4d7c63; margin-top: 6px; }
+        .lateral .console-box { max-height: 90px; min-height: 0; font-size: 10px; margin-top: 0; font-family: 'Courier New', monospace; }
+        ::-webkit-scrollbar { width: 9px; height: 9px; }
+        ::-webkit-scrollbar-thumb { background: #065f46; border-radius: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
     </style>
 </head>
 <body>
+<div id="vistaVoz">
     <div class="card">
         <h1>AZMUTH OS ONLINE</h1>
 
@@ -145,7 +280,47 @@
         <div class="console-box" id="consoleLog">
             <div class="log-line">&gt; Sistema inicializado correctamente.</div>
         </div>
+        <button class="btn-modo" onclick="cambiarModo('escritorio')" title="Abrir el chat escrito">⌨ MODO ESCRITORIO</button>
     </div>
+
+</div>
+
+<!-- ======================= MODO ESCRITORIO ======================= -->
+<div id="vistaEscritorio">
+    <aside class="lateral">
+        <div class="lateral-top">
+            <div class="marca">
+                <div class="mini-core" id="miniCore"></div>
+                <div class="marca-texto"><b>AZMUTH OS</b><span>MODO ESCRITORIO</span></div>
+            </div>
+            <button class="btn-nuevo" onclick="nuevoChat()">+ Nuevo chat</button>
+        </div>
+        <div class="lista-chats" id="listaChats"></div>
+        <div class="lateral-pie">
+            <div class="console-box" id="consoleMini"></div>
+            <div class="fila-pie">
+                <button class="btn-modo" id="btnVozChat" onclick="alternarVozChat()" title="Leer en voz alta las respuestas escritas">🔊 VOZ: SÍ</button>
+                <button class="btn-modo" onclick="cambiarModo('voz')" title="Regresar a la ventana compacta">◉ MODO VOZ</button>
+            </div>
+        </div>
+    </aside>
+    <main class="principal">
+        <div class="barra">
+            <h2 id="tituloChat">Nuevo chat</h2>
+            <div id="estadoChat">EN ESPERA</div>
+        </div>
+        <div class="mensajes" id="mensajes"><div class="columna" id="columnaMensajes"></div></div>
+        <div class="entrada">
+            <div class="columna">
+                <div class="caja-entrada">
+                    <textarea id="textoEntrada" rows="1" placeholder="Escríbale a Azmuth…"></textarea>
+                    <button id="btnEnviar" onclick="enviar()" title="Enviar (Enter)">➤</button>
+                </div>
+                <div class="ayuda-entrada">Enter para enviar · Shift+Enter nueva línea · También puede hablarle con la palabra clave</div>
+            </div>
+        </div>
+    </main>
+</div>
 
     <script>
         const ETIQUETAS = {
@@ -205,11 +380,255 @@
                 const data = await resp.json();
                 aplicarEstado(data.estado, data.detalle);
                 actualizarConsola(data.log, data.log_total);
+                aplicarModo(data.modo || 'voz');
+                if (modoActual === 'escritorio') actualizarEscritorio(data);
             } catch (e) {
                 // Silencioso: si el servidor tarda un instante en levantar,
                 // simplemente reintentamos en el próximo intervalo.
             }
         }
+
+
+        // ===================== MODO ESCRITORIO =====================
+        let modoActual = null;
+        let chatActivo = null;
+        let ultimaVersionChat = -1;
+        let enviando = false;
+        let vozChat = true;
+
+        function escaparHTML(t) {
+            return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function enLinea(t) {
+            // t ya viene escapado
+            return t
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>')
+                .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+        }
+
+        // Markdown sencillo: código, títulos, listas, tablas, negritas y enlaces
+        function markdown(texto) {
+            const bloques = [];
+            let t = escaparHTML(texto || '').replace(/```(\w*)\n?([\s\S]*?)```/g, (m, lang, codigo) => {
+                bloques.push('<div class="bloque-codigo"><div class="cab"><span>' + (lang || 'código') +
+                    '</span><button class="btn-copiar" onclick="copiarCodigo(this)">Copiar</button></div><pre><code>' +
+                    codigo.replace(/\n$/, '') + '</code></pre></div>');
+                return '\u0000' + (bloques.length - 1) + '\u0000';
+            });
+            const lineas = t.split('\n');
+            let html = '', parrafo = [], lista = null, tabla = [];
+            const cerrarParrafo = () => { if (parrafo.length) { html += '<p>' + enLinea(parrafo.join('<br>')) + '</p>'; parrafo = []; } };
+            const cerrarLista = () => { if (lista) { html += '</' + lista + '>'; lista = null; } };
+            const cerrarTabla = () => {
+                if (!tabla.length) return;
+                const filas = tabla.filter(f => !/^[\s|:-]+$/.test(f));   // quita la fila |---|---|
+                html += '<table>' + filas.map((f, i) => {
+                    const celdas = f.replace(/^\||\|$/g, '').split('|').map(c => enLinea(c.trim()));
+                    const tag = i === 0 ? 'th' : 'td';
+                    return '<tr>' + celdas.map(c => '<' + tag + '>' + c + '</' + tag + '>').join('') + '</tr>';
+                }).join('') + '</table>';
+                tabla = [];
+            };
+            for (const linea of lineas) {
+                const l = linea.trimEnd();
+                let m;
+                if (/^\u0000\d+\u0000$/.test(l.trim())) { cerrarParrafo(); cerrarLista(); cerrarTabla(); html += l.trim(); continue; }
+                if (/^\s*\|.*\|\s*$/.test(l)) { cerrarParrafo(); cerrarLista(); tabla.push(l.trim()); continue; } else cerrarTabla();
+                if ((m = l.match(/^(#{1,3})\s+(.*)/))) { cerrarParrafo(); cerrarLista(); html += '<h3>' + enLinea(m[2]) + '</h3>'; continue; }
+                if ((m = l.match(/^\s*[-*+]\s+(.*)/))) { cerrarParrafo(); if (lista !== 'ul') { cerrarLista(); html += '<ul>'; lista = 'ul'; } html += '<li>' + enLinea(m[1]) + '</li>'; continue; }
+                if ((m = l.match(/^\s*\d+[.)]\s+(.*)/))) { cerrarParrafo(); if (lista !== 'ol') { cerrarLista(); html += '<ol>'; lista = 'ol'; } html += '<li>' + enLinea(m[1]) + '</li>'; continue; }
+                if (!l.trim()) { cerrarParrafo(); cerrarLista(); continue; }
+                cerrarLista(); parrafo.push(l);
+            }
+            cerrarParrafo(); cerrarLista(); cerrarTabla();
+            return html.replace(/\u0000(\d+)\u0000/g, (m, i) => bloques[+i]);
+        }
+
+        function copiarCodigo(boton) {
+            const codigo = boton.closest('.bloque-codigo').querySelector('code').innerText;
+            navigator.clipboard.writeText(codigo).then(() => { boton.textContent = '¡Copiado!'; setTimeout(() => boton.textContent = 'Copiar', 1200); });
+        }
+
+        async function api(ruta, metodo = 'GET', cuerpo = null) {
+            const opciones = { method: metodo, cache: 'no-store', headers: {} };
+            if (cuerpo) { opciones.headers['Content-Type'] = 'application/json'; opciones.body = JSON.stringify(cuerpo); }
+            const r = await fetch(ruta, opciones);
+            if (!r.ok) throw new Error(await r.text());
+            return r.json();
+        }
+
+        function aplicarModo(modo) {
+            if (modo === modoActual) return;
+            modoActual = modo;
+            document.body.classList.toggle('modo-escritorio', modo === 'escritorio');
+            if (modo === 'escritorio') { cargarChats(true); setTimeout(() => document.getElementById('textoEntrada').focus(), 100); }
+        }
+
+        async function cambiarModo(modo) {
+            try { await api('/modo', 'POST', { modo }); aplicarModo(modo); } catch (e) { console.log(e); }
+        }
+
+        async function alternarVozChat() {
+            vozChat = !vozChat;
+            pintarVozChat();
+            try { await api('/voz_chat', 'POST', { activa: vozChat }); } catch (e) { console.log(e); }
+        }
+        function pintarVozChat() { document.getElementById('btnVozChat').textContent = vozChat ? '🔊 VOZ: SÍ' : '🔇 VOZ: NO'; }
+
+        async function cargarChats(tambienMensajes) {
+            const datos = await api('/chats');
+            if (!chatActivo || !datos.chats.some(c => c.id === chatActivo)) {
+                chatActivo = datos.activo || (datos.chats[0] && datos.chats[0].id) || null;
+            }
+            const lista = document.getElementById('listaChats');
+            lista.innerHTML = '';
+            datos.chats.forEach(c => {
+                const item = document.createElement('div');
+                item.className = 'chat-item' + (c.id === chatActivo ? ' activo' : '');
+                item.innerHTML = '<span class="titulo"></span><span class="acciones">' +
+                    '<button class="icono-btn" title="Renombrar">✎</button><button class="icono-btn" title="Borrar">🗑</button></span>';
+                item.querySelector('.titulo').textContent = c.titulo;
+                item.onclick = () => abrirChat(c.id);
+                const [btnRen, btnBor] = item.querySelectorAll('.icono-btn');
+                btnRen.onclick = (ev) => { ev.stopPropagation(); renombrar(c); };
+                btnBor.onclick = (ev) => { ev.stopPropagation(); borrar(c); };
+                lista.appendChild(item);
+            });
+            const actual = datos.chats.find(c => c.id === chatActivo);
+            document.getElementById('tituloChat').textContent = actual ? actual.titulo : 'Nuevo chat';
+            if (tambienMensajes) await cargarMensajes();
+        }
+
+        async function abrirChat(id) {
+            chatActivo = id;
+            await api('/chats/' + id + '/activar', 'POST');
+            await cargarChats(true);
+        }
+
+        async function nuevoChat() {
+            const r = await api('/chats', 'POST');
+            chatActivo = r.id;
+            await cargarChats(true);
+            document.getElementById('textoEntrada').focus();
+        }
+
+        async function renombrar(c) {
+            const titulo = prompt('Nuevo nombre del chat:', c.titulo);
+            if (titulo && titulo.trim()) { await api('/chats/' + c.id, 'PATCH', { titulo }); await cargarChats(false); }
+        }
+
+        async function borrar(c) {
+            if (!confirm('¿Borrar el chat "' + c.titulo + '"?')) return;
+            await api('/chats/' + c.id, 'DELETE');
+            if (chatActivo === c.id) chatActivo = null;
+            await cargarChats(true);
+        }
+
+        function burbuja(m) {
+            const fila = document.createElement('div');
+            fila.className = 'msg ' + m.rol;
+            if (m.rol === 'assistant') {
+                fila.innerHTML = '<div class="avatar">AZ</div><div class="burbuja"></div>';
+                fila.querySelector('.burbuja').innerHTML = markdown(m.texto);
+            } else {
+                const caja = document.createElement('div');
+                caja.style.maxWidth = '75%';
+                caja.innerHTML = '<div class="burbuja"></div>' + (m.origen === 'voz' ? '<div class="etiqueta-voz">🎤 por voz</div>' : '');
+                caja.querySelector('.burbuja').textContent = m.texto;
+                caja.querySelector('.burbuja').style.maxWidth = '100%';
+                fila.appendChild(caja);
+            }
+            return fila;
+        }
+
+        const SUGERENCIAS = ['¿Qué puedes hacer?', 'Explícame qué es DevOps', 'Recuérdame estudiar a las 7 pm', 'Mis notas', '¿Qué clima hace?', 'Hazme un script en Python que ordene una lista'];
+
+        function pintarVacio(col) {
+            col.innerHTML = '<div class="vacio"><div class="reactor-container estado-reposo"><div class="ring ring-1"></div><div class="ring ring-2"></div><div class="core"></div></div>' +
+                '<h3>¿EN QUÉ LE AYUDO, SEÑOR?</h3><p>Escríbame como a cualquier IA. También ejecuto mis comandos: notas, recordatorios, abrir apps…</p><div class="sugerencias"></div></div>';
+            const cont = col.querySelector('.sugerencias');
+            SUGERENCIAS.forEach(s => {
+                const b = document.createElement('button');
+                b.className = 'sugerencia'; b.textContent = s;
+                b.onclick = () => { document.getElementById('textoEntrada').value = s; enviar(); };
+                cont.appendChild(b);
+            });
+        }
+
+        async function cargarMensajes() {
+            const col = document.getElementById('columnaMensajes');
+            if (!chatActivo) { pintarVacio(col); return; }
+            const datos = await api('/chats/' + chatActivo + '/mensajes');
+            col.innerHTML = '';
+            if (!datos.mensajes.length) { pintarVacio(col); return; }
+            datos.mensajes.forEach(m => col.appendChild(burbuja(m)));
+            bajarScroll();
+        }
+
+        function bajarScroll() { const c = document.getElementById('mensajes'); c.scrollTop = c.scrollHeight; }
+
+        async function enviar() {
+            const caja = document.getElementById('textoEntrada');
+            const texto = caja.value.trim();
+            if (!texto || enviando) return;
+            enviando = true;
+            document.getElementById('btnEnviar').disabled = true;
+            caja.value = ''; ajustarAltura();
+            if (!chatActivo) { const r = await api('/chats', 'POST'); chatActivo = r.id; }
+            const col = document.getElementById('columnaMensajes');
+            if (col.querySelector('.vacio')) col.innerHTML = '';
+            col.appendChild(burbuja({ rol: 'user', texto, origen: 'texto' }));
+            const pensando = document.createElement('div');
+            pensando.className = 'msg assistant';
+            pensando.innerHTML = '<div class="avatar">AZ</div><div class="pensando"><span></span><span></span><span></span></div>';
+            col.appendChild(pensando);
+            bajarScroll();
+            try {
+                const r = await api('/chats/' + chatActivo + '/mensajes', 'POST', { texto });
+                chatActivo = r.chat_id;
+                aplicarModo(r.modo);
+            } catch (e) {
+                pensando.remove();
+                col.appendChild(burbuja({ rol: 'assistant', texto: '⚠️ No pude responder: ' + e.message }));
+            }
+            enviando = false;
+            document.getElementById('btnEnviar').disabled = false;
+            if (modoActual === 'escritorio') { await cargarChats(true); caja.focus(); }
+        }
+
+        function ajustarAltura() {
+            const caja = document.getElementById('textoEntrada');
+            caja.style.height = 'auto';
+            caja.style.height = Math.min(caja.scrollHeight, 180) + 'px';
+        }
+
+        document.getElementById('textoEntrada').addEventListener('input', ajustarAltura);
+        document.getElementById('textoEntrada').addEventListener('keydown', (ev) => {
+            if (ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); enviar(); }
+        });
+
+        function actualizarEscritorio(data) {
+            const etiqueta = ETIQUETAS[data.estado] || ETIQUETAS.reposo;
+            document.getElementById('miniCore').className = 'mini-core estado-' + (data.estado || 'reposo');
+            const est = document.getElementById('estadoChat');
+            est.className = data.estado || '';
+            est.textContent = etiqueta;
+            // Consola mini: últimas 4 líneas
+            const mini = document.getElementById('consoleMini');
+            mini.innerHTML = '';
+            (data.log || []).slice(-4).forEach(l => { const d = document.createElement('div'); d.className = 'log-line'; d.textContent = '> ' + l; mini.appendChild(d); });
+            // Llegó un mensaje nuevo al chat (por ejemplo, un comando dicho por voz)
+            if (data.version_chat !== ultimaVersionChat) {
+                const primeraVez = ultimaVersionChat === -1;
+                ultimaVersionChat = data.version_chat;
+                if (!primeraVez && !enviando) cargarChats(true);
+            }
+        }
+
+        api('/modo').then(d => { vozChat = d.voz_chat; pintarVozChat(); }).catch(() => {});
 
         setInterval(actualizarTodo, 500);
         actualizarTodo();

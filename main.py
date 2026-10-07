@@ -19,6 +19,7 @@ import voice
 import cerebro
 import skills
 import estado
+import nucleo
 
 # Si al comando le antepone el nombre del asistente ("Azmuth, recuerda que...",
 # "oye Azmuth, toma nota..."), se lo quitamos ANTES de mandarlo a las skills.
@@ -197,19 +198,16 @@ def procesar_comando(texto: str):
     if t_limpio in apps_directas:
         texto = f"abre {t_limpio}"
 
-    respuesta_local, categoria = skills.procesar(texto)
-    if respuesta_local is not None:
-        skills.habitos.registrar_uso(categoria)
-        estado.set_estado("ejecutando", respuesta_local)
-        voice.hablar(respuesta_local)
-        time.sleep(1.5)
-        estado.set_estado("reposo")
-        return
-
-    skills.habitos.registrar_uso("ia")
-    respuesta = cerebro.preguntar(texto)
+    # En modo escritorio lo que se dice por voz también queda escrito en el
+    # chat activo (y Claude usa el historial de ese chat como contexto).
+    if estado.obtener_modo() == "escritorio":
+        respuesta, _, _ = nucleo.responder_en_chat(texto, origen="voz")
+        respuesta_hablada = voice.texto_para_voz(respuesta)
+    else:
+        respuesta, _ = nucleo.responder(texto)
+        respuesta_hablada = respuesta
     estado.set_estado("ejecutando", respuesta)
-    voice.hablar(respuesta)
+    voice.hablar(respuesta_hablada)
     time.sleep(1.5)
     estado.set_estado("reposo")
 
