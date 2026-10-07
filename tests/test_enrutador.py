@@ -59,3 +59,33 @@ def test_la_sugerencia_de_habitos_ya_se_ejecuta():
     from skills import habitos
     respuesta, skill = skills.procesar(habitos.ACCION_SUGERIDA["multimedia"])
     assert skill == "aplicaciones" and respuesta == "Activando tu playlist"
+
+
+# Regresión DEF-016: comandos ESCRITOS con signos de interrogación o sin acentos
+@pytest.mark.parametrize("frase,skill_esperada", [
+    ("¿Qué hora es?", "tiempo"),
+    ("que hora es", "tiempo"),
+    ("¿Mis notas?", "notas"),
+    ("recuerdame comprar pan", "recordatorios"),
+    ("¡Toma nota: llamar a Jesús!", "notas"),
+    ("mis habitos", "habitos"),
+    ("siguiente pestana", "pestanas"),
+])
+def test_comandos_escritos_con_signos_o_sin_acentos(frase, skill_esperada):
+    _, skill = skills.procesar(frase)
+    assert skill == skill_esperada
+
+
+def test_clima_escrito_con_signos(monkeypatch):
+    from skills import tiempo
+    monkeypatch.setattr(tiempo, "_obtener_clima", lambda: "En Juárez hace 25°C.")
+    assert skills.procesar("¿Qué clima hace?") == ("En Juárez hace 25°C.", "tiempo")
+
+
+def test_la_nota_se_guarda_tal_cual_se_escribio():
+    respuesta, _ = skills.procesar("toma nota: ¿qué hago mañana?")
+    assert respuesta == 'Nota guardada: "¿qué hago mañana?".'
+
+
+def test_frase_libre_sigue_yendo_a_claude():
+    assert skills.procesar("¿Qué opinas de la inteligencia artificial?") == (None, None)

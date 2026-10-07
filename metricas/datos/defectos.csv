@@ -14,3 +14,4 @@ DEF-012,'pon mi playlist' (usada en ayuda y en ACCION_SUGERIDA de habitos) no la
 DEF-013,multimedia ('^siguiente') se roba 'siguiente pestaña' porque va antes que pestanas,skills/multimedia.py,media,pruebas,2026-09-02 18:00,2026-10-06 17:40,2026-10-07 00:55,pytest (xfail)
 DEF-014,Imports sin uso (difflib y sys en main.py; subprocess en web.py; re y unicodedata en voice.py) y f-string sin variables,main.py,baja,revision,2026-09-01 18:00,2026-10-06 17:35,2026-10-07 01:00,ruff (analisis estatico)
 DEF-015,Lineas de mas de 140 caracteres en comandos PowerShell (dificultan la revision),servidor.py,baja,revision,2026-09-01 18:00,2026-10-06 17:35,,ruff (analisis estatico)
+DEF-016,Escrito en el chat '¿Qué clima hace?' (con signos) o 'que hora es' (sin acentos) no lo reconocia ninguna skill y lo contestaba Claude,skills/__init__.py,media,produccion,2026-10-07 00:26,2026-10-07 00:58,2026-10-07 00:58,uso real del modo escritorio

@@ -19,9 +19,39 @@ Para agregar una skill nueva:
     "abre X" o "cierra X", ponla ANTES de aplicaciones en la lista.
 Ese es todo el contrato — no hay que tocar nada más del programa.
 """
-from . import modos, tiempo, notas, recordatorios, memoria, contactos, habitos, web, sistema, multimedia, pestanas, ayuda, aplicaciones, apps_instaladas
+import re
 
-SKILLS = [modos, sistema, tiempo, notas, recordatorios, memoria, contactos, habitos, web, pestanas, multimedia, ayuda, aplicaciones, apps_instaladas]
+from . import (modos, tiempo, notas, recordatorios, memoria, contactos, habitos, web, sistema,
+               multimedia, pestanas, ayuda, aplicaciones, apps_instaladas)
+
+SKILLS = [modos, sistema, tiempo, notas, recordatorios, memoria, contactos, habitos, web,
+          pestanas, multimedia, ayuda, aplicaciones, apps_instaladas]
+
+
+# Palabras de comando que, escritas SIN acento, no reconocerían las skills
+# (sus patrones usan la ortografía con acento que entrega el dictado por voz).
+_ACENTOS = {
+    "que": "qué", "cual": "cuál", "cuales": "cuáles", "como": "cómo", "donde": "dónde", "cuantos": "cuántos",
+    "dia": "día", "recuerdame": "recuérdame", "llevame": "llévame", "buscame": "búscame", "mandale": "mándale",
+    "escribele": "escríbele", "enviale": "envíale", "habitos": "hábitos", "pestana": "pestaña", "olvidate": "olvídate",
+}
+_RE_PALABRA = re.compile(r"\b(" + "|".join(_ACENTOS) + r")\b", re.IGNORECASE)
+
+
+def variantes(texto: str):
+    """Versiones del texto a probar, de la más fiel a la más corregida.
+    DEF-016: escrito en el chat llegaba "¿Qué clima hace?" (con signos) o
+    "que hora es" (sin acentos) y ninguna skill lo reconocía, aunque por voz
+    sí funcionaba. Se prueba primero el texto tal cual, luego sin los signos
+    de inicio/fin y luego con los acentos de las palabras de comando."""
+    original = (texto or "").strip()
+    limpio = original.lstrip("¿¡ ").rstrip("?!.¡¿ ").strip()
+    con_acentos = _RE_PALABRA.sub(lambda m: _ACENTOS[m.group(1).lower()], limpio)
+    vistas = []
+    for v in (original, limpio, con_acentos):
+        if v and v not in vistas:
+            vistas.append(v)
+    return vistas
 
 
 def procesar(texto: str):
@@ -29,8 +59,13 @@ def procesar(texto: str):
     primera que conteste algo (no None), o (None, None) si ninguna supo
     manejarlo. El nombre del módulo (ej. "multimedia", "notas") es lo que
     main.py usa para llevar el registro silencioso de hábitos."""
+    versiones = variantes(texto)
+    # El orden de las SKILLS manda: cada skill prueba todas las versiones antes
+    # de pasar a la siguiente (así "siguiente pestana" llega a pestanas y no a
+    # multimedia), y siempre recibe primero el texto tal cual se escribió.
     for skill in SKILLS:
-        resultado = skill.intentar(texto)
-        if resultado is not None:
-            return resultado, skill.__name__.rsplit(".", 1)[-1]
+        for version in versiones:
+            resultado = skill.intentar(version)
+            if resultado is not None:
+                return resultado, skill.__name__.rsplit(".", 1)[-1]
     return None, None
