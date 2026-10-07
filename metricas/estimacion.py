@@ -16,6 +16,8 @@ import math
 import os
 import statistics
 
+from consola import mostrar  # noqa: E402  (tablas con formato en la terminal)
+
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PESOS = {  # tabla estándar IFPUG
     "EI": {"simple": 3, "media": 4, "compleja": 6},
@@ -122,7 +124,7 @@ def main():
     json.dump(r, open(os.path.join(args.reportes, "estimacion.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     md = a_markdown(r)
     open(os.path.join(args.reportes, "estimacion.md"), "w", encoding="utf-8").write(md)
-    print(md)
+    mostrar(md)
 
 
 if __name__ == "__main__":

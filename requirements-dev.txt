@@ -11,4 +11,5 @@ pytest>=8
 pytest-cov
 radon
 matplotlib
+rich
 ruff

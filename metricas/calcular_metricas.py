@@ -27,6 +27,8 @@ from radon.complexity import cc_rank, cc_visit
 from radon.metrics import mi_visit
 from radon.raw import analyze
 
+from consola import mostrar  # noqa: E402  (tablas con formato en la terminal)
+
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATOS = os.path.join(RAIZ, "metricas", "datos")
 EXCLUIR = {"tests", "metricas", ".github", "__pycache__", ".venv", "venv", "reports"}
@@ -291,7 +293,7 @@ def main():
     md = a_markdown(resultado)
     with open(os.path.join(args.reportes, "metricas.md"), "w", encoding="utf-8") as f:
         f.write(md)
-    print(md)
+    mostrar(md)
 
 
 if __name__ == "__main__":

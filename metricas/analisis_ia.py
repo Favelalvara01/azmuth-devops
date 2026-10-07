@@ -16,6 +16,8 @@ import json
 import os
 import sys
 
+from consola import mostrar  # noqa: E402  (tablas con formato en la terminal)
+
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 try:  # en local toma la clave del mismo .env que usa Azmuth (en CI viene de los Secrets)
     from dotenv import load_dotenv
@@ -79,7 +81,7 @@ def main():
         aviso = ("## 🤖 Análisis con IA\n\n_No se configuró el secreto ANTHROPIC_API_KEY; "
                  "se omitió el análisis con Claude en esta ejecución._\n")
         open(salida, "w", encoding="utf-8").write(aviso)
-        print(aviso)
+        mostrar(aviso)
         return
 
     import anthropic
@@ -94,7 +96,7 @@ def main():
     texto = "".join(b.text for b in respuesta.content if b.type == "text").strip()
     md = f"## 🤖 Análisis de calidad con IA ({MODELO})\n\n{texto}\n"
     open(salida, "w", encoding="utf-8").write(md)
-    print(md)
+    mostrar(md)
 
 
 if __name__ == "__main__":
