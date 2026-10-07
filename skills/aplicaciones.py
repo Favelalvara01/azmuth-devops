@@ -136,7 +136,10 @@ def intentar(texto: str):
         return "Activando modo Menea tu chapa. ¡A bailar!"
 
     # --- MODO AZMUTH MIX (Tu playlist oficial de YouTube) ---
-    if any(k in t for k in ("azmuth mix", "mi musica", "mix personal", "pon mi musica", "aleatorio")):
+    # DEF-012: "pon mi playlist" se anunciaba en la ayuda y en las sugerencias
+    # de hábitos, pero ninguna skill lo reconocía.
+    if any(k in t for k in ("azmuth mix", "mi musica", "mix personal", "pon mi musica", "aleatorio",
+                            "mi playlist", "mi lista de reproduccion")):
         url_playlist = "https://www.youtube.com/watch?v=pMNhe03RKZE&list=PLTEsV4ouHz8U&index=2"
         webbrowser.open(url_playlist)
         return "Activando tu playlist"
@@ -166,7 +169,7 @@ def intentar(texto: str):
         if len(consulta_limpia) > 1:
             url = f"https://www.youtube.com/results?search_query={quote(consulta_limpia)}"
         else:
-            url = f"https://www.youtube.com"
+            url = "https://www.youtube.com"
 
         webbrowser.open(url)
         if len(consulta_limpia) > 1:

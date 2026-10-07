@@ -32,13 +32,30 @@ def test_frase_desconocida_regresa_none_para_ir_a_claude():
     assert skills.procesar("cuéntame un chiste de programadores") == (None, None)
 
 
-@pytest.mark.xfail(strict=True, reason="DEF-011: 'ayuda' captura cualquier frase con 'manual' u 'opciones' antes que aplicaciones")
+# Regresión DEF-011 (corregido en el Sprint 9)
 def test_youtube_con_palabra_manual_no_debe_abrir_la_ayuda():
     _, skill = skills.procesar("abre youtube y busca manual de guitarra")
     assert skill == "aplicaciones"
 
 
-@pytest.mark.xfail(strict=True, reason="DEF-012: la ayuda y habitos.ACCION_SUGERIDA usan 'pon mi playlist' pero ninguna skill la reconoce")
+# Regresión DEF-012 (corregido en el Sprint 9)
 def test_pon_mi_playlist_lo_resuelve_una_skill():
     respuesta, _ = skills.procesar("pon mi playlist")
     assert respuesta is not None
+
+
+@pytest.mark.parametrize("frase", ["ayuda", "¿Qué puedes hacer?", "dime tus comandos", "manual", "Azmuth, ayuda"])
+def test_la_ayuda_sigue_respondiendo_a_peticiones_reales(frase):
+    _, skill = skills.procesar(frase)
+    assert skill == "ayuda"
+
+
+def test_siguiente_a_secas_sigue_siendo_multimedia():
+    _, skill = skills.procesar("siguiente")
+    assert skill == "multimedia"
+
+
+def test_la_sugerencia_de_habitos_ya_se_ejecuta():
+    from skills import habitos
+    respuesta, skill = skills.procesar(habitos.ACCION_SUGERIDA["multimedia"])
+    assert skill == "aplicaciones" and respuesta == "Activando tu playlist"

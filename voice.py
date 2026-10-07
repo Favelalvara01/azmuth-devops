@@ -12,7 +12,6 @@ programa. Por eso todo pasa por un candado (_lock): solo una parte puede
 estar hablando en un momento dado, la otra espera su turno.
 """
 import threading
-import unicodedata
 import re
 import config
 import estado

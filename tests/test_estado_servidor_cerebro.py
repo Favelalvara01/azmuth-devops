@@ -86,5 +86,5 @@ def test_error_de_red_con_claude_no_truena(monkeypatch):
 
 
 def test_modelo_configurado_no_es_uno_retirado():
-    """Regresión DEF-004: el modelo claude-3-5-sonnet-20241022 fue retirado y daba 404."""
+    """Regresión DEF-010: el modelo claude-3-5-sonnet-20241022 fue retirado y daba 404."""
     assert "20241022" not in config.MODELO_CLAUDE

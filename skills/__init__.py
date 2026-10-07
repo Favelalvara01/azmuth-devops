@@ -9,6 +9,9 @@ muy amplio que agarra cualquier "abre X" o "cierra X", así que SIEMPRE
 debe ir al final — si no, se roba comandos que le tocan a otras skills
 más específicas (como "abre pestaña" o "cierra pestaña").
 
+Por la misma razón "pestanas" va ANTES que "multimedia": la regla de
+multimedia "^siguiente" se robaba "siguiente pestaña" (DEF-013).
+
 Para agregar una skill nueva:
 1. Crea un archivo nuevo aquí en skills/, por ejemplo skills/musica.py
 2. Dale una función intentar(texto: str) -> str | None igual que las demás
@@ -18,7 +21,7 @@ Ese es todo el contrato — no hay que tocar nada más del programa.
 """
 from . import modos, tiempo, notas, recordatorios, memoria, contactos, habitos, web, sistema, multimedia, pestanas, ayuda, aplicaciones, apps_instaladas
 
-SKILLS = [modos, sistema, tiempo, notas, recordatorios, memoria, contactos, habitos, web, multimedia, pestanas, ayuda, aplicaciones, apps_instaladas]
+SKILLS = [modos, sistema, tiempo, notas, recordatorios, memoria, contactos, habitos, web, pestanas, multimedia, ayuda, aplicaciones, apps_instaladas]
 
 
 def procesar(texto: str):

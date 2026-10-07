@@ -5,10 +5,23 @@ tomados directo de las expresiones que cada skill acepta (no genéricos).
 import re
 
 
+_PIDE_AYUDA = re.compile(
+    r"^(?:azmuth\s+)?(?:"
+    r"ayuda|ay[uú]dame|manual|(?:el\s+)?manual de uso|opciones|"
+    r"(?:dime\s+|cu[aá]les\s+son\s+|mu[eé]strame\s+)?(?:tus\s+|los\s+|mis\s+)?comandos|"
+    r"qu[eé]\s+(?:puedes|sabes)\s+hacer|qu[eé]\s+haces"
+    r")$"
+)
+
+
 def intentar(texto: str):
     t = texto.lower().strip()
 
-    if re.search(r"\b(comandos|qué puedes hacer|que puedes hacer|ayuda|manual|opciones)\b", t):
+    # DEF-011: antes bastaba con que la frase CONTUVIERA "manual" u "opciones"
+    # en cualquier parte ("abre youtube y busca manual de guitarra" mostraba la
+    # ayuda). Ahora la frase completa tiene que ser una petición de ayuda.
+    t = re.sub(r"[¿?¡!.,]", "", t).strip()
+    if _PIDE_AYUDA.match(t):
         return (
             "Estos son mis comandos exactos:\n"
             "\n"

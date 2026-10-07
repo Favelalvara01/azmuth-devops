@@ -1,13 +1,11 @@
 """
 A.Z.M.U.T.H. — motor de voz optimizado y sincronizado con el núcleo.
 """
-import difflib
 import re
 import threading
 import time
 import io
 import wave
-import sys
 import os
 import numpy as np
 import sounddevice as sd

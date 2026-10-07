@@ -29,7 +29,7 @@ def test_pestanas(frase, respuesta, teclas):
     pyautogui.hotkey.assert_called_with(*teclas)
 
 
-@pytest.mark.xfail(strict=True, reason="DEF-013: multimedia ('^siguiente') se roba 'siguiente pestaña' porque va antes que pestanas")
+# Regresión DEF-013 (corregido en el Sprint 9)
 def test_siguiente_pestana_llega_a_pestanas():
     _, skill = skills.procesar("siguiente pestaña")
     assert skill == "pestanas"

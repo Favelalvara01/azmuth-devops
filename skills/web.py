@@ -4,7 +4,6 @@ guardado — ver skills/contactos.py).
 """
 import re
 import os
-import subprocess
 import webbrowser
 from urllib.parse import quote
 
