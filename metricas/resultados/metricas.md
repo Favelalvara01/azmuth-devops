@@ -1,6 +1,6 @@
 ## 📊 Métricas de calidad — Azmuth
 
-_Generado: 2026-10-07 06:26_
+_Generado: 2026-10-07 06:58_
 
 ### Métricas de producto
 
@@ -9,11 +9,11 @@ _Generado: 2026-10-07 06:26_
 | Complejidad ciclomática promedio | 4.05 (148 funciones) |
 | Complejidad máxima | 27 |
 | Funciones en rango A-B (simples) | 90.54 % |
-| Cobertura de código | 76.28 % |
-| Tamaño | 2570 SLOC (2.57 KLOC) |
-| Densidad de defectos | 5.84 defectos/KLOC |
-| Defectos abiertos | 5 (1.95/KLOC) |
-| Índice de mantenibilidad promedio | 71.37 |
+| Cobertura de código | 76.43 % |
+| Tamaño | 2575 SLOC (2.58 KLOC) |
+| Densidad de defectos | 5.83 defectos/KLOC |
+| Defectos abiertos | 1 (0.39/KLOC) |
+| Índice de mantenibilidad promedio | 71.26 |
 
 **Funciones más complejas**
 
@@ -35,11 +35,11 @@ _Generado: 2026-10-07 06:26_
 | Métrica | Valor |
 |---|---|
 | Tiempo medio de detección (MTTD) | 279.62 h (11.65 días) |
-| Tiempo medio de reparación (MTTR) | 0.82 h (49 min) |
+| Tiempo medio de reparación (MTTR) | 2.69 h (162 min) |
 | Defectos detectados en pruebas | 5 |
 | Eficiencia de remoción antes de producción (DRE) | 53.33 % |
 | Defectos por fase | {'revision': 3, 'pruebas': 5, 'produccion': 7} |
-| Pruebas automatizadas | 147/150 aprobadas, 0 fallidas, 3 defectos conocidos (xfail) |
+| Pruebas automatizadas | 157/157 aprobadas, 0 fallidas, 0 defectos conocidos (xfail) |
 
 ### Métricas de proyecto
 
@@ -51,8 +51,8 @@ _Generado: 2026-10-07 06:26_
 
 | Sprint | Módulo | Est. (h) | Real (h) | Desv. % | SLOC | Defectos | Def/KLOC |
 |---|---|---|---|---|---|---|---|
-| 1 | Nucleo de voz | 10.0 | 14.0 | 40.0 | 299 | 5 | 16.72 |
-| 2 | Skills basicas | 12.0 | 15.0 | 25.0 | 275 | 1 | 3.64 |
+| 1 | Nucleo de voz | 10.0 | 14.0 | 40.0 | 296 | 5 | 16.89 |
+| 2 | Skills basicas | 12.0 | 15.0 | 25.0 | 283 | 1 | 3.53 |
 | 3 | Control del sistema | 14.0 | 18.0 | 28.57 | 335 | 2 | 5.97 |
 | 4 | IA y memoria | 12.0 | 13.0 | 8.33 | 408 | 1 | 2.45 |
 | 5 | Interfaz y servidor | 10.0 | 16.0 | 60.0 | 683 | 5 | 7.32 |
