@@ -4,8 +4,9 @@ import pytest
 import skills
 
 
-def test_aplicaciones_va_al_final_de_la_lista():
-    assert skills.SKILLS[-1].__name__.endswith("aplicaciones")
+def test_aplicaciones_y_apps_instaladas_van_al_final_de_la_lista():
+    assert skills.SKILLS[-2].__name__.endswith(".aplicaciones")
+    assert skills.SKILLS[-1].__name__.endswith(".apps_instaladas")
 
 
 @pytest.mark.parametrize("frase,skill_esperada", [

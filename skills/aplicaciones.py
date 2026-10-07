@@ -156,7 +156,7 @@ def intentar(texto: str):
             except Exception as e:
                 print(f"[aplicaciones] Error al cerrar {app_pedida}: {e}")
                 return f"No pude cerrar {app_pedida}. Es probable que no esté abierta."
-        return f'No tengo registrado el proceso para cerrar "{app_pedida}".'
+        return None  # no está en la lista fija: lo intenta skills/apps_instaladas.py
 
     # --- BUSCAR DIRECTAMENTE EN YOUTUBE ---
     if "youtube" in t and any(v in t for v in ("abre", "abreme", "abrir", "busca", "buscame")):

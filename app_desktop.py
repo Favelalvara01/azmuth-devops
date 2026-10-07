@@ -68,6 +68,10 @@ if __name__ == '__main__':
     # 1. Servidor FastAPI en segundo plano
     threading.Thread(target=iniciar_servidor, daemon=True).start()
     
+    # 1b. Índice de aplicaciones instaladas (para "abre cualquier app"), sin frenar el arranque
+    from skills import apps_instaladas
+    threading.Thread(target=apps_instaladas.precargar, daemon=True).start()
+
     # 2. Motor de voz en hilo secundario independiente
     threading.Thread(target=iniciar_escucha_voz, daemon=True).start()
 

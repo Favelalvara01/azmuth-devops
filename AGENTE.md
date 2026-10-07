@@ -82,6 +82,20 @@ activo, marcado con 🎤.
 Archivos: `chats.py` (chats y mensajes), `nucleo.py` (decide skill o Claude para voz y
 texto), `skills/modos.py` (cambio de modo), endpoints `/modo` y `/chats` en `servidor.py`.
 
+## Abrir CUALQUIER aplicación (skill que aprende sola)
+
+Si dices "abre X" / "inicia X" / "cierra X" y X no está en la lista fija de
+`skills/aplicaciones.py`, la skill `skills/apps_instaladas.py`:
+
+1. Busca X entre **todas** tus apps (menú Inicio, Microsoft Store y accesos directos del
+   escritorio), que escanea al arrancar y cada 24 h.
+2. Si hay un nombre claramente parecido, la abre (tolera errores de dictado: "discor" → Discord).
+3. Si hay varias parecidas, le pregunta a Claude cuál quisiste decir.
+4. Lo guarda en la tabla `apps_aprendidas`: la próxima vez la abre directo.
+
+Comandos extra: "cuando diga el juego abre Roblox" (enseñar un apodo), "qué aplicaciones
+aprendiste", "actualiza tus aplicaciones" (si acabas de instalar algo).
+
 ## Cómo debe completar tareas
 
 Cuando le dices un comando, JARVIS sigue este orden:

@@ -21,7 +21,7 @@ def test_youtube_sin_busqueda():
 def test_cerrar_app_registrada_y_no_registrada():
     assert aplicaciones.intentar("cierra el bloc de notas") == "Cerrando bloc de notas."
     subprocess.run.assert_called()
-    assert "No tengo registrado" in aplicaciones.intentar("cierra minecraft")
+    assert aplicaciones.intentar("cierra minecraft") is None  # lo resuelve skills/apps_instaladas
 
 
 def test_abrir_url_y_modos(sin_efectos_externos):

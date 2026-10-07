@@ -95,6 +95,23 @@ def _crear_tablas(con):
         fecha TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS apps_indice (
+        nombre TEXT NOT NULL,
+        normal TEXT NOT NULL,
+        tipo TEXT NOT NULL,
+        destino TEXT NOT NULL,
+        PRIMARY KEY (tipo, destino)
+    );
+
+    CREATE TABLE IF NOT EXISTS apps_aprendidas (
+        alias TEXT PRIMARY KEY,
+        nombre TEXT NOT NULL,
+        tipo TEXT NOT NULL,
+        destino TEXT NOT NULL,
+        usos INTEGER NOT NULL DEFAULT 0,
+        fecha TEXT NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS ajustes (
         clave TEXT PRIMARY KEY,
         valor TEXT
