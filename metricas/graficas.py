@@ -154,8 +154,10 @@ def tendencia(salida):
     filas = list(csv.DictReader(open(ruta, encoding="utf-8")))
     if not filas:
         return
-    x = [f"{f['commit']}\n{f['fecha'][5:10]}" for f in filas]
-    fig, axs = plt.subplots(1, 3, figsize=(8.4, 3.0))
+    muchas = len(filas) > 4
+    # Con muchas ejecuciones las etiquetas se enciman: se inclinan y se deja solo el commit
+    x = [f["commit"] if muchas else f"{f['commit']}\n{f['fecha'][5:10]}" for f in filas]
+    fig, axs = plt.subplots(1, 3, figsize=(8.4, 3.4 if muchas else 3.0))
     for ax, campo, titulo in ((axs[0], "cobertura_pct", "Cobertura (%)"),
                               (axs[1], "defectos_abiertos", "Defectos abiertos"),
                               (axs[2], "cc_promedio", "Complejidad promedio")):
@@ -163,7 +165,12 @@ def tendencia(salida):
         ax.plot(x, y, color=AZUL, linewidth=2, marker="o", markersize=6)
         ax.annotate(f"{y[-1]:g}", (len(y) - 1, y[-1]), textcoords="offset points", xytext=(0, 7), ha="center", fontsize=8.5)
         ax.set_title(titulo, fontsize=10.5)
-        ax.tick_params(axis="x", labelsize=7, rotation=0)
+        if muchas:
+            ax.tick_params(axis="x", labelsize=7, rotation=45)
+            for etiqueta in ax.get_xticklabels():
+                etiqueta.set_horizontalalignment("right")
+        else:
+            ax.tick_params(axis="x", labelsize=7)
         ax.set_ylim(0, 100 if campo == "cobertura_pct" else max(y) * 1.5 + 1)
     fig.suptitle(f"Tendencia de la calidad por ejecución del pipeline ({len(filas)} ejecuciones)", x=0.01, ha="left",
                  fontsize=11, fontweight="bold")
