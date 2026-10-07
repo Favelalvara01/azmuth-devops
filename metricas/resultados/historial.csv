@@ -1,3 +1,4 @@
 fecha,commit,pruebas_total,pruebas_aprobadas,pruebas_fallidas,cobertura_pct,cc_promedio,cc_maxima,sloc,defectos_totales,defectos_abiertos,densidad_kloc,mttd_h,mttr_h,dre_pct,mantenibilidad
 2026-10-06 18:34,bff26cb,112,109,0,72.52,4.46,27,2059,15,5,7.29,279.62,0.82,53.33,72.97
 2026-10-06 18:53,5103801,112,109,0,72.52,4.46,27,2059,15,5,7.29,279.62,0.82,53.33,72.97
+2026-10-07 00:59,a8c655d,112,109,0,72.52,4.46,27,2059,15,5,7.29,279.62,0.82,53.33,72.97
