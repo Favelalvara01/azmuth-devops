@@ -1,25 +1,25 @@
 {
-  "generado": "2026-10-08 13:49",
+  "generado": "2026-10-08 18:24",
   "producto": {
     "complejidad": {
-      "funciones_analizadas": 214,
-      "promedio": 3.44,
-      "mediana": 2.0,
+      "funciones_analizadas": 237,
+      "promedio": 3.49,
+      "mediana": 2,
       "maxima": 15,
       "distribucion_rangos": {
-        "A": 180,
-        "B": 22,
-        "C": 12,
+        "A": 197,
+        "B": 29,
+        "C": 11,
         "D": 0,
         "E": 0,
         "F": 0
       },
-      "porcentaje_A_B": 94.39,
+      "porcentaje_A_B": 95.36,
       "top10": [
         {
           "archivo": "skills/apps_instaladas.py",
           "funcion": "intentar",
-          "linea": 213,
+          "linea": 210,
           "complejidad": 15,
           "rango": "C"
         },
@@ -33,7 +33,7 @@
         {
           "archivo": "skills/apps_instaladas.py",
           "funcion": "resolver",
-          "linea": 169,
+          "linea": 166,
           "complejidad": 13,
           "rango": "C"
         },
@@ -52,9 +52,9 @@
           "rango": "C"
         },
         {
-          "archivo": "cerebro.py",
-          "funcion": "actualizar_perfil_si_toca",
-          "linea": 205,
+          "archivo": "groq_ia.py",
+          "funcion": "completar",
+          "linea": 85,
           "complejidad": 12,
           "rango": "C"
         },
@@ -80,19 +80,19 @@
           "rango": "C"
         },
         {
-          "archivo": "cerebro.py",
-          "funcion": "preguntar",
-          "linea": 104,
+          "archivo": "skills/habitos.py",
+          "funcion": "sugerir_por_hora",
+          "linea": 98,
           "complejidad": 11,
           "rango": "C"
         }
       ]
     },
     "lineas": {
-      "archivos": 35,
-      "loc": 4471,
-      "sloc": 3120,
-      "kloc": 3.12,
+      "archivos": 37,
+      "loc": 4753,
+      "sloc": 3312,
+      "kloc": 3.31,
       "por_archivo": {
         "acciones_remotas.py": {
           "loc": 123,
@@ -113,10 +113,10 @@
           "mi": 100.0
         },
         "cerebro.py": {
-          "loc": 240,
-          "sloc": 174,
-          "comentarios": 30,
-          "mi": 50.88
+          "loc": 264,
+          "sloc": 187,
+          "comentarios": 33,
+          "mi": 47.4
         },
         "chats.py": {
           "loc": 138,
@@ -125,16 +125,28 @@
           "mi": 58.53
         },
         "config.py": {
-          "loc": 40,
-          "sloc": 19,
-          "comentarios": 16,
-          "mi": 88.26
+          "loc": 50,
+          "sloc": 26,
+          "comentarios": 19,
+          "mi": 81.28
         },
         "estado.py": {
           "loc": 171,
           "sloc": 87,
           "comentarios": 53,
           "mi": 69.17
+        },
+        "gemini.py": {
+          "loc": 137,
+          "sloc": 97,
+          "comentarios": 18,
+          "mi": 55.84
+        },
+        "groq_ia.py": {
+          "loc": 114,
+          "sloc": 78,
+          "comentarios": 9,
+          "mi": 56.84
         },
         "idioma.py": {
           "loc": 58,
@@ -203,10 +215,10 @@
           "mi": 49.76
         },
         "skills/apps_instaladas.py": {
-          "loc": 275,
-          "sloc": 204,
+          "loc": 272,
+          "sloc": 201,
           "comentarios": 27,
-          "mi": 41.14
+          "mi": 41.68
         },
         "skills/ayuda.py": {
           "loc": 125,
@@ -307,15 +319,17 @@
       }
     },
     "cobertura": {
-      "total": 86.58,
+      "total": 87.37,
       "por_archivo": {
         "acciones_remotas.py": 100.0,
         "app_desktop.py": 0.0,
         "basedatos.py": 100.0,
-        "cerebro.py": 75.0,
+        "cerebro.py": 80.62,
         "chats.py": 96.2,
-        "config.py": 100.0,
+        "config.py": 96.0,
         "estado.py": 79.73,
+        "gemini.py": 94.25,
+        "groq_ia.py": 95.89,
         "idioma.py": 87.5,
         "main.py": 90.81,
         "monitoreo.py": 88.89,
@@ -325,7 +339,7 @@
         "servidor.py": 95.57,
         "skills/__init__.py": 100.0,
         "skills/aplicaciones.py": 88.99,
-        "skills/apps_instaladas.py": 82.49,
+        "skills/apps_instaladas.py": 82.39,
         "skills/ayuda.py": 100.0,
         "skills/contactos.py": 97.44,
         "skills/habitos.py": 85.56,
@@ -344,12 +358,12 @@
         "skills/web.py": 91.18,
         "voice.py": 72.88
       },
-      "lineas_cubiertas": 1768,
-      "lineas_ejecutables": 2042
+      "lineas_cubiertas": 1950,
+      "lineas_ejecutables": 2232
     },
     "densidad_defectos": {
       "defectos_totales": 18,
-      "por_kloc": 5.77,
+      "por_kloc": 5.43,
       "abiertos": 0,
       "abiertos_por_kloc": 0.0,
       "por_archivo": {
@@ -366,7 +380,7 @@
         "skills/idiomas.py": 1
       }
     },
-    "mantenibilidad_promedio": 72.02
+    "mantenibilidad_promedio": 70.9
   },
   "proceso": {
     "mttd_horas": 233.09,
@@ -387,11 +401,11 @@
       "porcentaje_pruebas_vs_produccion": 33.33
     },
     "ejecucion_pruebas": {
-      "total": 315,
-      "aprobadas": 315,
+      "total": 339,
+      "aprobadas": 339,
       "fallidas": 0,
       "defectos_conocidos_xfail": 0,
-      "tiempo_seg": 5.04
+      "tiempo_seg": 5.3
     }
   },
   "proyecto": {
@@ -414,9 +428,9 @@
           "desviacion_horas": 4.0,
           "desviacion_porcentaje": 40.0,
           "puntos_historia": 8,
-          "sloc": 364,
+          "sloc": 371,
           "defectos": 5,
-          "densidad_defectos_kloc": 13.74,
+          "densidad_defectos_kloc": 13.48,
           "horas_por_punto": 1.75
         },
         {
@@ -453,9 +467,9 @@
           "desviacion_horas": 1.0,
           "desviacion_porcentaje": 8.33,
           "puntos_historia": 8,
-          "sloc": 466,
+          "sloc": 479,
           "defectos": 1,
-          "densidad_defectos_kloc": 2.15,
+          "densidad_defectos_kloc": 2.09,
           "horas_por_punto": 1.62
         },
         {
@@ -505,7 +519,7 @@
           "desviacion_horas": 2.0,
           "desviacion_porcentaje": 20.0,
           "puntos_historia": 8,
-          "sloc": 332,
+          "sloc": 329,
           "defectos": 0,
           "densidad_defectos_kloc": 0.0,
           "horas_por_punto": 1.5
