@@ -177,6 +177,34 @@ def tendencia(salida):
     guardar(fig, list(axs), os.path.join(salida, "08_tendencia_historial.png"))
 
 
+def scrum(m, salida):
+    """Release burndown (puntos pendientes al cerrar cada sprint) y velocidad."""
+    mods = m["proyecto"]["desviacion"]["por_modulo"]
+    pts = [q["puntos_historia"] for q in mods]
+    n, total = len(pts), sum(pts)
+    restantes = [total]
+    for p in pts:
+        restantes.append(restantes[-1] - p)
+    fig, (a, b) = plt.subplots(1, 2, figsize=(11.5, 4.3))
+    xs = list(range(n + 1))
+    a.plot(xs, [total - total * i / n for i in xs], "--", color="#444444", linewidth=2, label="Ideal")
+    a.plot(xs, restantes, "-o", color=AZUL, linewidth=2.5, label="Real")
+    for x, y in zip(xs, restantes):
+        a.annotate(str(y), (x, y), textcoords="offset points", xytext=(6, 6), fontsize=9)
+    a.set_xticks(xs, ["Inicio"] + [f"S{q['sprint']}" for q in mods], fontsize=8.5)
+    a.set_ylabel("Puntos pendientes")
+    a.legend(frameon=False)
+    a.set_title(f"Release burndown ({total} puntos)", loc="left", fontweight="bold")
+    barras = b.bar(range(1, n + 1), pts, color=AZUL, width=0.62)
+    etiquetas(b, barras)
+    prom = total / n
+    b.axhline(prom, color=NARANJA, linewidth=2)
+    b.text(n + 0.4, prom + 0.3, f"promedio {prom:.2f}", ha="right", fontsize=9.5)
+    b.set_xticks(range(1, n + 1), [f"S{q['sprint']}" for q in mods])
+    b.set_title("Velocidad (puntos por sprint)", loc="left", fontweight="bold")
+    guardar(fig, [a, b], os.path.join(salida, "09_scrum_burndown_velocidad.png"))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--reportes", default="reports")
@@ -195,6 +223,7 @@ def main():
     densidad(m, args.salida)
     estimacion(e, args.salida)
     tendencia(args.salida)
+    scrum(m, args.salida)
 
 
 if __name__ == "__main__":
