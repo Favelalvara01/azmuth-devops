@@ -15,8 +15,11 @@ import config
 
 _URL = "https://generativelanguage.googleapis.com/v1beta/models/{modelo}:generateContent"
 # Si un modelo no existe (404) o está saturado (503), se prueba el siguiente.
-_RESPALDOS = ("gemini-2.5-flash", "gemini-2.5-flash-lite")
+# Se usan los alias "-latest" (Google los apunta al modelo vigente) y después
+# modelos con nombre fijo, por si un alias falla o está saturado.
+_RESPALDOS = ("gemini-flash-lite-latest", "gemini-3.5-flash-lite", "gemini-3-flash-preview")
 _REINTENTABLES = (404, 500, 503)
+_FRASES_RETIRADO = ("no longer available", "not found", "is not supported")
 _TIMEOUT = 60
 
 
@@ -77,7 +80,8 @@ def completar(system: str, mensajes: list, max_tokens: int = 800) -> str:
             return _texto(r.json())
         if r.status_code == 429:
             raise ErrorGemini("se alcanzó el límite gratuito de Gemini; espere un momento e intente de nuevo")
-        if r.status_code not in _REINTENTABLES:
+        retirado = any(f in _detalle(r).lower() for f in _FRASES_RETIRADO)
+        if r.status_code not in _REINTENTABLES and not retirado:
             raise ErrorGemini(f"Gemini respondió {r.status_code}: {_detalle(r)}")
         ultimo = r
         time.sleep(1)  # el modelo no existe o está saturado: se intenta con el siguiente

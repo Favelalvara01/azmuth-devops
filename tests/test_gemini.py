@@ -71,7 +71,7 @@ def test_si_el_modelo_no_existe_usa_el_de_respaldo(solo_gemini):
     monkeypatch_sleep.start()
     solo_gemini.side_effect = [Resp(404, {"error": {"message": "not found"}}), ok("respaldo")]
     assert gemini.completar("s", [{"role": "user", "content": "x"}]) == "respaldo"
-    assert "gemini-2.5-flash" in solo_gemini.call_args.args[0]
+    assert "gemini-flash-lite-latest" in solo_gemini.call_args.args[0]
     monkeypatch_sleep.stop()
 
 
@@ -105,3 +105,11 @@ def test_todos_saturados_da_mensaje_claro(solo_gemini, monkeypatch):
     monkeypatch.setattr(gemini.time, "sleep", lambda *_: None)
     solo_gemini.return_value = Resp(503, {"error": {"message": "high demand"}})
     assert "saturados" in cerebro.preguntar("hola")
+
+
+def test_modelo_retirado_para_usuarios_nuevos_usa_otro(solo_gemini, monkeypatch):
+    monkeypatch.setattr(gemini.time, "sleep", lambda *_: None)
+    retirado = Resp(400, {"error": {"message": "This model is no longer available to new users."}})
+    solo_gemini.side_effect = [Resp(503, {}), retirado, ok("hola desde 3.5")]
+    assert gemini.completar("s", [{"role": "user", "content": "x"}]) == "hola desde 3.5"
+    assert "gemini-3.5-flash-lite" in solo_gemini.call_args.args[0]
