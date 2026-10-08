@@ -17,6 +17,7 @@ import voice
 import cerebro
 import skills
 import estado
+import monitoreo
 import nucleo
 
 # Si al comando le antepone el nombre del asistente ("Azmuth, recuerda que...",
@@ -57,16 +58,23 @@ class SoundDeviceMicrophone:
         return 2
 
 
+def revisar_recordatorios_una_vez() -> int:
+    """Avisa los recordatorios vencidos. Devuelve cuántos avisó."""
+    try:
+        avisos = skills.recordatorios.revisar_pendientes()
+        for texto in avisos:
+            estado.set_estado("ejecutando", f"Recordatorio: {texto}")
+            voice.hablar(f"Recordatorio: {texto}")
+            estado.set_estado("reposo")
+        return len(avisos)
+    except Exception as e:
+        monitoreo.registrar_error("vigilante de recordatorios", e)
+        return 0
+
+
 def _vigilar_recordatorios():
     while True:
-        try:
-            avisos = skills.recordatorios.revisar_pendientes()
-            for texto in avisos:
-                estado.set_estado("ejecutando", f"Recordatorio: {texto}")
-                voice.hablar(f"Recordatorio: {texto}")
-                estado.set_estado("reposo")
-        except Exception:
-            pass
+        revisar_recordatorios_una_vez()
         time.sleep(20)
 
 
@@ -99,73 +107,70 @@ def calibrar_umbral(sample_rate=16000, chunk_size=1024, duracion_seg=1.0):
     return umbral
 
 
-def escuchar(reconocedor, microfono, marcar_escuchando=False):
-    sample_rate = 16000
-    chunk_size = 1024
+class DetectorVoz:
+    """Decide, cuadro por cuadro, cuándo empieza y cuándo termina una frase.
 
-    umbral_silencio = _UMBRAL_VOZ
-    # Antes esperaba ~1.9s de silencio (lento) y luego lo bajé a ~0.9s
-    # (muy agresivo: cortaba la frase si hacías una pausa corta al hablar,
-    # y el audio truncado salía como "no escuché ningún comando"). ~1.3s
-    # es el punto medio: sigue siendo más rápido que el original pero deja
-    # margen para pausas naturales al hablar.
-    max_frames_silencio = 20
-    max_frames_espera_voz = 200
+    Se separó del micrófono para poder probarlo sin hardware.
+    Antes esperaba ~1.9s de silencio (lento) y luego lo bajé a ~0.9s
+    (muy agresivo: cortaba la frase si hacías una pausa corta al hablar).
+    ~1.3s (20 cuadros) es el punto medio.
+    """
 
-    if marcar_escuchando:
-        estado.set_estado("escuchando", "Capturando su orden...")
+    def __init__(self, umbral, max_silencio=20, max_espera=200, max_frames=None,
+                 sample_rate=16000, chunk_size=1024):
+        self.umbral = umbral
+        self.max_silencio = max_silencio
+        self.max_espera = max_espera
+        self.max_frames = max_frames or (sample_rate / chunk_size) * 15
+        self.frames = []
+        self.hablando = False
+        self._silencio = 0
+        self._espera = 0
 
-    audio_frames = []
-    hablando = False
-    silencio_frames = 0
-    espera_voz_frames = 0
+    def procesar(self, chunk, volumen) -> bool:
+        """Agrega el cuadro. Devuelve True cuando ya hay que dejar de grabar."""
+        if not self.hablando:
+            return self._esperando_voz(chunk, volumen)
+        self.frames.append(chunk)
+        self._silencio = self._silencio + 1 if volumen < self.umbral else 0
+        return self._silencio > self.max_silencio or len(self.frames) > self.max_frames
 
-    try:
-        with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream:
-            while True:
-                audio_chunk, _ = stream.read(chunk_size)
-                volumen = np.max(np.abs(audio_chunk))
+    def _esperando_voz(self, chunk, volumen) -> bool:
+        self._espera += 1
+        if volumen > self.umbral:
+            self.hablando = True
+            self.frames.append(chunk)
+            estado.log("🎤 Voz detectada...")
+            return False
+        return self._espera > self.max_espera
 
-                if not hablando:
-                    espera_voz_frames += 1
-                    if volumen > umbral_silencio:
-                        hablando = True
-                        audio_frames.append(audio_chunk)
-                        estado.log("🎤 Voz detectada...")
-                    elif espera_voz_frames > max_frames_espera_voz:
-                        break
-                else:
-                    audio_frames.append(audio_chunk)
-                    if volumen < umbral_silencio:
-                        silencio_frames += 1
-                        if silencio_frames > max_frames_silencio:
-                            break
-                    else:
-                        silencio_frames = 0
 
-                if len(audio_frames) > (sample_rate / chunk_size) * 15:
-                    break
+def frames_a_wav(frames, sample_rate=16000) -> io.BytesIO:
+    audio_data = np.concatenate(frames, axis=0)
+    wav_buffer = io.BytesIO()
+    with wave.open(wav_buffer, 'wb') as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(sample_rate)
+        wf.writeframes(audio_data.tobytes())
+    wav_buffer.seek(0)
+    return wav_buffer
 
-        if not audio_frames:
-            return None
 
-        audio_data = np.concatenate(audio_frames, axis=0)
+def _grabar_frase(sample_rate=16000, chunk_size=1024):
+    detector = DetectorVoz(_UMBRAL_VOZ, sample_rate=sample_rate, chunk_size=chunk_size)
+    with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream:
+        while True:
+            audio_chunk, _ = stream.read(chunk_size)
+            if detector.procesar(audio_chunk, np.max(np.abs(audio_chunk))):
+                break
+    return detector.frames
 
-        wav_buffer = io.BytesIO()
-        with wave.open(wav_buffer, 'wb') as wf:
-            wf.setnchannels(1)
-            wf.setsampwidth(2)
-            wf.setframerate(sample_rate)
-            wf.writeframes(audio_data.tobytes())
-        wav_buffer.seek(0)
 
-        with sr.AudioFile(wav_buffer) as fuente:
-            audio = reconocedor.record(fuente)
-
-    except Exception as e:
-        estado.log(f"[Audio Error]: {e}")
-        return None
-
+def transcribir(reconocedor, wav_buffer):
+    """Convierte el WAV en texto con Google. None si no se entendió."""
+    with sr.AudioFile(wav_buffer) as fuente:
+        audio = reconocedor.record(fuente)
     try:
         texto = reconocedor.recognize_google(audio, language=config.IDIOMA_VOZ)
         estado.log(f"🎤 Escuché: {texto}")
@@ -174,15 +179,57 @@ def escuchar(reconocedor, microfono, marcar_escuchando=False):
         return None
 
 
+def escuchar(reconocedor, microfono, marcar_escuchando=False, grabar=None):
+    if marcar_escuchando:
+        estado.set_estado("escuchando", "Capturando su orden...")
+    try:
+        frames = (grabar or _grabar_frase)()
+        if not frames:
+            return None
+        return transcribir(reconocedor, frames_a_wav(frames))
+    except Exception as e:
+        estado.log(f"[Audio Error]: {e}")
+        monitoreo.registrar_error("audio", e)
+        return None
+
+
+_PALABRAS_APAGADO = ("apagate", "apagar", "apagar sistema", "apagar azmuth", "desactivar", "apaga el sistema")
+_APPS_DIRECTAS = ("roblox", "fortnite", "rocket league", "spotify", "xbox", "edge", "word", "excel",
+                  "paint", "bloc de notas")
+
+
+def es_apagado(texto: str) -> bool:
+    t = texto.lower().strip()
+    return any(p in t for p in _PALABRAS_APAGADO)
+
+
+def normalizar_comando(texto: str) -> str:
+    """Quita el vocativo ("Azmuth, ...") y convierte "paint" en "abre paint"."""
+    texto = _VOCATIVO_RE.sub("", texto, count=1).strip()
+    t_limpio = texto.lower().strip()
+    if t_limpio in _APPS_DIRECTAS:
+        return f"abre {t_limpio}"
+    return texto
+
+
+def responder_segun_modo(texto: str):
+    """Devuelve (respuesta completa, lo que se dice en voz alta)."""
+    # En modo escritorio lo que se dice por voz también queda escrito en el
+    # chat activo (y Claude usa el historial de ese chat como contexto).
+    if estado.obtener_modo() == "escritorio":
+        respuesta, _, _ = nucleo.responder_en_chat(texto, origen="voz")
+        return respuesta, voice.texto_para_voz(respuesta)
+    respuesta, _ = nucleo.responder(texto)
+    return respuesta, respuesta
+
+
 def procesar_comando(texto: str):
     estado.log(f"USTED: {texto}")
     estado.set_estado("procesando", texto)
 
-    texto = _VOCATIVO_RE.sub("", texto, count=1).strip()
-    t_limpio = texto.lower().strip()
+    texto = normalizar_comando(texto)
 
-    palabras_apagado = ["apagate", "apagar", "apagar sistema", "apagar azmuth", "desactivar", "apaga el sistema"]
-    if any(p in t_limpio for p in palabras_apagado):
+    if es_apagado(texto):
         estado.set_estado("ejecutando", "Apagando sistema")
         voice.hablar("Apagando sistema. Hasta luego, señor.")
         time.sleep(1.5)
@@ -192,18 +239,7 @@ def procesar_comando(texto: str):
         # el proceso completo -incluida la ventana- sin importar en qué hilo esté.
         os._exit(0)
 
-    apps_directas = ["roblox", "fortnite", "rocket league", "spotify", "xbox", "edge", "word", "excel", "paint", "bloc de notas"]
-    if t_limpio in apps_directas:
-        texto = f"abre {t_limpio}"
-
-    # En modo escritorio lo que se dice por voz también queda escrito en el
-    # chat activo (y Claude usa el historial de ese chat como contexto).
-    if estado.obtener_modo() == "escritorio":
-        respuesta, _, _ = nucleo.responder_en_chat(texto, origen="voz")
-        respuesta_hablada = voice.texto_para_voz(respuesta)
-    else:
-        respuesta, _ = nucleo.responder(texto)
-        respuesta_hablada = respuesta
+    respuesta, respuesta_hablada = responder_segun_modo(texto)
     estado.set_estado("ejecutando", respuesta)
     voice.hablar(respuesta_hablada)
     time.sleep(1.5)
@@ -219,12 +255,22 @@ def _vigilar_perfil():
         time.sleep(300)
         try:
             cerebro.actualizar_perfil_si_toca()
-        except Exception:
-            pass
+        except Exception as e:
+            monitoreo.registrar_error("vigilante de perfil", e)
 
 
 _RE_RESPUESTA_SI = re.compile(r"\b(s[ií]|claro|va|dale|dele|s[ií]mon|por favor|ok[aá]y?)\b", re.IGNORECASE)
 _RE_RESPUESTA_NO = re.compile(r"\bno\b|ahorita no|después no|luego no|para nada", re.IGNORECASE)
+
+
+def clasificar_respuesta(respuesta: str):
+    """'si', 'no' o None (cambió de tema)."""
+    t = respuesta.lower()
+    if _RE_RESPUESTA_SI.search(t):
+        return "si"
+    if _RE_RESPUESTA_NO.search(t):
+        return "no"
+    return None
 
 
 def _revisar_sugerencia_pendiente(reconocedor, microfono):
@@ -247,19 +293,51 @@ def _revisar_sugerencia_pendiente(reconocedor, microfono):
     if not respuesta:
         return  # no dijo nada claro -> no cuenta como aceptar ni rechazar
 
-    if _RE_RESPUESTA_SI.search(respuesta.lower()):
+    decision = clasificar_respuesta(respuesta)
+    if decision == "si":
         skills.habitos.registrar_respuesta_sugerencia(categoria, aceptada=True)
         accion = skills.habitos.ACCION_SUGERIDA.get(categoria)
         if accion:
             procesar_comando(accion)
         else:
             voice.hablar("Listo.")
-    elif _RE_RESPUESTA_NO.search(respuesta.lower()):
+    elif decision == "no":
         skills.habitos.registrar_respuesta_sugerencia(categoria, aceptada=False)
         voice.hablar("Entendido.")
     # cualquier otra cosa (cambió de tema, dijo otro comando) se ignora
     # aquí sin contar como rechazo -no es justo penalizar una sugerencia
     # solo porque el usuario tenía otra cosa en mente.
+
+
+def extraer_comando(texto: str):
+    """Si la frase trae la palabra clave devuelve lo que sigue ('' si no dijo
+    nada más); si no la trae devuelve None (no era para Azmuth)."""
+    t_norm = texto.lower().strip()
+    if PALABRA_CLAVE not in t_norm:
+        return None
+    partes = t_norm.split(PALABRA_CLAVE, 1)
+    return partes[1].strip() if len(partes) > 1 else ""
+
+
+def atender(texto: str, reconocedor, microfono) -> bool:
+    """Una vuelta del bucle principal. Devuelve True si la frase era para Azmuth."""
+    resto = extraer_comando(texto)
+    if resto is None:
+        return False
+    if len(resto) > 2:
+        procesar_comando(resto)
+        return True
+    estado.set_estado("escuchando", "Dígame...")
+    voice.hablar("Dígame.")
+    time.sleep(0.3)
+    comando = escuchar(reconocedor, microfono, marcar_escuchando=True)
+    if comando:
+        procesar_comando(comando)
+    else:
+        voice.hablar("No escuché ningún comando.")
+        time.sleep(1.0)
+    estado.set_estado("reposo")
+    return True
 
 
 def iniciar():
@@ -289,31 +367,13 @@ def iniciar():
                 _revisar_sugerencia_pendiente(reconocedor, microfono)
                 continue
 
-            t_norm = texto.lower().strip()
-
-            if PALABRA_CLAVE in t_norm:
-                partes = t_norm.split(PALABRA_CLAVE, 1)
-                resto = partes[1].strip() if len(partes) > 1 else ""
-
-                if len(resto) > 2:
-                    procesar_comando(resto)
-                else:
-                    estado.set_estado("escuchando", "Dígame...")
-                    voice.hablar("Dígame.")
-                    time.sleep(0.3)
-                    comando = escuchar(reconocedor, microfono, marcar_escuchando=True)
-                    if comando:
-                        procesar_comando(comando)
-                    else:
-                        voice.hablar("No escuché ningún comando.")
-                        time.sleep(1.0)
-                    estado.set_estado("reposo")
-                continue
+            atender(texto, reconocedor, microfono)
 
         except SystemExit:
             raise
         except Exception as e:
             estado.log(f"[ERROR]: {e}")
+            monitoreo.registrar_error("bucle principal", e)
             estado.set_estado("reposo")
             time.sleep(1)
             continue
@@ -325,6 +385,7 @@ def main():
 
 if __name__ == "__main__":
     _mutex_instancia = estado.asegurar_instancia_unica()
+    monitoreo.instalar()
     try:
         iniciar()
     except KeyboardInterrupt:

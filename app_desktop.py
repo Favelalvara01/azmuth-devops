@@ -23,6 +23,7 @@ import chats
 import config
 import estado
 import main
+import monitoreo
 from servidor import app as servidor_app
 
 # Tamaño de la ventana en cada modo (ancho, alto)
@@ -46,6 +47,7 @@ def iniciar_servidor():
         uvicorn.run(servidor_app, host="127.0.0.1", port=config.PUERTO_SERVIDOR, log_level="critical")
     except Exception as e:
         _log_arranque(f"Error arrancando el servidor: {e}")
+        monitoreo.registrar_error("arranque del servidor", e)
 
 
 def iniciar_escucha_voz():
@@ -55,6 +57,7 @@ def iniciar_escucha_voz():
         main.iniciar()
     except Exception as e:
         _log_arranque(f"Error en el motor de voz: {e}")
+        monitoreo.registrar_error("motor de voz", e)
         estado.log(f"Error en voz: {e}")
 
 
@@ -64,6 +67,7 @@ def _al_cerrar_ventana():
 
 if __name__ == '__main__':
     _mutex_instancia = estado.asegurar_instancia_unica()
+    monitoreo.instalar()
 
     # 1. Servidor FastAPI en segundo plano
     threading.Thread(target=iniciar_servidor, daemon=True).start()

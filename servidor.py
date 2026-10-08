@@ -4,14 +4,15 @@ servidor.py — El ÚNICO servidor web de A.Z.M.U.T.H.
 import os
 import threading
 
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 import acciones_remotas
 import chats
 import estado
+import monitoreo
 
 app = FastAPI()
 
@@ -35,6 +36,19 @@ def home():
 @app.get("/estado")
 def obtener_estado():
     return estado.obtener_estado()
+
+
+@app.exception_handler(Exception)
+async def _error_no_controlado(request: Request, error: Exception):
+    """Cualquier fallo de un endpoint queda en datos/errores.log (monitoreo)."""
+    monitoreo.registrar_error(f"{request.method} {request.url.path}", error)
+    return JSONResponse(status_code=500, content={"status": "error", "mensaje": "Error interno"})
+
+
+@app.get("/salud")
+def salud():
+    """Monitoreo: tiempo activo y últimos errores registrados."""
+    return {"status": "ok", **monitoreo.resumen()}
 
 
 # ====================== MODO ESCRITORIO (chat escrito) ======================

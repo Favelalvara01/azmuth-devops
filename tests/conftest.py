@@ -45,6 +45,15 @@ def bd_temporal(tmp_path, monkeypatch):
 
 
 @pytest.fixture(autouse=True)
+def log_temporal(tmp_path, monkeypatch):
+    """El registro de errores de las pruebas va a una carpeta temporal."""
+    import monitoreo
+    monkeypatch.setattr(monitoreo, "_RUTA_LOG", str(tmp_path / "errores.log"))
+    monkeypatch.setattr(monitoreo, "_logger", None)
+    yield tmp_path / "errores.log"
+
+
+@pytest.fixture(autouse=True)
 def sin_efectos_externos(monkeypatch):
     """Evita que una prueba abra el navegador, programas o comandos reales."""
     import webbrowser
