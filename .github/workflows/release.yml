@@ -1,0 +1,81 @@
+# Entrega continua: al publicar una etiqueta de versión (git tag v1.0 && git push origin v1.0)
+# se construye Azmuth.exe en Windows y se publica como GitHub Release.
+name: Release Azmuth (.exe)
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:   # también se puede lanzar a mano (solo deja el artefacto)
+
+permissions:
+  contents: write   # para crear el Release
+
+jobs:
+  exe-windows:
+    name: Empaquetar Azmuth.exe
+    runs-on: windows-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Instalar Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Instalar dependencias de la app y PyInstaller
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt pyinstaller
+
+      - name: Pruebas antes de empaquetar (gate)
+        run: pytest -q
+
+      - name: Construir Azmuth.exe (carpeta, sin consola)
+        run: >
+          pyinstaller app_desktop.py --noconfirm --onedir --windowed --name Azmuth
+          --add-data "azmuth.html;." --add-data "imagenes;imagenes"
+          --collect-submodules skills --collect-submodules uvicorn
+          --collect-all webview --hidden-import pyttsx3.drivers.sapi5
+
+      - name: Preparar paquete (.zip)
+        shell: pwsh
+        run: |
+          $version = if ($env:GITHUB_REF_TYPE -eq "tag") { $env:GITHUB_REF_NAME } else { "dev-$($env:GITHUB_SHA.Substring(0,7))" }
+          Copy-Item .env.example dist/Azmuth/.env.example
+          Copy-Item README.md dist/Azmuth/LEEME.md
+          New-Item -ItemType Directory -Force dist/Azmuth/datos | Out-Null
+          Compress-Archive -Path dist/Azmuth/* -DestinationPath "Azmuth-$version-windows.zip"
+          "ZIP=Azmuth-$version-windows.zip" >> $env:GITHUB_ENV
+
+      - name: Prueba de humo del .exe (arranca y responde /salud)
+        shell: pwsh
+        run: |
+          $p = Start-Process dist/Azmuth/Azmuth.exe -PassThru
+          $ok = $false
+          foreach ($i in 1..30) {
+            try { Invoke-RestMethod http://127.0.0.1:8080/salud | Out-Null; $ok = $true; break } catch { Start-Sleep 1 }
+          }
+          Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+          if (-not $ok) { Get-Content dist/Azmuth/datos/*.log -ErrorAction SilentlyContinue; exit 1 }
+          "Azmuth.exe respondió en /salud"
+
+      - name: Guardar como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: azmuth-windows
+          path: ${{ env.ZIP }}
+
+      - name: Publicar GitHub Release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ZIP }}
+          generate_release_notes: true
+          body: |
+            ## Azmuth ${{ github.ref_name }}
+            1. Descarga el .zip y descomprímelo.
+            2. Copia `.env.example` como `.env` y pon tus claves.
+            3. Abre `Azmuth.exe`.
+            Construido y probado automáticamente por GitHub Actions (pytest + prueba de humo del .exe).

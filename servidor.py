@@ -14,6 +14,7 @@ import chats
 import config
 import estado
 import monitoreo
+import rutas
 
 app = FastAPI()
 
@@ -53,11 +54,11 @@ async def _proteger_acceso_remoto(request, call_next):
     return await call_next(request)
 
 # Montamos la carpeta de imágenes para que estén accesibles por URL (ej: /imagenes/Fuego.png)
-_RUTA_IMAGENES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "imagenes")
+_RUTA_IMAGENES = os.path.join(rutas.CARPETA_RECURSOS, "imagenes")
 if os.path.exists(_RUTA_IMAGENES):
     app.mount("/imagenes", StaticFiles(directory=_RUTA_IMAGENES), name="imagenes")
 
-_RUTA_HTML = os.path.join(os.path.dirname(os.path.abspath(__file__)), "azmuth.html")
+_RUTA_HTML = os.path.join(rutas.CARPETA_RECURSOS, "azmuth.html")
 
 
 @app.get("/", response_class=HTMLResponse)

@@ -13,7 +13,9 @@ import time
 from collections import deque
 from logging.handlers import RotatingFileHandler
 
-_RUTA_LOG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "datos", "errores.log")
+import rutas
+
+_RUTA_LOG = os.path.join(rutas.CARPETA_DATOS, "errores.log")
 _INICIO = time.time()
 _ultimos = deque(maxlen=20)
 _total = 0

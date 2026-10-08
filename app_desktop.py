@@ -9,8 +9,10 @@ import time
 # key en .env), sin esto la app truena en silencio al arrancar, antes de
 # que aparezca cualquier ventana. Los mandamos a un archivo de log en vez
 # de reescribir cada print() del proyecto uno por uno.
+import rutas  # noqa: E402
+
 if sys.stdout is None or sys.stderr is None:
-    _carpeta_datos = os.path.join(os.path.dirname(os.path.abspath(__file__)), "datos")
+    _carpeta_datos = rutas.CARPETA_DATOS
     os.makedirs(_carpeta_datos, exist_ok=True)
     _log_salida = open(os.path.join(_carpeta_datos, "salida.log"), "a", encoding="utf-8", buffering=1)
     sys.stdout = _log_salida
@@ -29,8 +31,8 @@ from servidor import app as servidor_app
 # Tamaño de la ventana en cada modo (ancho, alto)
 TAMANOS = {"voz": (380, 560), "escritorio": (1100, 720)}
 
-_CARPETA = os.path.dirname(os.path.abspath(__file__))
-_RUTA_LOG = os.path.join(_CARPETA, "datos", "azmuth.log")
+_CARPETA = rutas.CARPETA_APP
+_RUTA_LOG = os.path.join(rutas.CARPETA_DATOS, "azmuth.log")
 
 
 def _log_arranque(texto: str):

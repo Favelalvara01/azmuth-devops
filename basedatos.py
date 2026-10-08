@@ -12,7 +12,9 @@ conexión larga entre hilos.
 import sqlite3
 import os
 
-_RUTA_DB = os.path.join(os.path.dirname(os.path.abspath(__file__)), "datos", "azmuth.db")
+import rutas
+
+_RUTA_DB = os.path.join(rutas.CARPETA_DATOS, "azmuth.db")
 
 
 def conectar():

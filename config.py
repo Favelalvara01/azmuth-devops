@@ -6,7 +6,10 @@ de .env.example) y los deja disponibles para el resto del programa.
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+import rutas
+
+# El .env vive junto al programa (o junto a Azmuth.exe en la versión empaquetada)
+load_dotenv(os.path.join(rutas.CARPETA_APP, ".env"))
 
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "").strip()

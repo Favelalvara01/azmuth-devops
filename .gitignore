@@ -21,3 +21,8 @@ coverage.xml
 coverage.json
 htmlcov/
 reports/
+
+# --- Empaquetado con PyInstaller (lo hace GitHub Actions) ---
+build/
+dist/
+*.spec
