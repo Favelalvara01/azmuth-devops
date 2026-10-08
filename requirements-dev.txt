@@ -13,3 +13,5 @@ radon
 matplotlib
 rich
 ruff
+pip-audit
+bandit

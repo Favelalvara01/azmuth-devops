@@ -23,6 +23,10 @@ NGROK_AUTHTOKEN = os.getenv("NGROK_AUTHTOKEN", "").strip()
 # Dominio fijo reservado en tu cuenta de Ngrok (ej. algo.ngrok-free.dev).
 # Déjalo vacío si quieres que Ngrok te asigne uno aleatorio cada vez.
 NGROK_DOMINIO = os.getenv("NGROK_DOMINIO", "").strip()
+# Seguridad del control remoto: si defines TOKEN_REMOTO en .env, todo lo que
+# llegue por Ngrok (celular / reloj) debe traer ese token. Abre una vez
+# https://<tu-dominio>/reloj?token=TU_TOKEN y el celular lo recuerda.
+TOKEN_REMOTO = os.getenv("TOKEN_REMOTO", "").strip()
 
 if not ANTHROPIC_API_KEY:
     print("⚠️  Falta ANTHROPIC_API_KEY en tu archivo .env — la conversación con la IA no va a funcionar todavía.")

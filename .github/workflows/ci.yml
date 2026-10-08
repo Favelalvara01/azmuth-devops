@@ -1,6 +1,6 @@
 # Pipeline CI/CD de Azmuth — se ejecuta en cada push y pull request.
-# Etapas: 1) Validación estática  2) Pruebas + cobertura  3) Métricas
-#         4) Análisis de calidad con IA (Claude)  5) Build y prueba en Docker
+# Etapas: 1) Validación estática  2) Seguridad  3) Pruebas + cobertura
+#         4) Métricas  5) Análisis de calidad con IA (Claude)  6) Build y prueba en Docker
 name: CI Azmuth
 
 on:
@@ -31,8 +31,24 @@ jobs:
       - name: Instalar dependencias de desarrollo
         run: pip install -r requirements-dev.txt
 
-      - name: "Validación estática (gate): errores de sintaxis y nombres indefinidos"
-        run: ruff check . --select E9,F63,F7,F82
+      - name: "Validación estática (gate): estilo y errores con ruff (0 permitidos)"
+        run: ruff check .
+
+      - name: "Gate de complejidad: ninguna función en rango D o peor (CC > 20)"
+        run: |
+          peores=$(radon cc . -n D -s -e "tests/*,metricas/*")
+          if [ -n "$peores" ]; then echo "$peores"; exit 1; fi
+          echo "OK: complejidad máxima dentro del rango A-C"
+
+      - name: "Seguridad (gate): dependencias con vulnerabilidades conocidas (pip-audit)"
+        run: |
+          mkdir -p reports
+          pip-audit -r requirements-dev.txt --progress-spinner off | tee reports/seguridad_dependencias.txt
+
+      - name: Seguridad del código (bandit, no bloquea)
+        run: |
+          bandit -r . -x ./tests,./metricas -ll -f txt -o reports/seguridad_codigo.txt --exit-zero
+          tail -n 25 reports/seguridad_codigo.txt
 
       - name: Reporte completo de estilo (no bloquea)
         run: |
@@ -78,6 +94,7 @@ jobs:
           mkdir -p metricas/resultados
           cp reports/metricas.md reports/metricas.json reports/estimacion.md reports/estimacion.json \
              reports/analisis_ia.md reports/complejidad.txt reports/mantenibilidad.txt reports/ruff.txt \
+             reports/seguridad_dependencias.txt reports/seguridad_codigo.txt \
              metricas/resultados/
           mkdir -p metricas/resultados/graficas
           cp reports/graficas/*.png metricas/resultados/graficas/

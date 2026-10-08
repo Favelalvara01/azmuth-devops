@@ -11,10 +11,46 @@ from pydantic import BaseModel
 
 import acciones_remotas
 import chats
+import config
 import estado
 import monitoreo
 
 app = FastAPI()
+
+# Script que se inyecta en las páginas: guarda el token que venga en la URL
+# (?token=...) y lo manda en cada fetch como cabecera X-Azmuth-Token.
+_JS_TOKEN = """<script>
+(function () {
+  const q = new URLSearchParams(location.search).get('token');
+  try { if (q) localStorage.setItem('azmuthToken', q); } catch (e) {}
+  let t = q; try { t = t || localStorage.getItem('azmuthToken'); } catch (e) {}
+  if (!t) return;
+  const original = window.fetch;
+  window.fetch = (url, op = {}) => {
+    op.headers = Object.assign({}, op.headers, { 'X-Azmuth-Token': t });
+    return original(url, op);
+  };
+})();
+</script>"""
+
+
+def _viene_de_internet(request) -> bool:
+    """Ngrok reenvía a 127.0.0.1 pero agrega X-Forwarded-For; la ventana local no."""
+    return "x-forwarded-for" in request.headers or "ngrok-trace-id" in request.headers
+
+
+def _token_valido(request) -> bool:
+    import hmac
+    dado = request.headers.get("x-azmuth-token") or request.query_params.get("token") or ""
+    return hmac.compare_digest(dado, config.TOKEN_REMOTO)
+
+
+@app.middleware("http")
+async def _proteger_acceso_remoto(request, call_next):
+    if config.TOKEN_REMOTO and _viene_de_internet(request) and not _token_valido(request):
+        monitoreo.registrar_evento(f"Acceso remoto rechazado: {request.method} {request.url.path}")
+        return JSONResponse(status_code=401, content={"status": "error", "mensaje": "Token inválido"})
+    return await call_next(request)
 
 # Montamos la carpeta de imágenes para que estén accesibles por URL (ej: /imagenes/Fuego.png)
 _RUTA_IMAGENES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "imagenes")
@@ -28,7 +64,7 @@ _RUTA_HTML = os.path.join(os.path.dirname(os.path.abspath(__file__)), "azmuth.ht
 def home():
     try:
         with open(_RUTA_HTML, "r", encoding="utf-8") as f:
-            return f.read()
+            return f.read().replace("<script>", _JS_TOKEN + "\n    <script>", 1)
     except FileNotFoundError:
         return "<h1>Error: No se encontró el archivo 'azmuth.html' en la raíz del proyecto.</h1>"
 
@@ -48,7 +84,7 @@ async def _error_no_controlado(request: Request, error: Exception):
 @app.get("/salud")
 def salud():
     """Monitoreo: tiempo activo y últimos errores registrados."""
-    return {"status": "ok", **monitoreo.resumen()}
+    return {"status": "ok", "control_remoto_protegido": bool(config.TOKEN_REMOTO), **monitoreo.resumen()}
 
 
 # ====================== MODO ESCRITORIO (chat escrito) ======================
@@ -383,6 +419,7 @@ def vista_reloj():
             </div>
         </div>
 
+        """ + _JS_TOKEN + """
         <script>
             const sectionsData = {
                 multimedia: [

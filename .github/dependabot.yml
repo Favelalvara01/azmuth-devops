@@ -1,0 +1,20 @@
+# Dependabot: revisa cada semana si hay versiones nuevas o parches de
+# seguridad de las librerías y abre un pull request (que pasa por el CI).
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: monthly
