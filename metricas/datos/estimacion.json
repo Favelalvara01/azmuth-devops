@@ -1,11 +1,59 @@
 {
   "_nota": "Datos de entrada para las 4 técnicas de estimación. Ajusta los valores si tus horas reales fueron otras.",
   "juicio_expertos": {
-    "modulos": ["Nucleo de voz", "Skills basicas", "Control del sistema", "IA y memoria", "Interfaz y servidor", "Persistencia SQLite", "DevOps"],
+    "modulos": [
+      "Nucleo de voz",
+      "Skills basicas",
+      "Control del sistema",
+      "IA y memoria",
+      "Interfaz y servidor",
+      "Persistencia SQLite",
+      "DevOps",
+      "Modo escritorio y apps",
+      "Correccion de defectos",
+      "Calidad y seguridad",
+      "Nuevas funciones"
+    ],
     "expertos": {
-      "Alumno desarrollador": [10, 12, 14, 12, 10, 6, 8],
-      "Companero con experiencia": [12, 14, 16, 12, 14, 5, 10],
-      "IA (Claude) - analisis del codigo": [14, 13, 17, 13, 15, 5, 9]
+      "Alumno desarrollador": [
+        10,
+        12,
+        14,
+        12,
+        10,
+        6,
+        8,
+        10,
+        4,
+        8,
+        8
+      ],
+      "Companero con experiencia": [
+        12,
+        14,
+        16,
+        12,
+        14,
+        5,
+        10,
+        11,
+        4,
+        9,
+        10
+      ],
+      "IA (Claude) - analisis del codigo": [
+        14,
+        13,
+        17,
+        13,
+        15,
+        5,
+        9,
+        12,
+        4,
+        8,
+        9
+      ]
     }
   },
   "analoga": {
@@ -16,47 +64,177 @@
     "justificacion_factor": "+10 %: Azmuth integra APIs externas (Claude, ElevenLabs) y voz, más complejas que un CRUD"
   },
   "tres_puntos": {
-    "Nucleo de voz":        {"optimista": 8,  "probable": 12, "pesimista": 20},
-    "Skills basicas":       {"optimista": 9,  "probable": 13, "pesimista": 20},
-    "Control del sistema":  {"optimista": 10, "probable": 15, "pesimista": 24},
-    "IA y memoria":         {"optimista": 9,  "probable": 12, "pesimista": 18},
-    "Interfaz y servidor":  {"optimista": 8,  "probable": 13, "pesimista": 22},
-    "Persistencia SQLite":  {"optimista": 3,  "probable": 5,  "pesimista": 8},
-    "DevOps":               {"optimista": 6,  "probable": 8,  "pesimista": 14}
+    "Nucleo de voz": {
+      "optimista": 8,
+      "probable": 12,
+      "pesimista": 20
+    },
+    "Skills basicas": {
+      "optimista": 9,
+      "probable": 13,
+      "pesimista": 20
+    },
+    "Control del sistema": {
+      "optimista": 10,
+      "probable": 15,
+      "pesimista": 24
+    },
+    "IA y memoria": {
+      "optimista": 9,
+      "probable": 12,
+      "pesimista": 18
+    },
+    "Interfaz y servidor": {
+      "optimista": 8,
+      "probable": 13,
+      "pesimista": 22
+    },
+    "Persistencia SQLite": {
+      "optimista": 3,
+      "probable": 5,
+      "pesimista": 8
+    },
+    "DevOps": {
+      "optimista": 6,
+      "probable": 8,
+      "pesimista": 14
+    },
+    "Modo escritorio y apps": {
+      "optimista": 8,
+      "probable": 11,
+      "pesimista": 16
+    },
+    "Correccion de defectos": {
+      "optimista": 2,
+      "probable": 4,
+      "pesimista": 6
+    },
+    "Calidad y seguridad": {
+      "optimista": 5,
+      "probable": 8,
+      "pesimista": 12
+    },
+    "Nuevas funciones": {
+      "optimista": 6,
+      "probable": 9,
+      "pesimista": 14
+    }
   },
   "puntos_funcion": {
-    "_fuente": "Conteo hecho sobre el código: skills/, basedatos.py, servidor.py, cerebro.py",
+    "_fuente": "Conteo hecho sobre el código: skills/, basedatos.py, servidor.py, cerebro.py, chats.py, idioma.py (actualizado en el Sprint 11)",
     "EI": {
-      "simple":  ["crear nota", "borrar nota", "borrar todas las notas", "borrar recordatorio", "borrar todos los recordatorios",
-                  "olvidar hecho", "olvidar todo", "borrar contacto", "borrar historial", "registrar uso (habito)"],
-      "media":   ["guardar hecho en memoria", "guardar contacto", "registrar respuesta a sugerencia", "comando remoto /comando"],
-      "compleja":["crear recordatorio (unico/recurrente con hora y dias)"]
+      "simple": [
+        "crear nota",
+        "borrar nota",
+        "borrar todas las notas",
+        "borrar recordatorio",
+        "borrar todos los recordatorios",
+        "olvidar hecho",
+        "olvidar todo",
+        "borrar contacto",
+        "borrar historial",
+        "registrar uso (habito)",
+        "crear chat",
+        "renombrar chat",
+        "borrar chat",
+        "cambiar modo voz/escritorio",
+        "cambiar idioma",
+        "ensenar alias de app"
+      ],
+      "media": [
+        "guardar hecho en memoria",
+        "guardar contacto",
+        "registrar respuesta a sugerencia",
+        "comando remoto /comando",
+        "enviar mensaje en el chat escrito"
+      ],
+      "compleja": [
+        "crear recordatorio (unico/recurrente con hora y dias)"
+      ]
     },
     "EO": {
-      "simple":  [],
-      "media":   ["clima (ubicacion + API)", "resumen de habitos", "aviso de recordatorios pendientes", "sugerencia por hora"],
-      "compleja":["respuesta de Claude con memoria automatica", "perfil de personalidad generado por IA", "respuesta en voz (ElevenLabs/Windows)"]
+      "simple": [],
+      "media": [
+        "clima (ubicacion + API)",
+        "resumen de habitos",
+        "aviso de recordatorios pendientes",
+        "sugerencia por hora",
+        "notificacion de Windows de recordatorio"
+      ],
+      "compleja": [
+        "respuesta de Claude con memoria automatica",
+        "perfil de personalidad generado por IA",
+        "respuesta en voz (ElevenLabs/Windows)",
+        "analisis de pantalla con vision de Claude",
+        "abrir app instalada con busqueda difusa e IA"
+      ]
     },
     "EQ": {
-      "simple":  ["hora", "fecha", "mis notas", "mis contactos", "ayuda", "GET /estado"],
-      "media":   ["mis recordatorios", "que recuerdas de X", "mis habitos"],
-      "compleja":[]
+      "simple": [
+        "hora",
+        "fecha",
+        "mis notas",
+        "mis contactos",
+        "ayuda",
+        "GET /estado",
+        "GET /salud",
+        "GET /idioma"
+      ],
+      "media": [
+        "mis recordatorios",
+        "que recuerdas de X",
+        "mis habitos",
+        "listar chats y mensajes",
+        "que aplicaciones aprendiste"
+      ],
+      "compleja": []
     },
     "ILF": {
-      "simple":  ["notas", "contactos", "perfil"],
-      "media":   ["recordatorios", "memoria", "habitos (categorias, horas, meta)"],
-      "compleja":[]
+      "simple": [
+        "notas",
+        "contactos",
+        "perfil",
+        "ajustes",
+        "apps_aprendidas"
+      ],
+      "media": [
+        "recordatorios",
+        "memoria",
+        "habitos (categorias, horas, meta)",
+        "chats y mensajes",
+        "apps_indice"
+      ],
+      "compleja": []
     },
     "EIF": {
-      "simple":  ["Open-Meteo", "ipapi", "Ngrok"],
-      "media":   ["API de Anthropic (Claude)", "ElevenLabs", "Google Speech Recognition"],
-      "compleja":[]
+      "simple": [
+        "Open-Meteo",
+        "ipapi",
+        "Ngrok",
+        "Menu Inicio de Windows (Get-StartApps)"
+      ],
+      "media": [
+        "API de Anthropic (Claude)",
+        "ElevenLabs",
+        "Google Speech Recognition"
+      ],
+      "compleja": []
     },
     "factores_ajuste": {
-      "1 Comunicacion de datos": 4, "2 Procesamiento distribuido": 2, "3 Rendimiento": 3, "4 Configuracion muy usada": 2,
-      "5 Tasa de transacciones": 1, "6 Entrada de datos en linea": 4, "7 Eficiencia del usuario final": 4,
-      "8 Actualizacion en linea": 3, "9 Procesamiento complejo": 3, "10 Reusabilidad": 3, "11 Facilidad de instalacion": 3,
-      "12 Facilidad de operacion": 4, "13 Multiples sitios": 2, "14 Facilidad de cambio": 4
+      "1 Comunicacion de datos": 4,
+      "2 Procesamiento distribuido": 2,
+      "3 Rendimiento": 3,
+      "4 Configuracion muy usada": 2,
+      "5 Tasa de transacciones": 1,
+      "6 Entrada de datos en linea": 4,
+      "7 Eficiencia del usuario final": 4,
+      "8 Actualizacion en linea": 3,
+      "9 Procesamiento complejo": 3,
+      "10 Reusabilidad": 3,
+      "11 Facilidad de instalacion": 3,
+      "12 Facilidad de operacion": 4,
+      "13 Multiples sitios": 2,
+      "14 Facilidad de cambio": 4
     },
     "horas_por_punto_funcion": 0.45,
     "_justificacion_horas_por_pf": "Productividad con desarrollo asistido por IA (Claude) y Python, más alta que el promedio de la industria (~0.8-1 h/PF)"
