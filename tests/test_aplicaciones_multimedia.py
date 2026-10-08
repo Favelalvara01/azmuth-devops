@@ -49,6 +49,17 @@ def test_controles_multimedia():
 
 
 def test_ayuda_y_sistema():
-    assert "comandos exactos" in ayuda.intentar("qué puedes hacer")
+    assert "Puedo ayudarle con" in ayuda.intentar("qué puedes hacer")
     assert sistema.intentar("borra el historial") == "Historial de conversación reiniciado."
     assert sistema.intentar("hola") is None
+
+
+def test_ayuda_en_modo_escritorio_muestra_el_manual(monkeypatch):
+    monkeypatch.setattr(ayuda.estado, "obtener_modo", lambda: "escritorio")
+    manual = ayuda.intentar("ayuda")
+    for seccion in ("Pantalla", "Aplicaciones", "Recordatorios", "reloj"):
+        assert seccion in manual
+
+
+def test_ayuda_en_voz_es_corta():
+    assert len(ayuda.intentar("ayuda")) < 600
