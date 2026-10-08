@@ -23,6 +23,8 @@ py -3.13 metricas\graficas.py --reportes reports --salida metricas\resultados\gr
 echo Graficas actualizadas en metricas\resultados\graficas
 echo === 6/6 Analisis con IA (Claude) ===
 py -3.13 metricas\analisis_ia.py --reportes reports
+echo === Veredicto por metrica (BIEN / MAL) ===
+py -3.13 metricas\veredicto.py todo
 echo === Resumen: metricas contra metas ===
 py -3.13 metricas\resumen.py --reportes reports
 if not exist metricas\resultados mkdir metricas\resultados
