@@ -64,7 +64,11 @@ def intentar(texto: str):
         return f'Aquí tiene los resultados para "{consulta}".'
 
     # --- MAPAS Y DIRECCIONES (Limpio y sin errores en consola) ---
-    patron_mapas = r"^(?:cómo\s+llegar\s+a|como\s+llegar\s+a|cómo\s+llego\s+a|como\s+llego\s+a|llévame\s+a|llevame\s+a|dame\s+direcciones\s+a|direcciones\s+a|abre\s+mapas\s+a|dónde\s+queda|donde\s+queda)\s+(.+)"
+    patron_mapas = (
+        r"^(?:cómo\s+llegar\s+a|como\s+llegar\s+a|cómo\s+llego\s+a|como\s+llego\s+a|"
+        r"llévame\s+a|llevame\s+a|dame\s+direcciones\s+a|direcciones\s+a|"
+        r"abre\s+mapas\s+a|dónde\s+queda|donde\s+queda)\s+(.+)"
+    )
     m = re.match(patron_mapas, t)
     if m:
         lugar = m.group(1).strip()

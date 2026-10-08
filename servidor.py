@@ -2,15 +2,14 @@
 servidor.py — El ÚNICO servidor web de A.Z.M.U.T.H.
 """
 import os
-import subprocess
 import threading
-import webbrowser
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+import acciones_remotas
 import chats
 import estado
 
@@ -161,103 +160,9 @@ def _terminar(mensaje: str, status: str = "ok"):
 def ejecutar_accion(accion: str):
     accion = accion.lower().strip()
     estado.set_estado("ejecutando", f"Comando remoto: {accion}")
-
-    if accion == "musica":
-        webbrowser.open("https://www.youtube.com/watch?v=pMNhe03RKZE&list=PLTEsV4ouHz8U&index=2")
-        subprocess.run("powershell -command \"(New-Object -ComObject WScript.Shell).AppActivate('Microsoft Edge')\"", shell=True)
-        return _terminar("Playlist activada al frente")
-    elif accion == "chapa":
-        webbrowser.open("https://www.youtube.com/watch?v=qD9uZp9TyR8&list=RDqD9uZp9TyR8&start_radio=1")
-        subprocess.run("powershell -command \"(New-Object -ComObject WScript.Shell).AppActivate('Microsoft Edge')\"", shell=True)
-        return _terminar("Chapa activada al frente")
-    elif accion == "play_pause":
-        subprocess.run(["powershell", "-command", "$wscript = New-Object -ComObject WScript.Shell; $wscript.SendKeys([char]179)"], shell=True)
-        return _terminar("Play / Pausa")
-    elif accion == "next":
-        ps = "$ws = New-Object -ComObject WScript.Shell; $ws.SendKeys('+n'); $code = '[DllImport(\"user32.dll\")] public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);'; Add-Type -MemberDefinition $code -Name 'W1' -Namespace 'U1'; [U1.W1]::keybd_event(0xB0,0,0,0); [U1.W1]::keybd_event(0xB0,0,2,0);"
-        subprocess.run(["powershell", "-command", ps], shell=True)
-        return _terminar("Siguiente video / pista")
-    elif accion == "prev":
-        ps = "$ws = New-Object -ComObject WScript.Shell; $ws.SendKeys('+p'); $code = '[DllImport(\"user32.dll\")] public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);'; Add-Type -MemberDefinition $code -Name 'W2' -Namespace 'U2'; [U2.W2]::keybd_event(0xB1,0,0,0); [U2.W2]::keybd_event(0xB1,0,2,0);"
-        subprocess.run(["powershell", "-command", ps], shell=True)
-        return _terminar("Video / pista anterior")
-    elif accion == "vol_up":
-        ps = "$code = '[DllImport(\"user32.dll\")] public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);'; Add-Type -MemberDefinition $code -Name 'W3' -Namespace 'U3'; 1..5 | ForEach-Object { [U3.W3]::keybd_event(0xAF,0,0,0); [U3.W3]::keybd_event(0xAF,0,2,0); Start-Sleep -Milliseconds 20 }"
-        subprocess.run(["powershell", "-command", ps], shell=True)
-        return _terminar("Volumen +10")
-    elif accion == "vol_down":
-        ps = "$code = '[DllImport(\"user32.dll\")] public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);'; Add-Type -MemberDefinition $code -Name 'W4' -Namespace 'U4'; 1..5 | ForEach-Object { [U4.W4]::keybd_event(0xAE,0,0,0); [U4.W4]::keybd_event(0xAE,0,2,0); Start-Sleep -Milliseconds 20 }"
-        subprocess.run(["powershell", "-command", ps], shell=True)
-        return _terminar("Volumen -10")
-    elif accion == "mute":
-        ps = "$code = '[DllImport(\"user32.dll\")] public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);'; Add-Type -MemberDefinition $code -Name 'W5' -Namespace 'U5'; [U5.W5]::keybd_event(0xAD,0,0,0); [U5.W5]::keybd_event(0xAD,0,2,0);"
-        subprocess.run(["powershell", "-command", ps], shell=True)
-        return _terminar("Volumen Silenciado")
-    elif accion == "alt_tab":
-        # Simulación robusta de Alt + Tab para ciclar entre aplicaciones sin trabarse
-        ps = "$code = '[DllImport(\"user32.dll\")] public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);'; Add-Type -MemberDefinition $code -Name 'WTab' -Namespace 'WT'; [WT.WTab]::keybd_event(0x12, 0, 0, 0); [WT.WTab]::keybd_event(0x09, 0, 0, 0); [WT.WTab]::keybd_event(0x09, 0, 2, 0); [WT.WTab]::keybd_event(0x12, 0, 2, 0);"
-        subprocess.run(["powershell", "-command", ps], shell=True)
-        return _terminar("Cambiando de App")
-    elif accion == "nueva_pestana":
-        subprocess.run("powershell -command \"(New-Object -ComObject WScript.Shell).SendKeys('^t')\"", shell=True)
-        return _terminar("Nueva pestaña abierta")
-    elif accion == "next_tab":
-        subprocess.run("powershell -command \"(New-Object -ComObject WScript.Shell).SendKeys('^{TAB}')\"", shell=True)
-        return _terminar("Siguiente pestaña")
-    elif accion == "prev_tab":
-        subprocess.run("powershell -command \"(New-Object -ComObject WScript.Shell).SendKeys('^+{TAB}')\"", shell=True)
-        return _terminar("Pestaña anterior")
-    elif accion == "fortnite":
-        subprocess.run(r"start shell:AppsFolder\436609B6.FortniteClient_9ncxwbgmmv7m8!AppFortniteShipping", shell=True)
-        return _terminar("Abriendo Fortnite")
-    elif accion == "roblox":
-        subprocess.run(r"start shell:AppsFolder\ROBLOXCorporation.RobloxGDK_55nm5eh3cm0pr!Game", shell=True)
-        return _terminar("Abriendo Roblox")
-    elif accion == "edge":
-        subprocess.run("start msedge", shell=True)
-        return _terminar("Edge abierto")
-    elif accion == "vscode":
-        subprocess.run("code", shell=True)
-        subprocess.run("powershell -command \"(New-Object -ComObject WScript.Shell).AppActivate('Visual Studio Code')\"", shell=True)
-        return _terminar("VS Code abierto al frente")
-    elif accion == "teams":
-        subprocess.run("start msteams:", shell=True)
-        return _terminar("Teams abierto")
-    elif accion == "cerrar_pestana":
-        subprocess.run("powershell -command \"(New-Object -ComObject WScript.Shell).SendKeys('^w')\"", shell=True)
-        return _terminar("Pestaña cerrada")
-    elif accion == "cerrar_app":
-        # Simulación nativa exacta de Alt + F4 para cerrar cualquier ventana activa de forma universal
-        ps = "$code = '[DllImport(\"user32.dll\")] public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);'; Add-Type -MemberDefinition $code -Name 'WClose' -Namespace 'WC'; [WC.WClose]::keybd_event(0x12, 0, 0, 0); [WC.WClose]::keybd_event(0x73, 0, 0, 0); [WC.WClose]::keybd_event(0x73, 0, 2, 0); [WC.WClose]::keybd_event(0x12, 0, 2, 0);"
-        subprocess.run(["powershell", "-command", ps], shell=True)
-        return _terminar("Ventana cerrada")
-    elif accion == "bloquear":
-        subprocess.run("rundll32.exe user32.dll,LockWorkStation", shell=True)
-        return _terminar("PC bloqueada")
-    elif accion == "task_manager":
-        subprocess.run("powershell -command \"(New-Object -ComObject WScript.Shell).SendKeys('^+{ESC}')\"", shell=True)
-        return _terminar("Administrador de Tareas abierto")
-    elif accion == "terminal":
-        subprocess.run("wt", shell=True)
-        return _terminar("Terminal abierta")
-    elif accion == "escritorio":
-        # Atajo exacto Win + D mediante PowerShell para mostrar/ocultar el escritorio de forma infalible
-        ps = "$code = '[DllImport(\"user32.dll\")] public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);'; Add-Type -MemberDefinition $code -Name 'WDesk' -Namespace 'WD'; [WD.WDesk]::keybd_event(0x5B, 0, 0, 0); [WD.WDesk]::keybd_event(0x44, 0, 0, 0); [WD.WDesk]::keybd_event(0x44, 0, 2, 0); [WD.WDesk]::keybd_event(0x5B, 0, 2, 0);"
-        subprocess.run(["powershell", "-command", ps], shell=True)
-        return _terminar("Escritorio mostrado")
-    elif accion == "brillo_up":
-        ps = "$b = (Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods); if ($b) { $curr = (Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightness).CurrentBrightness; $b.WmiSetBrightness(1, [Math]::Min(100, $curr + 15)) }"
-        subprocess.run(["powershell", "-command", ps], shell=True)
-        return _terminar("Brillo aumentado")
-    elif accion == "brillo_down":
-        ps = "$b = (Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods); if ($b) { $curr = (Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightness).CurrentBrightness; $b.WmiSetBrightness(1, [Math]::Max(0, $curr - 15)) }"
-        subprocess.run(["powershell", "-command", ps], shell=True)
-        return _terminar("Brillo reducido")
-    elif accion == "local_tunes":
-        webbrowser.open("https://local-tunes.netlify.app")
-        subprocess.run("powershell -command \"(New-Object -ComObject WScript.Shell).AppActivate('Microsoft Edge')\"", shell=True)
-        return _terminar("Local Tunes abierto al frente")
-
+    mensaje = acciones_remotas.ejecutar(accion)
+    if mensaje is not None:
+        return _terminar(mensaje)
     estado.set_estado("reposo")
     return _terminar(f"Comando '{accion}' no reconocido", status="error")
 

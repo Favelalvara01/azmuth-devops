@@ -46,12 +46,18 @@ APPS = {
 }
 
 # Procesos reales de Windows para cerrar
+# Cierra solo las ventanas del Explorador (taskkill mataría también la barra de tareas).
+_CERRAR_EXPLORADOR = (
+    "powershell -Command \"$wshell = New-Object -ComObject Shell.Application; "
+    "foreach ($w in $wshell.Windows()) { if ($w.Name -eq 'File Explorer' "
+    "-or $w.Name -eq 'Explorador de archivos') { $w.Quit() } }\""
+)
 PROCESOS_CIERRE = {
     "bloc de notas": "notepad.exe",
     "notepad": "notepad.exe",
     "calculadora": "ApplicationFrameHost.exe",
-    "explorador de archivos": "powershell -Command \"$wshell = New-Object -ComObject Shell.Application; foreach ($w in $wshell.Windows()) { if ($w.Name -eq 'File Explorer' -or $w.Name -eq 'Explorador de archivos') { $w.Quit() } }\"",
-    "explorador": "powershell -Command \"$wshell = New-Object -ComObject Shell.Application; foreach ($w in $wshell.Windows()) { if ($w.Name -eq 'File Explorer' -or $w.Name -eq 'Explorador de archivos') { $w.Quit() } }\"",
+    "explorador de archivos": _CERRAR_EXPLORADOR,
+    "explorador": _CERRAR_EXPLORADOR,
     "paint": "mspaint.exe",
     "edge": "msedge.exe",
     "microsoft edge": "msedge.exe",
@@ -117,79 +123,103 @@ def _abrir_simple(objetivo: str):
             return f"{e1} / {e2}"
 
 
+_URL_RICKROLL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+_URL_CHAPA = "https://www.youtube.com/watch?v=qD9uZp9TyR8&list=RDqD9uZp9TyR8&start_radio=1"
+_URL_PLAYLIST = "https://www.youtube.com/watch?v=pMNhe03RKZE&list=PLTEsV4ouHz8U&index=2"
+_VERBOS_ABRIR = ("abre", "abreme", "abrir")
+# DEF-012: "pon mi playlist" se anunciaba en la ayuda y en las sugerencias
+# de hábitos, pero ninguna skill lo reconocía.
+_PALABRAS_PLAYLIST = ("azmuth mix", "mi musica", "mix personal", "pon mi musica", "aleatorio",
+                      "mi playlist", "mi lista de reproduccion")
+_MSG_MESSENGER = ("Le abro Messenger. Ahí busca al contacto y manda el mensaje usted mismo "
+                  "— no tengo acceso a sus contactos.")
+
+# Un manejador devuelve la respuesta, None si no le toca, o _ALTO si le toca
+# pero decide que otra skill (apps_instaladas) debe atenderlo.
+_ALTO = object()
+
+
+def _abrir_url(url: str, respuesta: str) -> str:
+    webbrowser.open(url)
+    return respuesta
+
+
+def _modos_musica(t: str):
+    if any(k in t for k in ("rick roll", "rickroll", "rick astley")):
+        return _abrir_url(_URL_RICKROLL, "Activando modo Rickroll.")
+    if "menea tu chapa" in t:
+        return _abrir_url(_URL_CHAPA, "Activando modo Menea tu chapa. ¡A bailar!")
+    if any(k in t for k in _PALABRAS_PLAYLIST):
+        return _abrir_url(_URL_PLAYLIST, "Activando tu playlist")
+    return None
+
+
+def _matar_proceso(proceso: str):
+    if "powershell" in proceso.lower():
+        subprocess.run(proceso, shell=True, check=False, capture_output=True, text=True)
+    else:
+        subprocess.run(["taskkill", "/f", "/im", proceso], check=False, capture_output=True, text=True)
+
+
+def _cerrar(t: str):
+    m_cerrar = re.match(r"^(?:cierra|cierrame|cerrar)\s+(.+)", t)
+    if not m_cerrar:
+        return None
+    app_pedida = _limpiar_nombre(m_cerrar.group(1).strip())
+    proceso = PROCESOS_CIERRE.get(app_pedida)
+    if not proceso:
+        return _ALTO  # no está en la lista fija: lo intenta skills/apps_instaladas.py
+    try:
+        _matar_proceso(proceso)
+        return f"Cerrando {app_pedida}."
+    except Exception as e:
+        print(f"[aplicaciones] Error al cerrar {app_pedida}: {e}")
+        return f"No pude cerrar {app_pedida}. Es probable que no esté abierta."
+
+
+def _youtube(t: str):
+    if "youtube" not in t or not any(v in t for v in ("abre", "abreme", "abrir", "busca", "buscame")):
+        return None
+    consulta = re.sub(r"\s+", " ", _PALABRAS_YOUTUBE_RE.sub("", t).strip())
+    if len(consulta) > 1:
+        url = f"https://www.youtube.com/results?search_query={quote(consulta)}"
+        return _abrir_url(url, f'Abriendo YouTube y buscando "{consulta}".')
+    return _abrir_url("https://www.youtube.com", "Le abro YouTube.")
+
+
+def _messenger(t: str):
+    if "messenger" in t and any(v in t for v in _VERBOS_ABRIR):
+        return _abrir_url("https://www.messenger.com", _MSG_MESSENGER)
+    return None
+
+
+def _abrir_por_nombre(t: str):
+    if not any(v in t for v in _VERBOS_ABRIR):
+        return None
+    nombre_app = next((n for n in APPS if n in t), None)
+    if nombre_app is None:
+        return None
+    comando = APPS[nombre_app]
+    error = _abrir_simple(comando)
+    if error is None:
+        return f"Abriendo {nombre_app}."
+    print(f"[aplicaciones] Error al abrir {nombre_app!r} ({comando!r}): {error}")
+    return f"Intenté abrir {nombre_app} pero Windows no pudo."
+
+
+# HU-11: el if gigante (CC 24) quedó partido en manejadores con CC baja.
+_MANEJADORES = (_modos_musica, _cerrar, _youtube, _messenger, _abrir_por_nombre)
+
+
 def intentar(texto: str):
     if not texto:
         return None
-
     # Limpiamos el texto de voz aquí: adiós acentos, mayúsculas y comas
     t = limpiar_texto_voz(texto)
-
-    # --- MODO RICKROLL ---
-    if any(k in t for k in ("rick roll", "rickroll", "rick astley")):
-        webbrowser.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-        return "Activando modo Rickroll."
-
-    # --- MODO MENEA TU CHAPA ---
-    if "menea tu chapa" in t:
-        url_chapa = "https://www.youtube.com/watch?v=qD9uZp9TyR8&list=RDqD9uZp9TyR8&start_radio=1"
-        webbrowser.open(url_chapa)
-        return "Activando modo Menea tu chapa. ¡A bailar!"
-
-    # --- MODO AZMUTH MIX (Tu playlist oficial de YouTube) ---
-    # DEF-012: "pon mi playlist" se anunciaba en la ayuda y en las sugerencias
-    # de hábitos, pero ninguna skill lo reconocía.
-    if any(k in t for k in ("azmuth mix", "mi musica", "mix personal", "pon mi musica", "aleatorio",
-                            "mi playlist", "mi lista de reproduccion")):
-        url_playlist = "https://www.youtube.com/watch?v=pMNhe03RKZE&list=PLTEsV4ouHz8U&index=2"
-        webbrowser.open(url_playlist)
-        return "Activando tu playlist"
-
-    # --- CERRAR APLICACIONES ---
-    m_cerrar = re.match(r"^(?:cierra|cierrame|cerrar)\s+(.+)", t)
-    if m_cerrar:
-        app_pedida = _limpiar_nombre(m_cerrar.group(1).strip())
-        proceso = PROCESOS_CIERRE.get(app_pedida)
-        if proceso:
-            try:
-                if "powershell" in proceso.lower():
-                    subprocess.run(proceso, shell=True, check=False, capture_output=True, text=True)
-                else:
-                    subprocess.run(["taskkill", "/f", "/im", proceso], check=False, capture_output=True, text=True)
-                return f"Cerrando {app_pedida}."
-            except Exception as e:
-                print(f"[aplicaciones] Error al cerrar {app_pedida}: {e}")
-                return f"No pude cerrar {app_pedida}. Es probable que no esté abierta."
-        return None  # no está en la lista fija: lo intenta skills/apps_instaladas.py
-
-    # --- BUSCAR DIRECTAMENTE EN YOUTUBE ---
-    if "youtube" in t and any(v in t for v in ("abre", "abreme", "abrir", "busca", "buscame")):
-        consulta_limpia = _PALABRAS_YOUTUBE_RE.sub("", t).strip()
-        consulta_limpia = re.sub(r"\s+", " ", consulta_limpia)
-
-        if len(consulta_limpia) > 1:
-            url = f"https://www.youtube.com/results?search_query={quote(consulta_limpia)}"
-        else:
-            url = "https://www.youtube.com"
-
-        webbrowser.open(url)
-        if len(consulta_limpia) > 1:
-            return f'Abriendo YouTube y buscando "{consulta_limpia}".'
-        return "Le abro YouTube."
-
-    # --- MESSENGER ---
-    if "messenger" in t and any(v in t for v in ("abre", "abreme", "abrir")):
-        webbrowser.open("https://www.messenger.com")
-        return "Le abro Messenger. Ahí busca al contacto y manda el mensaje usted mismo — no tengo acceso a sus contactos."
-
-    # --- APERTURA POR NOMBRE ---
-    if any(v in t for v in ("abre", "abreme", "abrir")):
-        for nombre_app in APPS.keys():
-            if nombre_app in t:
-                comando = APPS[nombre_app]
-                error = _abrir_simple(comando)
-                if error is None:
-                    return f"Abriendo {nombre_app}."
-                print(f"[aplicaciones] Error al abrir {nombre_app!r} ({comando!r}): {error}")
-                return f"Intenté abrir {nombre_app} pero Windows no pudo."
-
+    for manejador in _MANEJADORES:
+        respuesta = manejador(t)
+        if respuesta is _ALTO:
+            return None
+        if respuesta is not None:
+            return respuesta
     return None
