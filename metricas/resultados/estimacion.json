@@ -83,9 +83,9 @@
     "horas_referencia": 80,
     "factor_ajuste": 1.1,
     "justificacion_factor": "+10 %: Azmuth integra APIs externas (Claude, ElevenLabs) y voz, más complejas que un CRUD",
-    "sloc_actual": 2897,
+    "sloc_actual": 3143,
     "productividad_sloc_por_hora": 22.5,
-    "total_horas": 141.63
+    "total_horas": 153.66
   },
   "tres_puntos": {
     "por_modulo": [
