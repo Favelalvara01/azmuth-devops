@@ -11,6 +11,7 @@ import argparse
 import csv
 import json
 import os
+import textwrap
 
 import matplotlib
 
@@ -59,14 +60,14 @@ def complejidad(m, salida):
 
 def top_complejidad(m, salida):
     top = m["producto"]["complejidad"]["top10"][::-1]
-    fig, ax = plt.subplots(figsize=(7, 3.8))
+    fig, ax = plt.subplots(figsize=(8, 3.8))
     ax.barh([f"{t['archivo'].replace('skills/', '')} · {t['funcion']}" for t in top], [t["complejidad"] for t in top],
             color=[NARANJA if t["complejidad"] > 15 else AZUL for t in top], height=0.6)
     ax.axvline(10, color=SECUNDARIO, linestyle="--", linewidth=1)
     for i, t in enumerate(top):
         ax.text(t["complejidad"] + 0.3, i, str(t["complejidad"]), va="center", fontsize=8)
-    ax.set_title("Las 10 funciones más complejas (naranja = rango D o peor)")
-    ax.set_xlabel("Complejidad ciclomática (línea punteada = límite recomendado 10)")
+    ax.set_title("Las 10 funciones más complejas", loc="left")
+    ax.set_xlabel("Complejidad ciclomática (punteada = límite recomendado 10; naranja = rango D o peor)", fontsize=8)
     guardar(fig, ax, os.path.join(salida, "02_funciones_mas_complejas.png"), "x")
 
 
@@ -106,12 +107,13 @@ def desviacion(m, salida):
     mods = m["proyecto"]["desviacion"]["por_modulo"]
     x = range(len(mods))
     w = 0.38
-    fig, ax = plt.subplots(figsize=(7.4, 3.6))
+    fig, ax = plt.subplots(figsize=(9, 4.4))
     ax.bar([i - w / 2 for i in x], [q["horas_estimadas"] for q in mods], w, color=AZUL, label="Estimadas")
     ax.bar([i + w / 2 for i in x], [q["horas_reales"] for q in mods], w, color=NARANJA, label="Reales")
     for i, q in enumerate(mods):
         ax.text(i + w / 2, q["horas_reales"] + 0.3, f"{q['desviacion_porcentaje']:+.0f}%", ha="center", fontsize=8)
-    ax.set_xticks(list(x), [f"S{q['sprint']}\n{q['modulo'].replace('Persistencia ', '')}" for q in mods], fontsize=7.5)
+    nombres = [f"S{q['sprint']}\n" + "\n".join(textwrap.wrap(q["modulo"], 11)) for q in mods]
+    ax.set_xticks(list(x), nombres, fontsize=7.5)
     ax.set_ylabel("Horas")
     ax.legend(frameon=False, loc="upper left")
     ax.set_title(f"Horas estimadas vs reales por sprint (desviación total {m['proyecto']['desviacion']['desviacion_porcentaje']:+.0f} %)")
@@ -121,8 +123,9 @@ def desviacion(m, salida):
 def densidad(m, salida):
     mods = [q for q in m["proyecto"]["desviacion"]["por_modulo"] if q["densidad_defectos_kloc"] is not None]
     prom = m["producto"]["densidad_defectos"]["por_kloc"]
-    fig, ax = plt.subplots(figsize=(7, 3.2))
-    b = ax.bar([q["modulo"] for q in mods], [q["densidad_defectos_kloc"] for q in mods], color=AZUL, width=0.55)
+    fig, ax = plt.subplots(figsize=(9, 3.8))
+    nombres = ["\n".join(textwrap.wrap(q["modulo"], 11)) for q in mods]
+    b = ax.bar(nombres, [q["densidad_defectos_kloc"] for q in mods], color=AZUL, width=0.55)
     etiquetas(ax, b)
     ax.axhline(prom, color=NARANJA, linewidth=1.5)
     ax.text(len(mods) - 0.6, prom + 0.3, f"promedio {prom}", fontsize=8, ha="right")
