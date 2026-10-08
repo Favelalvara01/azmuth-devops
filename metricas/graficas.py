@@ -112,7 +112,7 @@ def desviacion(m, salida):
     ax.bar([i + w / 2 for i in x], [q["horas_reales"] for q in mods], w, color=NARANJA, label="Reales")
     for i, q in enumerate(mods):
         ax.text(i + w / 2, q["horas_reales"] + 0.3, f"{q['desviacion_porcentaje']:+.0f}%", ha="center", fontsize=8)
-    nombres = [f"S{q['sprint']}\n" + "\n".join(textwrap.wrap(q["modulo"], 11)) for q in mods]
+    nombres = [f"S{q['sprint']}\n" + "\n".join(textwrap.wrap(q["modulo"], 12, break_long_words=False)) for q in mods]
     ax.set_xticks(list(x), nombres, fontsize=7.5)
     ax.set_ylabel("Horas")
     ax.legend(frameon=False, loc="upper left")
@@ -124,7 +124,7 @@ def densidad(m, salida):
     mods = [q for q in m["proyecto"]["desviacion"]["por_modulo"] if q["densidad_defectos_kloc"] is not None]
     prom = m["producto"]["densidad_defectos"]["por_kloc"]
     fig, ax = plt.subplots(figsize=(9, 3.8))
-    nombres = ["\n".join(textwrap.wrap(q["modulo"], 11)) for q in mods]
+    nombres = ["\n".join(textwrap.wrap(q["modulo"], 12, break_long_words=False)) for q in mods]
     b = ax.bar(nombres, [q["densidad_defectos_kloc"] for q in mods], color=AZUL, width=0.55)
     etiquetas(ax, b)
     ax.axhline(prom, color=NARANJA, linewidth=1.5)
