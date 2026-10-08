@@ -1,6 +1,6 @@
 # Dependencias para DevOps: pruebas, cobertura, métricas y validación.
 # (No incluye las librerías de Windows/micrófono: las pruebas las simulan.)
-anthropic>=0.40
+anthropic>=1.11.0
 python-dotenv
 requests
 numpy
