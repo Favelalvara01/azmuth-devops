@@ -22,6 +22,7 @@ def ok(texto):
 
 @pytest.fixture
 def solo_gemini(monkeypatch):
+    monkeypatch.setattr(config, "GROQ_API_KEY", "")
     monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "")
     monkeypatch.setattr(config, "GEMINI_API_KEY", "clave-gemini")
     monkeypatch.setattr(config, "GEMINI_MODELO", "gemini-flash-lite-latest")
@@ -32,6 +33,7 @@ def solo_gemini(monkeypatch):
 
 
 def test_proveedor_elige_bien(monkeypatch):
+    monkeypatch.setattr(config, "GROQ_API_KEY", "")
     monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "a")
     monkeypatch.setattr(config, "GEMINI_API_KEY", "g")
     assert cerebro.proveedor() == "claude"          # Claude tiene prioridad

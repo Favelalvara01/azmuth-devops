@@ -16,6 +16,9 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 # Por defecto el Flash Lite: es el más rápido para un asistente de voz y el menos saturado.
 GEMINI_MODELO = os.getenv("GEMINI_MODELO", "gemini-flash-lite-latest").strip() or "gemini-flash-lite-latest"
+# Otra alternativa gratuita y muy rápida para conversar (no ve imágenes).
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
+GROQ_MODELO = os.getenv("GROQ_MODELO", "openai/gpt-oss-120b").strip() or "openai/gpt-oss-120b"
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "").strip()
 ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "JBFqnCBsd6RMkjVDRZzb").strip()
 PALABRA_CLAVE = os.getenv("PALABRA_CLAVE", "hora de ser heroe").strip().lower()
@@ -38,9 +41,10 @@ NGROK_DOMINIO = os.getenv("NGROK_DOMINIO", "").strip()
 # https://<tu-dominio>/reloj?token=TU_TOKEN y el celular lo recuerda.
 TOKEN_REMOTO = os.getenv("TOKEN_REMOTO", "").strip()
 
-if not ANTHROPIC_API_KEY and GEMINI_API_KEY:
-    print("ℹ️  Sin ANTHROPIC_API_KEY: la conversación con la IA usará Google Gemini (GEMINI_API_KEY).")
+if not ANTHROPIC_API_KEY and (GROQ_API_KEY or GEMINI_API_KEY):
+    print("ℹ️  Sin ANTHROPIC_API_KEY: se usará IA gratuita ("
+          + " + ".join(n for n, k in (("Groq", GROQ_API_KEY), ("Gemini", GEMINI_API_KEY)) if k) + ").")
 elif not ANTHROPIC_API_KEY:
-    print("⚠️  Falta ANTHROPIC_API_KEY o GEMINI_API_KEY en tu archivo .env — la conversación con la IA no va a funcionar todavía.")
+    print("⚠️  Falta una clave de IA (ANTHROPIC_API_KEY, GROQ_API_KEY o GEMINI_API_KEY) en tu .env — la IA no va a funcionar todavía.")
 if not ELEVENLABS_API_KEY:
     print("⚠️  Falta ELEVENLABS_API_KEY en tu archivo .env — usaré la voz de reserva de Windows mientras tanto.")

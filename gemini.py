@@ -81,38 +81,57 @@ def _detalle(r) -> str:
         return r.text[:200]
 
 
+def _post(modelo, cuerpo):
+    return requests.post(_URL.format(modelo=modelo), json=cuerpo, timeout=_TIMEOUT,
+                         headers={"x-goog-api-key": config.GEMINI_API_KEY})
+
+
+def _pedir(modelo, cuerpo):
+    """Hace la petición a un modelo. Devuelve la respuesta, o None si tardó demasiado."""
+    try:
+        r = _post(modelo, cuerpo)
+    except requests.Timeout:
+        _avisar(f"Gemini ({modelo}) tardó más de {_TIMEOUT} s, se prueba otro")
+        return None
+    sin_pensar = "thinkingConfig" in cuerpo["generationConfig"] and "thinking" in _detalle(r).lower()
+    if r.status_code == 400 and sin_pensar:
+        cuerpo["generationConfig"].pop("thinkingConfig")  # el modelo no acepta el nivel de pensamiento
+        r = _post(modelo, cuerpo)
+    return r
+
+
+def _revisar_error(r):
+    """Lanza el error si no vale la pena probar otro modelo (límite o error definitivo)."""
+    if r.status_code == 429:
+        raise ErrorGemini("se alcanzó el límite gratuito de Gemini; espere un momento e intente de nuevo")
+    retirado = any(f in _detalle(r).lower() for f in _FRASES_RETIRADO)
+    if r.status_code not in _REINTENTABLES and not retirado:
+        raise ErrorGemini(f"Gemini respondió {r.status_code}: {_detalle(r)}")
+
+
+def _error_final(ultimo):
+    if ultimo is not None and ultimo.status_code == 503:
+        return ErrorGemini("los servidores de Gemini están saturados en este momento; intente de nuevo en unos segundos")
+    return ErrorGemini(f"ningún modelo de Gemini respondió ({_detalle(ultimo) if ultimo is not None else 'sin respuesta'})")
+
+
 def completar(system: str, mensajes: list, max_tokens: int = 800) -> str:
     global _modelo_que_funciona
     cuerpo = convertir(system, mensajes, max_tokens)
     modelos = list(dict.fromkeys([m for m in (_modelo_que_funciona, config.GEMINI_MODELO, *_RESPALDOS) if m]))
-    ultimo = None
-    inicio = time.time()
+    ultimo, inicio = None, time.time()
     for modelo in modelos:
-        try:
-            r = requests.post(_URL.format(modelo=modelo), json=cuerpo, timeout=_TIMEOUT,
-                              headers={"x-goog-api-key": config.GEMINI_API_KEY})
-        except requests.Timeout:
-            _avisar(f"Gemini ({modelo}) tardó más de {_TIMEOUT} s, se prueba otro")
-            continue  # tardó demasiado: siguiente modelo
-        if r.status_code == 400 and "thinking" in _detalle(r).lower() and "thinkingConfig" in cuerpo["generationConfig"]:
-            # este modelo no acepta el nivel de pensamiento: se repite la petición sin él
-            cuerpo["generationConfig"].pop("thinkingConfig")
-            r = requests.post(_URL.format(modelo=modelo), json=cuerpo, timeout=_TIMEOUT,
-                              headers={"x-goog-api-key": config.GEMINI_API_KEY})
+        r = _pedir(modelo, cuerpo)
+        if r is None:
+            continue
         if r.status_code == 200:
             _modelo_que_funciona = modelo
             _avisar(f"🧠 Gemini ({modelo}) respondió en {time.time() - inicio:.1f} s")
             return _texto(r.json())
-        if r.status_code == 429:
-            raise ErrorGemini("se alcanzó el límite gratuito de Gemini; espere un momento e intente de nuevo")
-        retirado = any(f in _detalle(r).lower() for f in _FRASES_RETIRADO)
-        if r.status_code not in _REINTENTABLES and not retirado:
-            raise ErrorGemini(f"Gemini respondió {r.status_code}: {_detalle(r)}")
+        _revisar_error(r)
         ultimo = r
         _avisar(f"Gemini ({modelo}) falló con {r.status_code}: {_detalle(r)[:80]}")
         if modelo == _modelo_que_funciona:
             _modelo_que_funciona = None  # dejó de funcionar: se vuelve a buscar
-        time.sleep(0.3)  # el modelo no existe o está saturado: se intenta con el siguiente
-    if ultimo is not None and ultimo.status_code == 503:
-        raise ErrorGemini("los servidores de Gemini están saturados en este momento; intente de nuevo en unos segundos")
-    raise ErrorGemini(f"ningún modelo de Gemini respondió ({_detalle(ultimo) if ultimo is not None else 'sin respuesta'})")
+        time.sleep(0.3)
+    raise _error_final(ultimo)

@@ -57,22 +57,43 @@ _cliente = None
 _historial = []
 
 
-SIN_CLAVE = ("No tengo configurada ninguna clave de IA todavía. Ponga ANTHROPIC_API_KEY "
-             "o GEMINI_API_KEY (gratis) en su archivo .env, por favor.")
+SIN_CLAVE = ("No tengo configurada ninguna clave de IA todavía. Ponga ANTHROPIC_API_KEY, "
+             "GROQ_API_KEY o GEMINI_API_KEY (las dos últimas son gratis) en su archivo .env, por favor.")
+SIN_VISION = ("Para ver la pantalla necesito una clave de Anthropic o de Gemini; "
+              "Groq solo sirve para conversar. Agregue GEMINI_API_KEY (gratis) a su .env.")
 
 
-def proveedor():
-    """'claude', 'gemini' o None. Claude tiene prioridad; Gemini es la opción gratuita."""
+def _tiene_imagen(mensajes) -> bool:
+    return any(isinstance(m["content"], list) and any(b.get("type") == "image" for b in m["content"])
+               for m in mensajes)
+
+
+def proveedor(con_imagen: bool = False):
+    """Qué IA usar: Claude si hay clave; si no, Groq (rápida) para texto y Gemini para
+    imágenes o como respaldo. None si no hay ninguna clave que sirva."""
     if config.ANTHROPIC_API_KEY:
         return "claude"
-    if getattr(config, "GEMINI_API_KEY", ""):
-        return "gemini"
-    return None
+    groq, gemini_ = getattr(config, "GROQ_API_KEY", ""), getattr(config, "GEMINI_API_KEY", "")
+    if con_imagen:
+        return "gemini" if gemini_ else None
+    return "groq" if groq else ("gemini" if gemini_ else None)
 
 
 def completar(system: str, mensajes: list, max_tokens: int) -> str:
-    """Punto único para hablar con la IA, sea Claude o Gemini. Lanza excepción si falla."""
-    if proveedor() == "gemini":
+    """Punto único para hablar con la IA (Claude, Groq o Gemini). Lanza excepción si falla."""
+    con_imagen = _tiene_imagen(mensajes)
+    elegido = proveedor(con_imagen)
+    if elegido is None and con_imagen and proveedor():
+        raise RuntimeError(SIN_VISION)
+    if elegido == "groq":
+        import groq_ia as groq
+        try:
+            return groq.completar(system, mensajes, max_tokens)
+        except Exception:
+            if not getattr(config, "GEMINI_API_KEY", ""):
+                raise
+        elegido = "gemini"  # Groq falló: se intenta con Gemini si hay clave
+    if elegido == "gemini":
         import gemini
         return gemini.completar(system, mensajes, max_tokens)
     respuesta = _obtener_cliente().messages.create(
@@ -159,6 +180,8 @@ def analizar_imagen(imagen_jpeg: bytes, pregunta: str, modo: str = "voz") -> str
     """Visión: manda una imagen (ej. captura de pantalla) a Claude con la pregunta."""
     if not proveedor():
         return SIN_CLAVE
+    if not proveedor(con_imagen=True):
+        return SIN_VISION
     import base64
     system = _construir_system_prompt()
     if modo == "escritorio":

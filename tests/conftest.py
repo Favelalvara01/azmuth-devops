@@ -28,6 +28,7 @@ for nombre in ("pyautogui", "pygetwindow", "speech_recognition", "sounddevice", 
 # Sin claves reales durante las pruebas (nunca se llama a la API de verdad)
 os.environ.setdefault("ANTHROPIC_API_KEY", "")
 os.environ.setdefault("GEMINI_API_KEY", "")
+os.environ.setdefault("GROQ_API_KEY", "")
 os.environ.setdefault("ELEVENLABS_API_KEY", "")
 
 if "anthropic" not in sys.modules:
