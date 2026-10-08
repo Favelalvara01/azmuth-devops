@@ -42,16 +42,32 @@ def _viene_de_internet(request) -> bool:
 
 def _token_valido(request) -> bool:
     import hmac
-    dado = request.headers.get("x-azmuth-token") or request.query_params.get("token") or ""
+    dado = (request.headers.get("x-azmuth-token") or request.query_params.get("token")
+            or request.cookies.get(_COOKIE) or "")
     return hmac.compare_digest(dado, config.TOKEN_REMOTO)
+
+
+_COOKIE = "azmuth_token"
+# Las imágenes del Omnitrix son públicas: un <img> no puede mandar la cabecera
+# del token (DEF-017: salían rotas las que no estaban en caché).
+_RUTAS_PUBLICAS = ("/imagenes/",)
 
 
 @app.middleware("http")
 async def _proteger_acceso_remoto(request, call_next):
-    if config.TOKEN_REMOTO and _viene_de_internet(request) and not _token_valido(request):
+    if not config.TOKEN_REMOTO or not _viene_de_internet(request):
+        return await call_next(request)
+    if request.url.path.startswith(_RUTAS_PUBLICAS):
+        return await call_next(request)
+    if not _token_valido(request):
         monitoreo.registrar_evento(f"Acceso remoto rechazado: {request.method} {request.url.path}")
         return JSONResponse(status_code=401, content={"status": "error", "mensaje": "Token inválido"})
-    return await call_next(request)
+    respuesta = await call_next(request)
+    if request.query_params.get("token"):
+        # Recordar el token en el celular/reloj: así las imágenes y recargas también pasan
+        respuesta.set_cookie(_COOKIE, config.TOKEN_REMOTO, max_age=31_536_000,
+                             httponly=True, secure=True, samesite="lax")
+    return respuesta
 
 # Montamos la carpeta de imágenes para que estén accesibles por URL (ej: /imagenes/Fuego.png)
 _RUTA_IMAGENES = os.path.join(rutas.CARPETA_RECURSOS, "imagenes")

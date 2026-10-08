@@ -85,3 +85,18 @@ def test_ventana_local_no_necesita_token(monkeypatch):
 def test_salud_indica_si_esta_protegido(monkeypatch):
     monkeypatch.setattr(servidor.config, "TOKEN_REMOTO", "s3creto")
     assert TestClient(servidor.app).get("/salud").json()["control_remoto_protegido"] is True
+
+
+def test_imagenes_del_reloj_no_piden_token(monkeypatch):
+    # DEF-017: un <img> no manda la cabecera del token
+    monkeypatch.setattr(servidor.config, "TOKEN_REMOTO", "s3creto")
+    r = TestClient(servidor.app).get("/imagenes/Fuego.png", headers=NGROK)
+    assert r.status_code != 401
+
+
+def test_token_en_url_deja_cookie_para_lo_demas(monkeypatch):
+    monkeypatch.setattr(servidor.config, "TOKEN_REMOTO", "s3creto")
+    cliente = TestClient(servidor.app, base_url="https://testserver")
+    assert cliente.get("/reloj", params={"token": "s3creto"}, headers=NGROK).status_code == 200
+    assert cliente.cookies.get("azmuth_token") == "s3creto"
+    assert cliente.get("/comando", params={"accion": "mute"}, headers=NGROK).status_code == 200

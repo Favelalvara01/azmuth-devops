@@ -58,6 +58,9 @@ def intentar(texto: str):
     try:
         estado.set_estado("procesando", "Mirando su pantalla...")
         imagen = capturar()
+    except ImportError:
+        return ("No pude tomar la captura: falta la librería Pillow en el Python con el que corre Azmuth. "
+                "Instálela con: python -m pip install Pillow")
     except Exception as e:
         return f"No pude tomar la captura de pantalla: {e}"
     return cerebro.analizar_imagen(imagen, _pregunta(texto), modo=estado.obtener_modo())
