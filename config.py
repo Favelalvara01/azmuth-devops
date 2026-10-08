@@ -14,7 +14,8 @@ load_dotenv(os.path.join(rutas.CARPETA_APP, ".env"))
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 # Alternativa gratuita: si no hay clave de Anthropic, Azmuth usa Google Gemini.
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
-GEMINI_MODELO = os.getenv("GEMINI_MODELO", "gemini-flash-latest").strip() or "gemini-flash-latest"
+# Por defecto el Flash Lite: es el más rápido para un asistente de voz y el menos saturado.
+GEMINI_MODELO = os.getenv("GEMINI_MODELO", "gemini-flash-lite-latest").strip() or "gemini-flash-lite-latest"
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "").strip()
 ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "JBFqnCBsd6RMkjVDRZzb").strip()
 PALABRA_CLAVE = os.getenv("PALABRA_CLAVE", "hora de ser heroe").strip().lower()

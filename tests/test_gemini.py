@@ -24,7 +24,8 @@ def ok(texto):
 def solo_gemini(monkeypatch):
     monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "")
     monkeypatch.setattr(config, "GEMINI_API_KEY", "clave-gemini")
-    monkeypatch.setattr(config, "GEMINI_MODELO", "gemini-flash-latest")
+    monkeypatch.setattr(config, "GEMINI_MODELO", "gemini-flash-lite-latest")
+    monkeypatch.setattr(gemini, "_modelo_que_funciona", None)
     post = mock.MagicMock(return_value=ok("Hola, soy Azmuth con Gemini."))
     monkeypatch.setattr(gemini.requests, "post", post)
     return post
@@ -71,7 +72,7 @@ def test_si_el_modelo_no_existe_usa_el_de_respaldo(solo_gemini):
     monkeypatch_sleep.start()
     solo_gemini.side_effect = [Resp(404, {"error": {"message": "not found"}}), ok("respaldo")]
     assert gemini.completar("s", [{"role": "user", "content": "x"}]) == "respaldo"
-    assert "gemini-flash-lite-latest" in solo_gemini.call_args.args[0]
+    assert "gemini-flash-latest" in solo_gemini.call_args.args[0]
     monkeypatch_sleep.stop()
 
 
@@ -113,3 +114,19 @@ def test_modelo_retirado_para_usuarios_nuevos_usa_otro(solo_gemini, monkeypatch)
     solo_gemini.side_effect = [Resp(503, {}), retirado, ok("hola desde 3.5")]
     assert gemini.completar("s", [{"role": "user", "content": "x"}]) == "hola desde 3.5"
     assert "gemini-3.5-flash-lite" in solo_gemini.call_args.args[0]
+
+
+def test_recuerda_el_modelo_que_funciono(solo_gemini, monkeypatch):
+    monkeypatch.setattr(gemini.time, "sleep", lambda *_: None)
+    solo_gemini.side_effect = [Resp(503, {}), ok("primera"), ok("segunda")]
+    gemini.completar("s", [{"role": "user", "content": "x"}])
+    gemini.completar("s", [{"role": "user", "content": "y"}])
+    # la segunda pregunta va directo al modelo que funcionó, sin repetir el saturado
+    assert solo_gemini.call_count == 3
+    assert solo_gemini.call_args_list[1].args[0] == solo_gemini.call_args_list[2].args[0]
+
+
+def test_modelo_lento_pasa_al_siguiente(solo_gemini, monkeypatch):
+    monkeypatch.setattr(gemini.time, "sleep", lambda *_: None)
+    solo_gemini.side_effect = [gemini.requests.Timeout(), ok("rápido")]
+    assert gemini.completar("s", [{"role": "user", "content": "x"}]) == "rápido"

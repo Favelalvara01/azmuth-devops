@@ -17,10 +17,11 @@ _URL = "https://generativelanguage.googleapis.com/v1beta/models/{modelo}:generat
 # Si un modelo no existe (404) o está saturado (503), se prueba el siguiente.
 # Se usan los alias "-latest" (Google los apunta al modelo vigente) y después
 # modelos con nombre fijo, por si un alias falla o está saturado.
-_RESPALDOS = ("gemini-flash-lite-latest", "gemini-3.5-flash-lite", "gemini-3-flash-preview")
+_RESPALDOS = ("gemini-flash-latest", "gemini-3.5-flash-lite", "gemini-3-flash-preview")
 _REINTENTABLES = (404, 500, 503)
 _FRASES_RETIRADO = ("no longer available", "not found", "is not supported")
-_TIMEOUT = 60
+_TIMEOUT = 25  # si un modelo tarda más, se pasa al siguiente en vez de dejar al usuario esperando
+_modelo_que_funciona = None  # se recuerda para no volver a probar los que fallaron
 
 
 class ErrorGemini(RuntimeError):
@@ -62,6 +63,14 @@ def _texto(datos: dict) -> str:
     return "".join(p.get("text", "") for p in partes if not p.get("thought")).strip()
 
 
+def _avisar(texto: str):
+    try:
+        import estado
+        estado.log(texto)
+    except Exception:
+        pass
+
+
 def _detalle(r) -> str:
     try:
         return r.json()["error"]["message"]
@@ -70,13 +79,20 @@ def _detalle(r) -> str:
 
 
 def completar(system: str, mensajes: list, max_tokens: int = 800) -> str:
+    global _modelo_que_funciona
     cuerpo = convertir(system, mensajes, max_tokens)
-    modelos = list(dict.fromkeys([config.GEMINI_MODELO, *_RESPALDOS]))
+    modelos = list(dict.fromkeys([m for m in (_modelo_que_funciona, config.GEMINI_MODELO, *_RESPALDOS) if m]))
     ultimo = None
+    inicio = time.time()
     for modelo in modelos:
-        r = requests.post(_URL.format(modelo=modelo), json=cuerpo, timeout=_TIMEOUT,
-                          headers={"x-goog-api-key": config.GEMINI_API_KEY})
+        try:
+            r = requests.post(_URL.format(modelo=modelo), json=cuerpo, timeout=_TIMEOUT,
+                              headers={"x-goog-api-key": config.GEMINI_API_KEY})
+        except requests.Timeout:
+            continue  # tardó demasiado: siguiente modelo
         if r.status_code == 200:
+            _modelo_que_funciona = modelo
+            _avisar(f"🧠 Gemini ({modelo}) respondió en {time.time() - inicio:.1f} s")
             return _texto(r.json())
         if r.status_code == 429:
             raise ErrorGemini("se alcanzó el límite gratuito de Gemini; espere un momento e intente de nuevo")
@@ -84,7 +100,9 @@ def completar(system: str, mensajes: list, max_tokens: int = 800) -> str:
         if r.status_code not in _REINTENTABLES and not retirado:
             raise ErrorGemini(f"Gemini respondió {r.status_code}: {_detalle(r)}")
         ultimo = r
-        time.sleep(1)  # el modelo no existe o está saturado: se intenta con el siguiente
+        if modelo == _modelo_que_funciona:
+            _modelo_que_funciona = None  # dejó de funcionar: se vuelve a buscar
+        time.sleep(0.3)  # el modelo no existe o está saturado: se intenta con el siguiente
     if ultimo is not None and ultimo.status_code == 503:
         raise ErrorGemini("los servidores de Gemini están saturados en este momento; intente de nuevo en unos segundos")
     raise ErrorGemini(f"ningún modelo de Gemini respondió ({_detalle(ultimo) if ultimo is not None else 'sin respuesta'})")
