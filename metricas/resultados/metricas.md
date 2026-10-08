@@ -1,6 +1,6 @@
 ## 📊 Métricas de calidad — Azmuth
 
-_Generado: 2026-10-08 13:43_
+_Generado: 2026-10-08 13:49_
 
 ### Métricas de producto
 

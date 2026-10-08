@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-08 13:43",
+  "generado": "2026-10-08 13:49",
   "producto": {
     "complejidad": {
       "funciones_analizadas": 214,
@@ -391,7 +391,7 @@
       "aprobadas": 315,
       "fallidas": 0,
       "defectos_conocidos_xfail": 0,
-      "tiempo_seg": 5.52
+      "tiempo_seg": 5.04
     }
   },
   "proyecto": {
