@@ -1,20 +1,20 @@
 {
-  "generado": "2026-10-08 03:31",
+  "generado": "2026-10-08 03:54",
   "producto": {
     "complejidad": {
-      "funciones_analizadas": 217,
-      "promedio": 3.43,
-      "mediana": 2,
+      "funciones_analizadas": 214,
+      "promedio": 3.44,
+      "mediana": 2.0,
       "maxima": 15,
       "distribucion_rangos": {
-        "A": 183,
+        "A": 180,
         "B": 22,
         "C": 12,
         "D": 0,
         "E": 0,
         "F": 0
       },
-      "porcentaje_A_B": 94.47,
+      "porcentaje_A_B": 94.39,
       "top10": [
         {
           "archivo": "skills/apps_instaladas.py",
@@ -89,10 +89,10 @@
       ]
     },
     "lineas": {
-      "archivos": 36,
-      "loc": 4520,
-      "sloc": 3143,
-      "kloc": 3.14,
+      "archivos": 35,
+      "loc": 4471,
+      "sloc": 3120,
+      "kloc": 3.12,
       "por_archivo": {
         "acciones_remotas.py": {
           "loc": 123,
@@ -238,12 +238,6 @@
           "comentarios": 17,
           "mi": 96.17
         },
-        "skills/interfaz.py": {
-          "loc": 49,
-          "sloc": 23,
-          "comentarios": 15,
-          "mi": 90.7
-        },
         "skills/memoria.py": {
           "loc": 105,
           "sloc": 62,
@@ -313,7 +307,7 @@
       }
     },
     "cobertura": {
-      "total": 85.83,
+      "total": 86.58,
       "por_archivo": {
         "acciones_remotas.py": 100.0,
         "app_desktop.py": 0.0,
@@ -337,7 +331,6 @@
         "skills/habitos.py": 85.56,
         "skills/idiomas.py": 89.29,
         "skills/ingles.py": 100.0,
-        "skills/interfaz.py": 0.0,
         "skills/memoria.py": 94.64,
         "skills/modos.py": 94.44,
         "skills/multimedia.py": 74.07,
@@ -352,11 +345,11 @@
         "voice.py": 72.88
       },
       "lineas_cubiertas": 1768,
-      "lineas_ejecutables": 2060
+      "lineas_ejecutables": 2042
     },
     "densidad_defectos": {
       "defectos_totales": 18,
-      "por_kloc": 5.73,
+      "por_kloc": 5.77,
       "abiertos": 0,
       "abiertos_por_kloc": 0.0,
       "por_archivo": {
@@ -373,7 +366,7 @@
         "skills/idiomas.py": 1
       }
     },
-    "mantenibilidad_promedio": 72.54
+    "mantenibilidad_promedio": 72.02
   },
   "proceso": {
     "mttd_horas": 233.09,
@@ -398,7 +391,7 @@
       "aprobadas": 315,
       "fallidas": 0,
       "defectos_conocidos_xfail": 0,
-      "tiempo_seg": 5.16
+      "tiempo_seg": 3.53
     }
   },
   "proyecto": {
@@ -408,10 +401,10 @@
       "porcentaje": 16.67
     },
     "desviacion": {
-      "horas_estimadas": 72.0,
-      "horas_reales": 90.0,
-      "desviacion_porcentaje": 25.0,
-      "velocidad_puntos_por_sprint": 7.86,
+      "horas_estimadas": 102.0,
+      "horas_reales": 122.0,
+      "desviacion_porcentaje": 19.61,
+      "velocidad_puntos_por_sprint": 7.45,
       "por_modulo": [
         {
           "sprint": 1,
@@ -434,9 +427,9 @@
           "desviacion_horas": 3.0,
           "desviacion_porcentaje": 25.0,
           "puntos_historia": 8,
-          "sloc": 307,
-          "defectos": 1,
-          "densidad_defectos_kloc": 3.26,
+          "sloc": 348,
+          "defectos": 3,
+          "densidad_defectos_kloc": 8.62,
           "horas_por_punto": 1.88
         },
         {
@@ -473,9 +466,9 @@
           "desviacion_horas": 6.0,
           "desviacion_porcentaje": 60.0,
           "puntos_historia": 8,
-          "sloc": 660,
+          "sloc": 637,
           "defectos": 6,
-          "densidad_defectos_kloc": 9.09,
+          "densidad_defectos_kloc": 9.42,
           "horas_por_punto": 2.0
         },
         {
@@ -503,6 +496,58 @@
           "defectos": 0,
           "densidad_defectos_kloc": null,
           "horas_por_punto": 1.8
+        },
+        {
+          "sprint": 8,
+          "modulo": "Modo escritorio y apps",
+          "horas_estimadas": 10.0,
+          "horas_reales": 12.0,
+          "desviacion_horas": 2.0,
+          "desviacion_porcentaje": 20.0,
+          "puntos_historia": 8,
+          "sloc": 332,
+          "defectos": 0,
+          "densidad_defectos_kloc": 0.0,
+          "horas_por_punto": 1.5
+        },
+        {
+          "sprint": 9,
+          "modulo": "Correccion de defectos",
+          "horas_estimadas": 4.0,
+          "horas_reales": 3.0,
+          "desviacion_horas": -1.0,
+          "desviacion_porcentaje": -25.0,
+          "puntos_historia": 3,
+          "sloc": 0,
+          "defectos": 0,
+          "densidad_defectos_kloc": null,
+          "horas_por_punto": 1.0
+        },
+        {
+          "sprint": 10,
+          "modulo": "Calidad y seguridad",
+          "horas_estimadas": 8.0,
+          "horas_reales": 7.0,
+          "desviacion_horas": -1.0,
+          "desviacion_porcentaje": -12.5,
+          "puntos_historia": 8,
+          "sloc": 157,
+          "defectos": 0,
+          "densidad_defectos_kloc": 0.0,
+          "horas_por_punto": 0.88
+        },
+        {
+          "sprint": 11,
+          "modulo": "Nuevas funciones",
+          "horas_estimadas": 8.0,
+          "horas_reales": 10.0,
+          "desviacion_horas": 2.0,
+          "desviacion_porcentaje": 25.0,
+          "puntos_historia": 8,
+          "sloc": 221,
+          "defectos": 1,
+          "densidad_defectos_kloc": 4.52,
+          "horas_por_punto": 1.25
         }
       ]
     }

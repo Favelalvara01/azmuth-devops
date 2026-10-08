@@ -1,19 +1,19 @@
 ## 📊 Métricas de calidad — Azmuth
 
-_Generado: 2026-10-08 03:31_
+_Generado: 2026-10-08 03:54_
 
 ### Métricas de producto
 
 | Métrica | Valor |
 |---|---|
-| Complejidad ciclomática promedio | 3.43 (217 funciones) |
+| Complejidad ciclomática promedio | 3.44 (214 funciones) |
 | Complejidad máxima | 15 |
-| Funciones en rango A-B (simples) | 94.47 % |
-| Cobertura de código | 85.83 % |
-| Tamaño | 3143 SLOC (3.14 KLOC) |
-| Densidad de defectos | 5.73 defectos/KLOC |
+| Funciones en rango A-B (simples) | 94.39 % |
+| Cobertura de código | 86.58 % |
+| Tamaño | 3120 SLOC (3.12 KLOC) |
+| Densidad de defectos | 5.77 defectos/KLOC |
 | Defectos abiertos | 0 (0.0/KLOC) |
-| Índice de mantenibilidad promedio | 72.54 |
+| Índice de mantenibilidad promedio | 72.02 |
 
 **Funciones más complejas**
 
@@ -46,15 +46,19 @@ _Generado: 2026-10-08 03:31_
 | Métrica | Valor |
 |---|---|
 | Eficacia de la revisión | 16.67 % (3/18) |
-| Desviación total de tiempo | 25.0 % (90.0 h reales vs 72.0 h) |
-| Velocidad promedio | 7.86 puntos/sprint |
+| Desviación total de tiempo | 19.61 % (122.0 h reales vs 102.0 h) |
+| Velocidad promedio | 7.45 puntos/sprint |
 
 | Sprint | Módulo | Est. (h) | Real (h) | Desv. % | SLOC | Defectos | Def/KLOC |
 |---|---|---|---|---|---|---|---|
 | 1 | Nucleo de voz | 10.0 | 14.0 | 40.0 | 364 | 5 | 13.74 |
-| 2 | Skills basicas | 12.0 | 15.0 | 25.0 | 307 | 1 | 3.26 |
+| 2 | Skills basicas | 12.0 | 15.0 | 25.0 | 348 | 3 | 8.62 |
 | 3 | Control del sistema | 14.0 | 18.0 | 28.57 | 364 | 2 | 5.49 |
 | 4 | IA y memoria | 12.0 | 13.0 | 8.33 | 466 | 1 | 2.15 |
-| 5 | Interfaz y servidor | 10.0 | 16.0 | 60.0 | 660 | 6 | 9.09 |
+| 5 | Interfaz y servidor | 10.0 | 16.0 | 60.0 | 637 | 6 | 9.42 |
 | 6 | Persistencia SQLite | 6.0 | 5.0 | -16.67 | 231 | 0 | 0.0 |
 | 7 | DevOps | 8.0 | 9.0 | 12.5 | 0 | 0 | N/A |
+| 8 | Modo escritorio y apps | 10.0 | 12.0 | 20.0 | 332 | 0 | 0.0 |
+| 9 | Correccion de defectos | 4.0 | 3.0 | -25.0 | 0 | 0 | N/A |
+| 10 | Calidad y seguridad | 8.0 | 7.0 | -12.5 | 157 | 0 | 0.0 |
+| 11 | Nuevas funciones | 8.0 | 10.0 | 25.0 | 221 | 1 | 4.52 |

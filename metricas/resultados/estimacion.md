@@ -11,11 +11,15 @@
 | Interfaz y servidor | 10 | 14 | 15 | 13 |
 | Persistencia SQLite | 6 | 5 | 5 | 5.33 |
 | DevOps | 8 | 10 | 9 | 9 |
-| **Total** | 72 | 83 | 86 | **80.33** |
+| Modo escritorio y apps | 10 | 11 | 12 | 11 |
+| Correccion de defectos | 4 | 4 | 4 | 4 |
+| Calidad y seguridad | 8 | 9 | 8 | 8.33 |
+| Nuevas funciones | 8 | 10 | 9 | 9 |
+| **Total** | 102 | 117 | 119 | **112.66** |
 
 ### 2. Estimación análoga
 
-Proyecto de referencia: Easy Learning (proyecto integrador DSM31, C#/MySQL) — 1800 SLOC en 80 h → 22.5 SLOC/h. Azmuth: 3143 SLOC × factor 1.1 = **153.66 h**.
+Proyecto de referencia: Easy Learning (proyecto integrador DSM31, C#/MySQL) — 1800 SLOC en 80 h → 22.5 SLOC/h. Azmuth: 3120 SLOC × factor 1.1 = **152.53 h**.
 
 ### 3. Tres puntos (PERT)
 
@@ -28,35 +32,39 @@ Proyecto de referencia: Easy Learning (proyecto integrador DSM31, C#/MySQL) — 
 | Interfaz y servidor | 8 | 13 | 22 | 13.67 | 14.33 | 2.33 |
 | Persistencia SQLite | 3 | 5 | 8 | 5.17 | 5.33 | 0.83 |
 | DevOps | 6 | 8 | 14 | 8.67 | 9.33 | 1.33 |
-| **Total** | | | | **81.85** | | 4.79 |
+| Modo escritorio y apps | 8 | 11 | 16 | 11.33 | 11.67 | 1.33 |
+| Correccion de defectos | 2 | 4 | 6 | 4.0 | 4.0 | 0.67 |
+| Calidad y seguridad | 5 | 8 | 12 | 8.17 | 8.33 | 1.17 |
+| Nuevas funciones | 6 | 9 | 14 | 9.33 | 9.67 | 1.33 |
+| **Total** | | | | **114.68** | | 5.32 |
 
-Con 95 % de confianza: entre 72.26 y 91.44 horas.
+Con 95 % de confianza: entre 104.03 y 125.33 horas.
 
 ### 4. Puntos de función
 
 | Tipo | Complejidad | Cantidad | Peso | Subtotal |
 |---|---|---|---|---|
-| EI | simple | 10 | 3 | 30 |
-| EI | media | 4 | 4 | 16 |
+| EI | simple | 16 | 3 | 48 |
+| EI | media | 5 | 4 | 20 |
 | EI | compleja | 1 | 6 | 6 |
-| EO | media | 4 | 5 | 20 |
-| EO | compleja | 3 | 7 | 21 |
-| EQ | simple | 6 | 3 | 18 |
-| EQ | media | 3 | 4 | 12 |
-| ILF | simple | 3 | 7 | 21 |
-| ILF | media | 3 | 10 | 30 |
-| EIF | simple | 3 | 5 | 15 |
+| EO | media | 5 | 5 | 25 |
+| EO | compleja | 5 | 7 | 35 |
+| EQ | simple | 8 | 3 | 24 |
+| EQ | media | 5 | 4 | 20 |
+| ILF | simple | 5 | 7 | 35 |
+| ILF | media | 5 | 10 | 50 |
+| EIF | simple | 4 | 5 | 20 |
 | EIF | media | 3 | 7 | 21 |
-| **PFNA** | | | | **210** |
+| **PFNA** | | | | **304** |
 
-VAF = 0.65 + 0.01 × 42 = 1.07 → PFA = 224.7 → 224.7 × 0.45 h/PF = **101.12 h**.
+VAF = 0.65 + 0.01 × 42 = 1.07 → PFA = 325.28 → 325.28 × 0.45 h/PF = **146.38 h**.
 
 ### Comparación
 
 | Técnica | Horas estimadas |
 |---|---|
-| Juicio de expertos | 80.33 |
-| Análoga | 153.66 |
-| Tres puntos (PERT) | 81.85 |
-| Puntos de función | 101.12 |
-| **Real (registro de sprints)** | **90.0** |
+| Juicio de expertos | 112.66 |
+| Análoga | 152.53 |
+| Tres puntos (PERT) | 114.68 |
+| Puntos de función | 146.38 |
+| **Real (registro de sprints)** | **122.0** |

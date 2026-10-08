@@ -68,14 +68,50 @@
           9
         ],
         "promedio": 9
+      },
+      {
+        "modulo": "Modo escritorio y apps",
+        "valores": [
+          10,
+          11,
+          12
+        ],
+        "promedio": 11
+      },
+      {
+        "modulo": "Correccion de defectos",
+        "valores": [
+          4,
+          4,
+          4
+        ],
+        "promedio": 4
+      },
+      {
+        "modulo": "Calidad y seguridad",
+        "valores": [
+          8,
+          9,
+          8
+        ],
+        "promedio": 8.33
+      },
+      {
+        "modulo": "Nuevas funciones",
+        "valores": [
+          8,
+          10,
+          9
+        ],
+        "promedio": 9
       }
     ],
     "totales_por_experto": {
-      "Alumno desarrollador": 72,
-      "Companero con experiencia": 83,
-      "IA (Claude) - analisis del codigo": 86
+      "Alumno desarrollador": 102,
+      "Companero con experiencia": 117,
+      "IA (Claude) - analisis del codigo": 119
     },
-    "total_horas": 80.33
+    "total_horas": 112.66
   },
   "analoga": {
     "proyecto_referencia": "Easy Learning (proyecto integrador DSM31, C#/MySQL)",
@@ -83,9 +119,9 @@
     "horas_referencia": 80,
     "factor_ajuste": 1.1,
     "justificacion_factor": "+10 %: Azmuth integra APIs externas (Claude, ElevenLabs) y voz, más complejas que un CRUD",
-    "sloc_actual": 3143,
+    "sloc_actual": 3120,
     "productividad_sloc_por_hora": 22.5,
-    "total_horas": 153.66
+    "total_horas": 152.53
   },
   "tres_puntos": {
     "por_modulo": [
@@ -151,13 +187,49 @@
         "pert": 8.67,
         "triangular": 9.33,
         "desv_std": 1.33
+      },
+      {
+        "modulo": "Modo escritorio y apps",
+        "O": 8,
+        "M": 11,
+        "P": 16,
+        "pert": 11.33,
+        "triangular": 11.67,
+        "desv_std": 1.33
+      },
+      {
+        "modulo": "Correccion de defectos",
+        "O": 2,
+        "M": 4,
+        "P": 6,
+        "pert": 4.0,
+        "triangular": 4.0,
+        "desv_std": 0.67
+      },
+      {
+        "modulo": "Calidad y seguridad",
+        "O": 5,
+        "M": 8,
+        "P": 12,
+        "pert": 8.17,
+        "triangular": 8.33,
+        "desv_std": 1.17
+      },
+      {
+        "modulo": "Nuevas funciones",
+        "O": 6,
+        "M": 9,
+        "P": 14,
+        "pert": 9.33,
+        "triangular": 9.67,
+        "desv_std": 1.33
       }
     ],
-    "total_horas": 81.85,
-    "desv_std_total": 4.79,
+    "total_horas": 114.68,
+    "desv_std_total": 5.32,
     "rango_95": [
-      72.26,
-      91.44
+      104.03,
+      125.33
     ]
   },
   "puntos_funcion": {
@@ -165,16 +237,16 @@
       {
         "tipo": "EI",
         "complejidad": "simple",
-        "cantidad": 10,
+        "cantidad": 16,
         "peso": 3,
-        "subtotal": 30
+        "subtotal": 48
       },
       {
         "tipo": "EI",
         "complejidad": "media",
-        "cantidad": 4,
+        "cantidad": 5,
         "peso": 4,
-        "subtotal": 16
+        "subtotal": 20
       },
       {
         "tipo": "EI",
@@ -193,30 +265,30 @@
       {
         "tipo": "EO",
         "complejidad": "media",
-        "cantidad": 4,
+        "cantidad": 5,
         "peso": 5,
-        "subtotal": 20
+        "subtotal": 25
       },
       {
         "tipo": "EO",
         "complejidad": "compleja",
-        "cantidad": 3,
+        "cantidad": 5,
         "peso": 7,
-        "subtotal": 21
+        "subtotal": 35
       },
       {
         "tipo": "EQ",
         "complejidad": "simple",
-        "cantidad": 6,
+        "cantidad": 8,
         "peso": 3,
-        "subtotal": 18
+        "subtotal": 24
       },
       {
         "tipo": "EQ",
         "complejidad": "media",
-        "cantidad": 3,
+        "cantidad": 5,
         "peso": 4,
-        "subtotal": 12
+        "subtotal": 20
       },
       {
         "tipo": "EQ",
@@ -228,16 +300,16 @@
       {
         "tipo": "ILF",
         "complejidad": "simple",
-        "cantidad": 3,
+        "cantidad": 5,
         "peso": 7,
-        "subtotal": 21
+        "subtotal": 35
       },
       {
         "tipo": "ILF",
         "complejidad": "media",
-        "cantidad": 3,
+        "cantidad": 5,
         "peso": 10,
-        "subtotal": 30
+        "subtotal": 50
       },
       {
         "tipo": "ILF",
@@ -249,9 +321,9 @@
       {
         "tipo": "EIF",
         "complejidad": "simple",
-        "cantidad": 3,
+        "cantidad": 4,
         "peso": 5,
-        "subtotal": 15
+        "subtotal": 20
       },
       {
         "tipo": "EIF",
@@ -268,12 +340,12 @@
         "subtotal": 0
       }
     ],
-    "pf_no_ajustados": 210,
+    "pf_no_ajustados": 304,
     "suma_factores": 42,
     "vaf": 1.07,
-    "pf_ajustados": 224.7,
+    "pf_ajustados": 325.28,
     "horas_por_pf": 0.45,
-    "total_horas": 101.12,
+    "total_horas": 146.38,
     "factores": {
       "1 Comunicacion de datos": 4,
       "2 Procesamiento distribuido": 2,
@@ -291,5 +363,5 @@
       "14 Facilidad de cambio": 4
     }
   },
-  "horas_reales": 90.0
+  "horas_reales": 122.0
 }
