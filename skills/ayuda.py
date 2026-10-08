@@ -86,7 +86,7 @@ RESUMEN_VOZ_EN = (
 
 MANUAL_EN = """## 🟢 What I can do (English mode)
 
-Say **"it's hero time"** before a command, or type here. **Anything that is not a command is answered by Claude.**
+Say your **wake word** before a command, or type here. **Anything that is not a command is answered by Claude.**
 
 ### 🖥️ Screen
 - "what's on my screen" · "help me with my screen" · "explain what's on my screen" · "translate my screen"

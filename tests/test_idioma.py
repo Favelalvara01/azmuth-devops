@@ -126,9 +126,21 @@ def test_reconocimiento_de_voz_cambia_de_idioma(en_ingles):
     assert idioma.codigo_voz() == "en-US"
 
 
-def test_palabra_clave_en_ingles():
-    assert main.extraer_comando(f"{main.PALABRA_CLAVE_EN} open discord") == "open discord"
+def test_palabra_clave_en_ingles(monkeypatch):
+    monkeypatch.setattr(main, "PALABRA_CLAVE", "omnitrix")
+    monkeypatch.setattr(main, "PALABRA_CLAVE_EN", "omnitrix")
+    assert main.extraer_comando("omnitrix open discord") == "open discord"
+    # el dictado en inglés a veces separa la palabra inventada
+    assert main.extraer_comando("Omni trix, what time is it") == "what time is it"
+    assert main.extraer_comando("omni-trix") == ""
+    assert main.extraer_comando("open discord") is None
+
+
+def test_palabra_clave_extra_en_ingles(monkeypatch):
+    monkeypatch.setattr(main, "PALABRA_CLAVE", "omnitrix")
+    monkeypatch.setattr(main, "PALABRA_CLAVE_EN", "it's hero time")
     assert main.extraer_comando("It’s hero time what time is it") == "what time is it"
+    assert main.extraer_comando("omnitrix qué hora es") == "qué hora es"
 
 
 def test_apagado_en_ingles():

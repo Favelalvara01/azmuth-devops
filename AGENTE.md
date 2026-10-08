@@ -246,7 +246,7 @@ la ventana de escritorio con el núcleo animado — nunca una terminal.
 
 - Cambiar: botón **🌐 ENGLISH / ESPAÑOL** en la ventana, o decir/escribir «cambia a inglés» / «switch to Spanish».
 - En inglés cambia todo: reconocimiento de voz (en-US), respuestas de Claude, voz, interfaz y ayuda.
-- Palabra clave en inglés: **«it's hero time»** (configurable con `PALABRA_CLAVE_EN` en `.env`).
+- Palabra clave: la misma de siempre (ej. «omnitrix»); se puede agregar otra solo para inglés con `PALABRA_CLAVE_EN`.
 - Los comandos principales en inglés (`open X`, `volume to 40`, `remind me to … at 7 pm`, `what's on my screen`…)
   se traducen al comando en español en `skills/ingles.py` y reutilizan las mismas skills; la respuesta se traduce con Claude.
 - Solo en español por ahora: WhatsApp, mapas, contactos y enseñar apodos de apps.

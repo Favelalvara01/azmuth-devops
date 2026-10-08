@@ -7,6 +7,7 @@ Inglés -> español: "cambia a español", "switch to Spanish", "speak Spanish"..
 """
 import re
 
+import config
 import idioma
 
 _A_INGLES = re.compile(
@@ -33,7 +34,7 @@ def intentar(texto: str):
             return "I'm already speaking English."
         idioma.cambiar("en")
         return ("Done! From now on I'll understand and answer in English. "
-                "Say \"it's hero time\" before your command, and \"switch to Spanish\" to go back.")
+                f"Say \"{config.PALABRA_CLAVE_EN}\" before your command, and \"switch to Spanish\" to go back.")
     if _A_ESPANOL.match(t):
         if not idioma.es_ingles():
             return "Ya estoy hablando en español."

@@ -320,11 +320,18 @@ def extraer_comando(texto: str):
     """Si la frase trae la palabra clave devuelve lo que sigue ('' si no dijo
     nada más); si no la trae devuelve None (no era para Azmuth)."""
     t_norm = texto.lower().strip().replace("’", "'")
-    clave = next((c for c in (PALABRA_CLAVE, PALABRA_CLAVE_EN) if c and c in t_norm), None)
-    if clave is None:
-        return None
-    partes = t_norm.split(clave, 1)
-    return partes[1].strip() if len(partes) > 1 else ""
+    for clave in dict.fromkeys((PALABRA_CLAVE, PALABRA_CLAVE_EN)):
+        m = _patron_clave(clave).search(t_norm) if clave else None
+        if m:
+            return t_norm[m.end():].strip(" ,.")
+    return None
+
+
+def _patron_clave(clave: str):
+    """La palabra clave tolera espacios o guiones entre letras: el dictado a veces
+    escribe "omni trix" u "omni-trix" en vez de "omnitrix"."""
+    letras = [re.escape(c) for c in clave if not c.isspace()]
+    return re.compile(r"[\s-]*".join(letras))
 
 
 def atender(texto: str, reconocedor, microfono) -> bool:
