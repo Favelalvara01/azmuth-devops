@@ -18,6 +18,7 @@ import cerebro
 import skills
 import estado
 import monitoreo
+import notificaciones
 import nucleo
 
 # Si al comando le antepone el nombre del asistente ("Azmuth, recuerda que...",
@@ -63,6 +64,7 @@ def revisar_recordatorios_una_vez() -> int:
     try:
         avisos = skills.recordatorios.revisar_pendientes()
         for texto in avisos:
+            notificaciones.notificar("⏰ Recordatorio de Azmuth", texto)
             estado.set_estado("ejecutando", f"Recordatorio: {texto}")
             voice.hablar(f"Recordatorio: {texto}")
             estado.set_estado("reposo")
