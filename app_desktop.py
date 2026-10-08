@@ -24,6 +24,7 @@ import webview
 import chats
 import config
 import estado
+import idioma
 import main
 import monitoreo
 from servidor import app as servidor_app
@@ -83,6 +84,7 @@ if __name__ == '__main__':
 
     # 3. Modo con el que se cerró la última vez (voz o escritorio)
     estado.set_modo(chats.obtener_ajuste("modo", "voz"))
+    idioma.cargar()
     ancho, alto = TAMANOS[estado.obtener_modo()]
 
     # 4. Creación y ejecución de la ventana gráfica (DEBE estar en el hilo principal)

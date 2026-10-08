@@ -15,6 +15,7 @@ import threading
 import re
 import config
 import estado
+import idioma
 
 _lock = threading.Lock()
 
@@ -26,7 +27,8 @@ def texto_para_voz(texto: str) -> str:
     larga) para decirla en voz alta: quita símbolos de formato, no lee
     bloques de código y, si es muy larga, dice solo el principio."""
     t = texto or ""
-    t = re.sub(r"```.*?```", " (le dejé el código en pantalla) ", t, flags=re.DOTALL)
+    t = re.sub(r"```.*?```", idioma.t(" (le dejé el código en pantalla) ", " (I left the code on screen) "), t,
+               flags=re.DOTALL)
     t = re.sub(r"`([^`]*)`", r"\1", t)
     t = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", t)          # [texto](url) -> texto
     t = re.sub(r"^\s*(#{1,6}|>|[-*+]|\d+\.)\s+", "", t, flags=re.MULTILINE)
@@ -38,7 +40,25 @@ def texto_para_voz(texto: str) -> str:
     corte = t[:_MAX_CARACTERES_VOZ]
     fin = max(corte.rfind(". "), corte.rfind("? "), corte.rfind("! "))
     corte = corte[:fin + 1] if fin > 80 else corte.rsplit(" ", 1)[0] + "…"
-    return corte + " El resto se lo dejé en pantalla."
+    return corte + idioma.t(" El resto se lo dejé en pantalla.", " The rest is on screen.")
+
+
+_PISTAS_VOZ = {"es": ("spanish", "español", "es-", "es_", "sabina", "helena", "laura", "pablo"),
+               "en": ("english", "en-us", "en_us", "zira", "david", "mark")}
+
+
+def _elegir_voz_windows(motor):
+    """Elige una voz de Windows instalada que hable el idioma activo."""
+    try:
+        pistas = _PISTAS_VOZ[idioma.obtener()]
+        for voz in motor.getProperty("voices"):
+            nombre = f"{voz.id} {voz.name}".lower()
+            if any(p in nombre for p in pistas):
+                motor.setProperty("voice", voz.id)
+                return voz.id
+    except Exception:
+        pass
+    return None
 
 
 def _hablar_con_windows(texto: str):
@@ -46,6 +66,7 @@ def _hablar_con_windows(texto: str):
     try:
         import pyttsx3
         motor = pyttsx3.init()
+        _elegir_voz_windows(motor)
         motor.say(texto)
         motor.runAndWait()
         motor.stop()

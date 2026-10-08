@@ -185,6 +185,7 @@
         .lateral-pie .btn-modo { margin-top: 0; }
         .fila-pie { display: flex; gap: 6px; }
         .fila-pie .btn-modo { flex: 1; }
+        .btn-idioma { margin-top: 6px; }
 
         .principal { display: flex; flex-direction: column; min-width: 0; min-height: 0;
             background: radial-gradient(ellipse at top, #022314 0%, #010c07 75%); }
@@ -266,7 +267,7 @@
 <body>
 <div id="vistaVoz">
     <div class="card">
-        <h1>AZMUTH OS ONLINE</h1>
+        <h1 data-i18n="titulo">AZMUTH OS ONLINE</h1>
 
         <!-- Núcleo Visual Estilo JARVIS: la clase estado-XXX cambia sola -->
         <div class="reactor-container estado-reposo" id="reactorContainer">
@@ -280,7 +281,8 @@
         <div class="console-box" id="consoleLog">
             <div class="log-line">&gt; Sistema inicializado correctamente.</div>
         </div>
-        <button class="btn-modo" onclick="cambiarModo('escritorio')" title="Abrir el chat escrito">⌨ MODO ESCRITORIO</button>
+        <button class="btn-modo" onclick="cambiarModo('escritorio')" title="Abrir el chat escrito" data-i18n="btnEscritorio">⌨ MODO ESCRITORIO</button>
+        <button class="btn-modo btn-idioma" onclick="alternarIdioma()" title="Cambiar idioma / Change language" data-i18n="btnIdioma">🌐 ENGLISH</button>
     </div>
 
 </div>
@@ -291,17 +293,18 @@
         <div class="lateral-top">
             <div class="marca">
                 <div class="mini-core" id="miniCore"></div>
-                <div class="marca-texto"><b>AZMUTH OS</b><span>MODO ESCRITORIO</span></div>
+                <div class="marca-texto"><b>AZMUTH OS</b><span data-i18n="marca">MODO ESCRITORIO</span></div>
             </div>
-            <button class="btn-nuevo" onclick="nuevoChat()">+ Nuevo chat</button>
+            <button class="btn-nuevo" onclick="nuevoChat()" data-i18n="nuevoChat">+ Nuevo chat</button>
         </div>
         <div class="lista-chats" id="listaChats"></div>
         <div class="lateral-pie">
             <div class="console-box" id="consoleMini"></div>
             <div class="fila-pie">
                 <button class="btn-modo" id="btnVozChat" onclick="alternarVozChat()" title="Leer en voz alta las respuestas escritas">🔊 VOZ: SÍ</button>
-                <button class="btn-modo" onclick="cambiarModo('voz')" title="Regresar a la ventana compacta">◉ MODO VOZ</button>
+                <button class="btn-modo" onclick="cambiarModo('voz')" title="Regresar a la ventana compacta" data-i18n="btnVoz">◉ MODO VOZ</button>
             </div>
+            <button class="btn-modo btn-idioma" onclick="alternarIdioma()" title="Cambiar idioma / Change language" data-i18n="btnIdioma">🌐 ENGLISH</button>
         </div>
     </aside>
     <main class="principal">
@@ -313,22 +316,57 @@
         <div class="entrada">
             <div class="columna">
                 <div class="caja-entrada">
-                    <textarea id="textoEntrada" rows="1" placeholder="Escríbale a Azmuth…"></textarea>
+                    <textarea id="textoEntrada" rows="1" placeholder="Escríbale a Azmuth…" data-i18n-ph="placeholder"></textarea>
                     <button id="btnEnviar" onclick="enviar()" title="Enviar (Enter)">➤</button>
                 </div>
-                <div class="ayuda-entrada">Enter para enviar · Shift+Enter nueva línea · También puede hablarle con la palabra clave</div>
+                <div class="ayuda-entrada" data-i18n="ayudaEntrada">Enter para enviar · Shift+Enter nueva línea · También puede hablarle con la palabra clave</div>
             </div>
         </div>
     </main>
 </div>
 
     <script>
-        const ETIQUETAS = {
-            reposo: "EN ESPERA",
-            escuchando: "ESCUCHANDO",
-            procesando: "PROCESANDO",
-            ejecutando: "EJECUTANDO ORDEN"
+        // ===================== IDIOMA (español / inglés) =====================
+        const TEXTOS = {
+            es: {
+                titulo: "AZMUTH OS ONLINE", btnEscritorio: "⌨ MODO ESCRITORIO", btnIdioma: "🌐 ENGLISH",
+                marca: "MODO ESCRITORIO", nuevoChat: "+ Nuevo chat", btnVoz: "◉ MODO VOZ",
+                placeholder: "Escríbale a Azmuth…", ayudaEntrada: "Enter para enviar · Shift+Enter nueva línea · También puede hablarle con la palabra clave",
+                vozSi: "🔊 VOZ: SÍ", vozNo: "🔇 VOZ: NO", tituloNuevo: "Nuevo chat",
+                vacioTitulo: "¿EN QUÉ LE AYUDO, SEÑOR?", vacioTexto: "Escríbame como a cualquier IA. También ejecuto mis comandos: notas, recordatorios, abrir apps…",
+                sugerencias: ['¿Qué puedes hacer?', 'Explícame qué es DevOps', 'Recuérdame estudiar a las 7 pm', 'Mis notas', '¿Qué clima hace?', 'Hazme un script en Python que ordene una lista'],
+                estados: { reposo: "EN ESPERA", escuchando: "ESCUCHANDO", procesando: "PROCESANDO", ejecutando: "EJECUTANDO ORDEN" }
+            },
+            en: {
+                titulo: "AZMUTH OS ONLINE", btnEscritorio: "⌨ DESKTOP MODE", btnIdioma: "🌐 ESPAÑOL",
+                marca: "DESKTOP MODE", nuevoChat: "+ New chat", btnVoz: "◉ VOICE MODE",
+                placeholder: "Message Azmuth…", ayudaEntrada: "Enter to send · Shift+Enter new line · You can also talk to me with the wake word",
+                vozSi: "🔊 VOICE: ON", vozNo: "🔇 VOICE: OFF", tituloNuevo: "New chat",
+                vacioTitulo: "HOW CAN I HELP, SIR?", vacioTexto: "Write to me like any AI. I also run my commands: notes, reminders, opening apps…",
+                sugerencias: ['What can you do?', 'Explain what DevOps is', 'Remind me to study at 7 pm', 'My notes', "What's the weather?", 'Write a Python script that sorts a list'],
+                estados: { reposo: "STANDING BY", escuchando: "LISTENING", procesando: "PROCESSING", ejecutando: "EXECUTING" }
+            }
         };
+        let idiomaActual = 'es';
+        let ETIQUETAS = TEXTOS.es.estados;
+        const tx = (clave) => TEXTOS[idiomaActual][clave];
+
+        function aplicarIdioma(codigo) {
+            if (!TEXTOS[codigo] || codigo === idiomaActual) return;
+            idiomaActual = codigo;
+            ETIQUETAS = TEXTOS[codigo].estados;
+            document.documentElement.lang = codigo;
+            document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = tx(el.dataset.i18n); });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = tx(el.dataset.i18nPh); });
+            if (typeof pintarVozChat === 'function') pintarVozChat();
+            const col = document.getElementById('columnaMensajes');
+            if (col && col.querySelector('.vacio')) pintarVacio(col);
+        }
+
+        async function alternarIdioma() {
+            const nuevo = idiomaActual === 'es' ? 'en' : 'es';
+            try { await api('/idioma', 'POST', { idioma: nuevo }); aplicarIdioma(nuevo); } catch (e) { console.log(e); }
+        }
 
         // Antes se comparaba contra log.length (el tamaño de la lista ya
         // recortada por el backend a 40 líneas). En cuanto el historial
@@ -381,6 +419,7 @@
                 aplicarEstado(data.estado, data.detalle);
                 actualizarConsola(data.log, data.log_total);
                 aplicarModo(data.modo || 'voz');
+                aplicarIdioma(data.idioma || 'es');
                 if (modoActual === 'escritorio') actualizarEscritorio(data);
             } catch (e) {
                 // Silencioso: si el servidor tarda un instante en levantar,
@@ -476,7 +515,7 @@
             pintarVozChat();
             try { await api('/voz_chat', 'POST', { activa: vozChat }); } catch (e) { console.log(e); }
         }
-        function pintarVozChat() { document.getElementById('btnVozChat').textContent = vozChat ? '🔊 VOZ: SÍ' : '🔇 VOZ: NO'; }
+        function pintarVozChat() { document.getElementById('btnVozChat').textContent = vozChat ? tx('vozSi') : tx('vozNo'); }
 
         async function cargarChats(tambienMensajes) {
             const datos = await api('/chats');
@@ -498,7 +537,7 @@
                 lista.appendChild(item);
             });
             const actual = datos.chats.find(c => c.id === chatActivo);
-            document.getElementById('tituloChat').textContent = actual ? actual.titulo : 'Nuevo chat';
+            document.getElementById('tituloChat').textContent = actual ? actual.titulo : tx('tituloNuevo');
             if (tambienMensajes) await cargarMensajes();
         }
 
@@ -544,13 +583,12 @@
             return fila;
         }
 
-        const SUGERENCIAS = ['¿Qué puedes hacer?', 'Explícame qué es DevOps', 'Recuérdame estudiar a las 7 pm', 'Mis notas', '¿Qué clima hace?', 'Hazme un script en Python que ordene una lista'];
 
         function pintarVacio(col) {
             col.innerHTML = '<div class="vacio"><div class="reactor-container estado-reposo"><div class="ring ring-1"></div><div class="ring ring-2"></div><div class="core"></div></div>' +
-                '<h3>¿EN QUÉ LE AYUDO, SEÑOR?</h3><p>Escríbame como a cualquier IA. También ejecuto mis comandos: notas, recordatorios, abrir apps…</p><div class="sugerencias"></div></div>';
+                '<h3>' + tx('vacioTitulo') + '</h3><p>' + tx('vacioTexto') + '</p><div class="sugerencias"></div></div>';
             const cont = col.querySelector('.sugerencias');
-            SUGERENCIAS.forEach(s => {
+            tx('sugerencias').forEach(s => {
                 const b = document.createElement('button');
                 b.className = 'sugerencia'; b.textContent = s;
                 b.onclick = () => { document.getElementById('textoEntrada').value = s; enviar(); };

@@ -17,6 +17,7 @@ Estados válidos:
   - "procesando"  → interpretando el comando (skill local o Claude).
   - "ejecutando"  → realizando la acción y/o hablando la respuesta.
 """
+import idioma
 import threading
 import time
 
@@ -70,6 +71,7 @@ def obtener_estado():
             "log_total": _total_historial,
             "modo": _modo_actual,
             "version_chat": _version_chat,
+            "idioma": idioma.obtener(),
         }
 
 

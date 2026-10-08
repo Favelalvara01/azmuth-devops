@@ -13,6 +13,7 @@ import acciones_remotas
 import chats
 import config
 import estado
+import idioma
 import monitoreo
 import rutas
 
@@ -96,6 +97,22 @@ async def _error_no_controlado(request: Request, error: Exception):
     """Cualquier fallo de un endpoint queda en datos/errores.log (monitoreo)."""
     monitoreo.registrar_error(f"{request.method} {request.url.path}", error)
     return JSONResponse(status_code=500, content={"status": "error", "mensaje": "Error interno"})
+
+
+class CambioIdioma(BaseModel):
+    idioma: str
+
+
+@app.get("/idioma")
+def ver_idioma():
+    return {"idioma": idioma.obtener(), "disponibles": list(idioma.IDIOMAS)}
+
+
+@app.post("/idioma")
+def cambiar_idioma(datos: CambioIdioma):
+    if datos.idioma not in idioma.IDIOMAS:
+        raise HTTPException(status_code=400, detail="Idioma no soportado")
+    return {"idioma": idioma.cambiar(datos.idioma)}
 
 
 @app.get("/salud")

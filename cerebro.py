@@ -10,6 +10,7 @@ perfil de personalidad/estilo a partir de todo lo que Azmuth ya sabe.
 import re
 import anthropic
 import config
+import idioma
 from skills import memoria, habitos, perfil
 
 SYSTEM_PROMPT = """Eres AZMUTH, un asistente de inteligencia artificial personal que vive \
@@ -41,6 +42,12 @@ ChatGPT o Claude), no hablando. Aquí sí puedes dar respuestas completas y del 
 pida la pregunta, y usar Markdown cuando ayude a leer mejor: listas, **negritas**, \
 tablas y bloques de código con su lenguaje (```python). Sigue siendo AZMUTH, con el \
 mismo tono. Las reglas de [MEMORIA: ...] y de no fingir acciones siguen aplicando."""
+
+EXTRA_INGLES = """
+
+LANGUAGE: the user switched AZMUTH to ENGLISH. Always answer in natural English \
+(American), with the same personality, even if older messages in the history are in \
+Spanish. Keep the [MEMORIA: ...] tag exactly as described, but write the fact itself in English."""
 
 _RE_MEMORIA = re.compile(r"\[MEMORIA:\s*(.+?)\]", re.IGNORECASE)
 
@@ -77,6 +84,8 @@ def _construir_system_prompt():
     if perfil_texto:
         prompt += "\n\nPerfil de personalidad/estilo del usuario (generado a partir de su historial de uso):\n" + perfil_texto
 
+    if idioma.es_ingles():
+        prompt += EXTRA_INGLES
     return prompt
 
 
@@ -155,6 +164,35 @@ def analizar_imagen(imagen_jpeg: bytes, pregunta: str, modo: str = "voz") -> str
         return texto or "No logré describir la pantalla."
     except Exception as e:
         return f"Tuve un problema analizando la pantalla: {e}"
+
+
+_cache_traducciones = {}
+
+
+def traducir(texto: str, a: str = "en") -> str:
+    """Traduce una respuesta corta de una skill (ej. "Abriendo paint.") al idioma
+    pedido. Si no hay clave o falla, regresa el texto original: nunca rompe el flujo."""
+    if not texto or not config.ANTHROPIC_API_KEY:
+        return texto
+    clave = (texto, a)
+    if clave in _cache_traducciones:
+        return _cache_traducciones[clave]
+    destino = "natural American English" if a == "en" else "español de México"
+    try:
+        respuesta = _obtener_cliente().messages.create(
+            model=config.MODELO_CLAUDE,
+            max_tokens=600,
+            system=(f"Translate the user's text into {destino}. It is a reply from a voice assistant. "
+                    "Keep names, numbers, URLs, emojis and line breaks. Output ONLY the translation."),
+            messages=[{"role": "user", "content": texto}],
+        )
+        traducido = "".join(b.text for b in respuesta.content if b.type == "text").strip() or texto
+    except Exception:
+        return texto
+    if len(_cache_traducciones) > 300:
+        _cache_traducciones.clear()
+    _cache_traducciones[clave] = traducido
+    return traducido
 
 
 def borrar_historial():

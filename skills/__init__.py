@@ -21,10 +21,10 @@ Ese es todo el contrato — no hay que tocar nada más del programa.
 """
 import re
 
-from . import (modos, pantalla, tiempo, notas, recordatorios, memoria, contactos, habitos, web, sistema,
+from . import (idiomas, ingles, modos, pantalla, tiempo, notas, recordatorios, memoria, contactos, habitos, web, sistema,
                multimedia, pestanas, ayuda, aplicaciones, apps_instaladas)
 
-SKILLS = [modos, pantalla, sistema, tiempo, notas, recordatorios, memoria, contactos, habitos, web,
+SKILLS = [idiomas, modos, pantalla, sistema, tiempo, notas, recordatorios, memoria, contactos, habitos, web,
           pestanas, multimedia, ayuda, aplicaciones, apps_instaladas]
 
 
@@ -54,7 +54,29 @@ def variantes(texto: str):
     return vistas
 
 
+# Respuestas que ya vienen de Claude en el idioma correcto (no se traducen otra vez)
+_SIN_TRADUCIR = {"idiomas", "pantalla", "ayuda"}
+
+
 def procesar(texto: str):
+    """Igual que _procesar_es, pero en modo inglés primero convierte el comando
+    al español (skills/ingles.py) y traduce la respuesta de la skill al inglés."""
+    import idioma
+    if not idioma.es_ingles():
+        return _procesar_es(texto)
+    comando = ingles.a_espanol(texto)
+    respuesta, skill = _procesar_es(comando) if comando else (None, None)
+    if respuesta is None:
+        # Sin traducción solo se prueban las skills que entienden inglés por sí
+        # mismas: así "next friday I have an exam" no se toma como "siguiente canción".
+        respuesta, skill = _procesar_es(texto, solo=(idiomas, pantalla))
+    if respuesta is not None and skill not in _SIN_TRADUCIR:
+        import cerebro
+        respuesta = cerebro.traducir(respuesta, "en")
+    return respuesta, skill
+
+
+def _procesar_es(texto: str, solo=None):
     """Prueba cada skill en orden; regresa (respuesta, nombre_skill) de la
     primera que conteste algo (no None), o (None, None) si ninguna supo
     manejarlo. El nombre del módulo (ej. "multimedia", "notas") es lo que
@@ -63,7 +85,7 @@ def procesar(texto: str):
     # El orden de las SKILLS manda: cada skill prueba todas las versiones antes
     # de pasar a la siguiente (así "siguiente pestana" llega a pestanas y no a
     # multimedia), y siempre recibe primero el texto tal cual se escribió.
-    for skill in SKILLS:
+    for skill in (solo or SKILLS):
         for version in versiones:
             resultado = skill.intentar(version)
             if resultado is not None:

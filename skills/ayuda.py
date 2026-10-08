@@ -5,6 +5,7 @@ tomados directo de las expresiones que cada skill acepta (no genéricos).
 import re
 
 import estado
+import idioma
 
 
 _PIDE_AYUDA = re.compile(
@@ -67,12 +68,45 @@ Háblame con la palabra clave o escríbeme en este chat. **Lo que no sea un coma
 - «qué hora es» · «qué fecha es» · «qué clima hace»
 - «mis hábitos» (también le sugiero cosas si noto un patrón)
 
-### 🔁 Modos y sistema
+### 🔁 Modos, idioma y sistema
 - «modo escritorio» / «modo voz» (o el botón de la ventana)
+- «cambia a inglés» (o el botón 🌐) · en inglés: «switch to Spanish»
 - «borra el historial» · «apágate»
 
 ### ⌚ Control desde el celular o el reloj
 - Abra **/reloj** con su token: 26 acciones (multimedia, volumen, juegos, sistema, herramientas y pestañas)."""
+
+
+RESUMEN_VOZ_EN = (
+    "I can help you with notes, reminders with Windows notifications, memory, the time, date "
+    "and weather, web searches, music and volume, tabs and windows, opening or closing any app "
+    "you have installed, and looking at your screen to help you. Anything else, I answer with "
+    "artificial intelligence. To see every example, say desktop mode and type help."
+)
+
+MANUAL_EN = """## 🟢 What I can do (English mode)
+
+Say **"it's hero time"** before a command, or type here. **Anything that is not a command is answered by Claude.**
+
+### 🖥️ Screen
+- "what's on my screen" · "help me with my screen" · "explain what's on my screen" · "translate my screen"
+
+### 🚀 Apps
+- "open Discord" · "open PowerPoint" (any installed app) · "close Spotify"
+
+### ⏰ Reminders and notes
+- "remind me to study at 7 pm" · "remind me to drink water every day at 9" · "my reminders"
+- "take a note: buy coffee" · "my notes" · "remember that my project is called Chispa" · "what do you know about me"
+
+### 🎵 Music and volume
+- "play my playlist" · "pause" · "next" · "previous" · "volume to 50" · "volume up" · "volume down" · "mute"
+
+### 🗂️ Tabs, modes and more
+- "new tab" · "close tab" · "next tab" · "previous tab" · "tab 3" · "switch window"
+- "what time is it" · "what's the date" · "what's the weather" · "search for cats" · "my habits"
+- "desktop mode" / "voice mode" · **"switch to Spanish"** to go back
+
+*Some advanced commands (WhatsApp, maps, contacts, teaching app nicknames) are still Spanish only.*"""
 
 
 def intentar(texto: str):
@@ -83,8 +117,9 @@ def intentar(texto: str):
     # ayuda). Ahora la frase completa tiene que ser una petición de ayuda.
     t = re.sub(r"[¿?¡!.,]", "", t).strip()
     if _PIDE_AYUDA.match(t):
-        if estado.obtener_modo() == "escritorio":
-            return MANUAL
-        return RESUMEN_VOZ
+        escritorio = estado.obtener_modo() == "escritorio"
+        if idioma.es_ingles():
+            return MANUAL_EN if escritorio else RESUMEN_VOZ_EN
+        return MANUAL if escritorio else RESUMEN_VOZ
 
     return None

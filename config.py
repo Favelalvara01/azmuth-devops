@@ -15,6 +15,8 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "").strip()
 ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "JBFqnCBsd6RMkjVDRZzb").strip()
 PALABRA_CLAVE = os.getenv("PALABRA_CLAVE", "hora de ser heroe").strip().lower()
+# Palabra clave cuando Azmuth está en inglés (el reconocedor en-US no entiende la de español)
+PALABRA_CLAVE_EN = os.getenv("PALABRA_CLAVE_EN", "it's hero time").strip().lower()
 IDIOMA_VOZ = "es-MX"
 MODELO_CLAUDE = "claude-sonnet-4-6"
 

@@ -23,9 +23,14 @@ _DISPARADORES = re.compile(
     r"(?:(?:con|en)\s+)?(?:lo\s+que\s+(?:hay|tengo|dice|sale|aparece)\s+en\s+)?(?:(?:lo\s+)?de\s+)?" + _PANTALLA +
     r"|lo\s+que\s+(?:hay|tengo|dice|sale|aparece)\s+en\s+" + _PANTALLA +
     r"|(?:ves|puedes\s+ver)\s+" + _PANTALLA +
+    r"|what'?s\s+on\s+(?:my\s+|the\s+)?screen|what\s+is\s+on\s+(?:my\s+|the\s+)?screen"
+    r"|(?:look\s+at|read|check|explain|describe|help\s+me\s+with|solve|translate|summarize)\s+"
+    r"(?:what'?s\s+on\s+|what\s+is\s+on\s+)?(?:my\s+|the\s+|this\s+)?screen"
+    r"|can\s+you\s+see\s+(?:my\s+|the\s+)?screen"
     r")\b"
 )
 _PREGUNTA_GENERICA = "Describe brevemente qué hay en mi pantalla y qué estoy haciendo."
+_PREGUNTA_GENERICA_EN = "Briefly describe what is on my screen and what I'm doing."
 _LADO_MAX = 1568
 
 
@@ -50,7 +55,10 @@ def preparar(imagen) -> bytes:
 
 def _pregunta(texto: str) -> str:
     resto = _DISPARADORES.sub("", texto.lower()).strip(" ,.?¿!¡y")
-    return texto.strip() if len(resto) > 3 else _PREGUNTA_GENERICA
+    if len(resto) > 3:
+        return texto.strip()
+    import idioma
+    return _PREGUNTA_GENERICA_EN if idioma.es_ingles() else _PREGUNTA_GENERICA
 
 
 def intentar(texto: str):

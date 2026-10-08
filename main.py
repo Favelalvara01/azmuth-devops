@@ -17,6 +17,7 @@ import voice
 import cerebro
 import skills
 import estado
+import idioma
 import monitoreo
 import notificaciones
 import nucleo
@@ -29,6 +30,7 @@ import nucleo
 _VOCATIVO_RE = re.compile(r"^(?:oye\s+|hey\s+)?azmuth[,]?\s+", re.IGNORECASE)
 
 PALABRA_CLAVE = config.PALABRA_CLAVE.lower().strip()
+PALABRA_CLAVE_EN = config.PALABRA_CLAVE_EN.lower().strip()
 
 
 class SoundDeviceMicrophone:
@@ -64,9 +66,10 @@ def revisar_recordatorios_una_vez() -> int:
     try:
         avisos = skills.recordatorios.revisar_pendientes()
         for texto in avisos:
-            notificaciones.notificar("⏰ Recordatorio de Azmuth", texto)
-            estado.set_estado("ejecutando", f"Recordatorio: {texto}")
-            voice.hablar(f"Recordatorio: {texto}")
+            titulo = idioma.t("Recordatorio", "Reminder")
+            notificaciones.notificar(idioma.t("⏰ Recordatorio de Azmuth", "⏰ Azmuth reminder"), texto)
+            estado.set_estado("ejecutando", f"{titulo}: {texto}")
+            voice.hablar(f"{titulo}: {texto}")
             estado.set_estado("reposo")
         return len(avisos)
     except Exception as e:
@@ -174,7 +177,7 @@ def transcribir(reconocedor, wav_buffer):
     with sr.AudioFile(wav_buffer) as fuente:
         audio = reconocedor.record(fuente)
     try:
-        texto = reconocedor.recognize_google(audio, language=config.IDIOMA_VOZ)
+        texto = reconocedor.recognize_google(audio, language=idioma.codigo_voz())
         estado.log(f"🎤 Escuché: {texto}")
         return texto
     except (sr.UnknownValueError, sr.RequestError):
@@ -195,7 +198,8 @@ def escuchar(reconocedor, microfono, marcar_escuchando=False, grabar=None):
         return None
 
 
-_PALABRAS_APAGADO = ("apagate", "apagar", "apagar sistema", "apagar azmuth", "desactivar", "apaga el sistema")
+_PALABRAS_APAGADO = ("apagate", "apagar", "apagar sistema", "apagar azmuth", "desactivar", "apaga el sistema",
+                     "shut down", "shutdown", "power off", "turn yourself off")
 _APPS_DIRECTAS = ("roblox", "fortnite", "rocket league", "spotify", "xbox", "edge", "word", "excel",
                   "paint", "bloc de notas")
 
@@ -233,7 +237,7 @@ def procesar_comando(texto: str):
 
     if es_apagado(texto):
         estado.set_estado("ejecutando", "Apagando sistema")
-        voice.hablar("Apagando sistema. Hasta luego, señor.")
+        voice.hablar(idioma.t("Apagando sistema. Hasta luego, señor.", "Shutting down. Goodbye, sir."))
         time.sleep(1.5)
         # main.iniciar() corre en un hilo secundario cuando lo lanza app_desktop.py
         # (el hilo principal está ocupado con la ventana de webview). sys.exit(0)
@@ -261,8 +265,9 @@ def _vigilar_perfil():
             monitoreo.registrar_error("vigilante de perfil", e)
 
 
-_RE_RESPUESTA_SI = re.compile(r"\b(s[ií]|claro|va|dale|dele|s[ií]mon|por favor|ok[aá]y?)\b", re.IGNORECASE)
-_RE_RESPUESTA_NO = re.compile(r"\bno\b|ahorita no|después no|luego no|para nada", re.IGNORECASE)
+_RE_RESPUESTA_SI = re.compile(r"\b(s[ií]|claro|va|dale|dele|s[ií]mon|por favor|ok[aá]y?|yes|yeah|yep|sure|please)\b",
+                              re.IGNORECASE)
+_RE_RESPUESTA_NO = re.compile(r"\bno\b|ahorita no|después no|luego no|para nada|\bnope\b|not now", re.IGNORECASE)
 
 
 def clasificar_respuesta(respuesta: str):
@@ -302,10 +307,10 @@ def _revisar_sugerencia_pendiente(reconocedor, microfono):
         if accion:
             procesar_comando(accion)
         else:
-            voice.hablar("Listo.")
+            voice.hablar(idioma.t("Listo.", "Done."))
     elif decision == "no":
         skills.habitos.registrar_respuesta_sugerencia(categoria, aceptada=False)
-        voice.hablar("Entendido.")
+        voice.hablar(idioma.t("Entendido.", "Understood."))
     # cualquier otra cosa (cambió de tema, dijo otro comando) se ignora
     # aquí sin contar como rechazo -no es justo penalizar una sugerencia
     # solo porque el usuario tenía otra cosa en mente.
@@ -314,10 +319,11 @@ def _revisar_sugerencia_pendiente(reconocedor, microfono):
 def extraer_comando(texto: str):
     """Si la frase trae la palabra clave devuelve lo que sigue ('' si no dijo
     nada más); si no la trae devuelve None (no era para Azmuth)."""
-    t_norm = texto.lower().strip()
-    if PALABRA_CLAVE not in t_norm:
+    t_norm = texto.lower().strip().replace("’", "'")
+    clave = next((c for c in (PALABRA_CLAVE, PALABRA_CLAVE_EN) if c and c in t_norm), None)
+    if clave is None:
         return None
-    partes = t_norm.split(PALABRA_CLAVE, 1)
+    partes = t_norm.split(clave, 1)
     return partes[1].strip() if len(partes) > 1 else ""
 
 
@@ -330,13 +336,13 @@ def atender(texto: str, reconocedor, microfono) -> bool:
         procesar_comando(resto)
         return True
     estado.set_estado("escuchando", "Dígame...")
-    voice.hablar("Dígame.")
+    voice.hablar(idioma.t("Dígame.", "Go ahead."))
     time.sleep(0.3)
     comando = escuchar(reconocedor, microfono, marcar_escuchando=True)
     if comando:
         procesar_comando(comando)
     else:
-        voice.hablar("No escuché ningún comando.")
+        voice.hablar(idioma.t("No escuché ningún comando.", "I didn't hear a command."))
         time.sleep(1.0)
     estado.set_estado("reposo")
     return True
@@ -356,7 +362,7 @@ def iniciar():
     estado.log("=" * 40)
 
     estado.set_estado("ejecutando", "Iniciando sistema")
-    voice.hablar("Sistema iniciado. A sus órdenes.")
+    voice.hablar(idioma.t("Sistema iniciado. A sus órdenes.", "System online. At your service."))
     estado.set_estado("reposo")
 
     threading.Thread(target=_vigilar_recordatorios, daemon=True).start()

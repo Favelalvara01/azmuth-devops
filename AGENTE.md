@@ -241,3 +241,13 @@ python main.py
 
 Desde el próximo reinicio, Azmuth arranca solo, invisible, y directo a
 la ventana de escritorio con el núcleo animado — nunca una terminal.
+
+## Idioma (español / inglés)
+
+- Cambiar: botón **🌐 ENGLISH / ESPAÑOL** en la ventana, o decir/escribir «cambia a inglés» / «switch to Spanish».
+- En inglés cambia todo: reconocimiento de voz (en-US), respuestas de Claude, voz, interfaz y ayuda.
+- Palabra clave en inglés: **«it's hero time»** (configurable con `PALABRA_CLAVE_EN` en `.env`).
+- Los comandos principales en inglés (`open X`, `volume to 40`, `remind me to … at 7 pm`, `what's on my screen`…)
+  se traducen al comando en español en `skills/ingles.py` y reutilizan las mismas skills; la respuesta se traduce con Claude.
+- Solo en español por ahora: WhatsApp, mapas, contactos y enseñar apodos de apps.
+- El idioma se guarda en la tabla `ajustes` y se conserva al reiniciar.
