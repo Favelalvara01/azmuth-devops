@@ -2,7 +2,6 @@
   "juicio_expertos": {
     "expertos": [
       "Alumno desarrollador",
-      "Companero con experiencia",
       "IA (Claude) - analisis del codigo"
     ],
     "por_modulo": [
@@ -10,7 +9,6 @@
         "modulo": "Nucleo de voz",
         "valores": [
           10,
-          12,
           14
         ],
         "promedio": 12
@@ -19,61 +17,54 @@
         "modulo": "Skills basicas",
         "valores": [
           12,
-          14,
           13
         ],
-        "promedio": 13
+        "promedio": 12.5
       },
       {
         "modulo": "Control del sistema",
         "valores": [
           14,
-          16,
           17
         ],
-        "promedio": 15.67
+        "promedio": 15.5
       },
       {
         "modulo": "IA y memoria",
         "valores": [
           12,
-          12,
           13
         ],
-        "promedio": 12.33
+        "promedio": 12.5
       },
       {
         "modulo": "Interfaz y servidor",
         "valores": [
           10,
-          14,
           15
         ],
-        "promedio": 13
+        "promedio": 12.5
       },
       {
         "modulo": "Persistencia SQLite",
         "valores": [
           6,
-          5,
           5
         ],
-        "promedio": 5.33
+        "promedio": 5.5
       },
       {
         "modulo": "DevOps",
         "valores": [
           8,
-          10,
           9
         ],
-        "promedio": 9
+        "promedio": 8.5
       },
       {
         "modulo": "Modo escritorio y apps",
         "valores": [
           10,
-          11,
           12
         ],
         "promedio": 11
@@ -81,7 +72,6 @@
       {
         "modulo": "Correccion de defectos",
         "valores": [
-          4,
           4,
           4
         ],
@@ -91,27 +81,24 @@
         "modulo": "Calidad y seguridad",
         "valores": [
           8,
-          9,
           8
         ],
-        "promedio": 8.33
+        "promedio": 8
       },
       {
         "modulo": "Nuevas funciones",
         "valores": [
           8,
-          10,
           9
         ],
-        "promedio": 9
+        "promedio": 8.5
       }
     ],
     "totales_por_experto": {
       "Alumno desarrollador": 102,
-      "Companero con experiencia": 117,
       "IA (Claude) - analisis del codigo": 119
     },
-    "total_horas": 112.66
+    "total_horas": 110.5
   },
   "analoga": {
     "proyecto_referencia": "Easy Learning (proyecto integrador DSM31, C#/MySQL)",

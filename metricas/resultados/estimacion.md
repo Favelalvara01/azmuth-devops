@@ -2,20 +2,20 @@
 
 ### 1. Juicio de expertos
 
-| Módulo | Alumno desarrollador | Companero con experiencia | IA (Claude) - analisis del codigo | Promedio |
-|---|---|---|---|---|
-| Nucleo de voz | 10 | 12 | 14 | 12 |
-| Skills basicas | 12 | 14 | 13 | 13 |
-| Control del sistema | 14 | 16 | 17 | 15.67 |
-| IA y memoria | 12 | 12 | 13 | 12.33 |
-| Interfaz y servidor | 10 | 14 | 15 | 13 |
-| Persistencia SQLite | 6 | 5 | 5 | 5.33 |
-| DevOps | 8 | 10 | 9 | 9 |
-| Modo escritorio y apps | 10 | 11 | 12 | 11 |
-| Correccion de defectos | 4 | 4 | 4 | 4 |
-| Calidad y seguridad | 8 | 9 | 8 | 8.33 |
-| Nuevas funciones | 8 | 10 | 9 | 9 |
-| **Total** | 102 | 117 | 119 | **112.66** |
+| Módulo | Alumno desarrollador | IA (Claude) - analisis del codigo | Promedio |
+|---|---|---|---|
+| Nucleo de voz | 10 | 14 | 12 |
+| Skills basicas | 12 | 13 | 12.5 |
+| Control del sistema | 14 | 17 | 15.5 |
+| IA y memoria | 12 | 13 | 12.5 |
+| Interfaz y servidor | 10 | 15 | 12.5 |
+| Persistencia SQLite | 6 | 5 | 5.5 |
+| DevOps | 8 | 9 | 8.5 |
+| Modo escritorio y apps | 10 | 12 | 11 |
+| Correccion de defectos | 4 | 4 | 4 |
+| Calidad y seguridad | 8 | 8 | 8 |
+| Nuevas funciones | 8 | 9 | 8.5 |
+| **Total** | 102 | 119 | **110.5** |
 
 ### 2. Estimación análoga
 
@@ -63,7 +63,7 @@ VAF = 0.65 + 0.01 × 42 = 1.07 → PFA = 325.28 → 325.28 × 0.45 h/PF = **146.
 
 | Técnica | Horas estimadas |
 |---|---|
-| Juicio de expertos | 112.66 |
+| Juicio de expertos | 110.5 |
 | Análoga | 152.53 |
 | Tres puntos (PERT) | 114.68 |
 | Puntos de función | 146.38 |
