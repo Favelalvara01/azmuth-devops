@@ -1,92 +1,92 @@
 ## 🤖 Análisis de calidad con IA (claude-sonnet-4-6)
 
 # Auditoría de Calidad — Proyecto Azmuth
-**Normas ISO/IEC 25010 · ISO/IEC 25023 | Fecha de datos: 2026-10-07**
+**Normas:** ISO/IEC 25010 · ISO/IEC 25023 | **Fecha de datos:** 2026-10-08 02:11
 
 ---
 
 ## Dictamen general
 
-El proyecto Azmuth obtiene una calificación de **71 / 100**, apoyada en una cobertura de pruebas del 76,62 %, un DRE del 50 % y un único defecto abierto de baja criticidad. **El proyecto puede liberarse de forma condicionada**: se requiere cerrar el defecto abierto, elevar el DRE por encima del 75 % y refactorizar las dos funciones de rango D antes de la siguiente iteración productiva.
+El proyecto **Azmuth** alcanza una calificación de **76 / 100**, posicionándose en un nivel de calidad *aceptable con reservas*. Las fortalezas son notables: 227/227 pruebas en verde, 0 defectos abiertos, análisis estático Ruff sin hallazgos y cobertura global del 85.28 %. Sin embargo, la **tasa de detección de defectos en pruebas (DRE 50 %)** y los **dos archivos con cobertura 0 %** representan riesgos residuales que deben mitigarse antes de una liberación a producción amplia; se recomienda **liberar en modo controlado (beta supervisada)** con un plan de mejora activo.
 
 ---
 
 ## Idoneidad funcional
 
-| Subcaracterística | Métrica clave | Valor | Interpretación |
-|---|---|---|---|
-| **Completitud funcional** | Pruebas aprobadas / total | 167 / 167 (100 %) | Todas las rutas de prueba declaradas pasan |
-| **Corrección funcional** | Defectos abiertos | 1 | Riesgo residual bajo; debe resolverse antes del despliegue |
-| **Pertinencia funcional** | Densidad de defectos total | 6,17 / kloc | Aceptable para un proyecto de 2,6 kloc en etapa formativa |
+| Sub-característica | Evidencia | Valoración |
+|---|---|---|
+| **Completitud funcional** | 227 casos de prueba cubren el 85.28 % del código ejecutable; 7 módulos de skills identificados y probados | ✅ Alta |
+| **Corrección funcional** | 16 defectos totales, **0 abiertos**; densidad global de 5.77 defectos/KLOC | ✅ Alta |
+| **Pertinencia funcional** | Skills de voz, recordatorios, multimedia, web, contactos, hábitos, sistema alineadas con el propósito declarado del asistente | ✅ Alta |
 
-**Hallazgos relevantes:**
+**Puntos de atención:**
 
-- `main.py` concentra **4 defectos** con solo 26,01 % de cobertura; es el archivo con mayor riesgo de regresión no detectada.
-- `app_desktop.py` y `skills/interfaz.py` tienen **0 % de cobertura**, lo que impide verificar su corrección funcional.
-- Los 5 defectos que llegaron a producción (frente a 5 detectados en pruebas) indican que aproximadamente la mitad del flujo funcional no estaba validado antes de la entrega.
+- `app_desktop.py` y `skills/interfaz.py` tienen **cobertura 0 %**. Ninguna prueba automatizada valida la interfaz de usuario de escritorio. Si estas rutas de código son accesibles al usuario final, existe riesgo de defectos no detectados.
+- `cerebro.py` alcanza solo **70.59 %** de cobertura, siendo el módulo cognitivo central del sistema.
+- `voice.py` llega a **73.33 %**, crítico para un asistente de voz.
+- La densidad de defectos del Sprint 1 (*Núcleo de voz*: 14.88/KLOC) y Sprint 5 (*Interfaz y servidor*: 7.89/KLOC) superan la media del proyecto, indicando mayor fragilidad en esas áreas.
 
 ---
 
 ## Fiabilidad
 
-| Indicador | Valor | Benchmark referencial | Evaluación |
-|---|---|---|---|
-| MTTD | 262,18 h (10,92 días) | < 72 h (crítico) | ⚠️ Alto — los defectos tardan demasiado en detectarse |
-| MTTR | 2,52 h (151 min) | < 4 h (aceptable) | ✅ Muy bueno — la corrección es ágil |
-| DRE | 50,0 % | ≥ 75 % (liberación) | ⚠️ Bajo — la mitad de los defectos llegan a producción |
-| Defectos en producción vs. total | 8 / 16 (50 %) | < 20 % | ❌ Crítico |
+### Métricas clave del proceso
 
-**Interpretación por subcaracterística (ISO/IEC 25010):**
+| Métrica | Valor | Interpretación |
+|---|---|---|
+| **MTTD** (Mean Time To Detect) | 262.18 h (≈ 10.9 días) | Detección tardía; la mayoría de defectos se descubren en producción |
+| **MTTR** (Mean Time To Repair) | 4.37 h (262 min) | Corrección ágil una vez detectado el defecto |
+| **DRE** (Defect Removal Effectiveness) | 50.0 % | Solo 1 de cada 2 defectos fue capturado antes de producción |
+| **Defectos en producción** | 8 de 16 (50 %) | Proporción alta para un producto de voz con usuario final directo |
+| **Defectos en pruebas** | 5 de 16 (31.25 %) | La cobertura existente captura menos de un tercio |
+| **Defectos en revisión** | 3 de 16 (18.75 %) | Las revisiones de código aportan, pero tienen alcance limitado |
 
-- **Madurez:** Con 15/16 defectos resueltos y 0 *xfail*, la base de código es estable en lo conocido; sin embargo, el MTTD alto sugiere defectos latentes aún no descubiertos.
-- **Disponibilidad:** El pipeline CI ejecuta 167 pruebas en 3,18 s, lo que garantiza ciclos de retroalimentación rápidos.
-- **Tolerancia a fallos:** No existen métricas explícitas de manejo de excepciones, pero la alta complejidad ciclomática en `ejecutar_accion` (CC=27) y `intentar` de aplicaciones (CC=24) eleva el riesgo de ramas no controladas.
-- **Recuperabilidad:** El MTTR de 2,52 h indica buena capacidad de respuesta del equipo una vez detectado el fallo.
+### Sub-características ISO/IEC 25010
+
+| Sub-característica | Evidencia | Valoración |
+|---|---|---|
+| **Madurez** | 0 defectos abiertos; 16/16 reparados | ✅ Alta |
+| **Disponibilidad** | Pipeline CI sin fallos; Docker garantiza entorno reproducible | ✅ Alta |
+| **Tolerancia a fallos** | No hay datos de pruebas de caos o manejo de caídas de API (Claude, ElevenLabs) | ⚠️ No medida |
+| **Recuperabilidad** | MTTR de 4.37 h indica recuperación rápida ante incidentes conocidos | ✅ Aceptable |
+
+> **Riesgo latente:** El DRE del 50 % significa que el proceso de pruebas no está suficientemente maduro para garantizar que no existan defectos significativos no descubiertos. Los 4 defectos graves **ninguno fue detectado en pruebas** (graves detectados en pruebas = 0 / graves totales = 4), lo cual es el hallazgo de fiabilidad más crítico de este informe.
 
 ---
 
 ## Mantenibilidad
 
-### Escala de referencia (McCabe)
+### Escala de complejidad ciclomática (McCabe)
 
-| Rango | CC | Significado |
-|---|---|---|
-| A | 1–5 | Bajo riesgo |
-| B | 6–10 | Moderado |
-| C | 11–15 | Alto — revisión recomendada |
-| D | 16–25 | Muy alto — refactorización prioritaria |
-| E | 26–50 | Crítico |
-| F | > 50 | No mantenible |
+| Rango | CC | Significado | Funciones en Azmuth | % |
+|---|---|---|---|---|
+| **A** | 1–5 | Código simple, bajo riesgo | 163 | 84.9 % |
+| **B** | 6–10 | Moderada, manejable | 18 | 9.4 % |
+| **C** | 11–15 | Alta, candidata a refactorización | 11 | 5.7 % |
+| **D** | 16–20 | Muy alta, propensa a defectos | 0 | 0 % |
+| **E** | 21–25 | Extrema | 0 | 0 % |
+| **F** | > 25 | Caótica, ingobernables | 0 | 0 % |
 
-### Distribución actual
+**Promedio:** 3.39 (Rango A) · **Mediana:** 2.0 (Rango A) · **% A+B:** 94.27 %
 
-| Rango | Funciones | % |
-|---|---|---|
-| A | 118 | 79,2 % |
-| B | 17 | 11,4 % |
-| C | 12 | 8,1 % |
-| D | 2 | 1,3 % |
-| E | 0 | — |
-| F | 0 | — |
+El 94.27 % de las funciones se ubica en rangos A o B, lo que refleja una base de código **bien estructurada en general**. El índice de mantenibilidad promedio de **72.32** se considera aceptable (umbral recomendado ≥ 65).
 
-- **Índice de mantenibilidad promedio:** 71,83 / 100 — aceptable, con margen de mejora.
-- **90,6 % de funciones en rango A–B** es un resultado sólido para un proyecto de esta escala.
-- **14 infracciones E501** en `servidor.py` y `skills/aplicaciones.py` degradan la legibilidad de las funciones ya complejas.
+### Funciones que requieren refactorización (Rango C)
 
-### Funciones prioritarias a refactorizar
+| Prioridad | Archivo | Función | Línea | CC | Acción sugerida |
+|---|---|---|---|---|---|
+| 🔴 1 | `skills/apps_instaladas.py` | `intentar` | 213 | 15 | Extraer ramas de intención a funciones auxiliares |
+| 🔴 2 | `skills/recordatorios.py` | `intentar` | 96 | 14 | Separar lógica de creación/modificación/eliminación |
+| 🔴 3 | `skills/apps_instaladas.py` | `resolver` | 169 | 13 | Aplicar tabla de despacho o patrón Strategy |
+| 🔴 4 | `skills/multimedia.py` | `intentar` | 31 | 13 | Dividir por tipo de acción multimedia |
+| 🔴 5 | `skills/pestanas.py` | `intentar` | 33 | 13 | Refactorizar con despacho por comando |
+| 🟡 6 | `cerebro.py` | `actualizar_perfil_si_toca` | 136 | 12 | Simplificar condicionales anidados |
+| 🟡 7 | `skills/memoria.py` | `intentar` | 61 | 12 | Extraer casos de memoria a métodos privados |
+| 🟡 8 | `skills/recordatorios.py` | `revisar_pendientes` | 170 | 12 | Separar lógica de notificación y persistencia |
+| 🟡 9 | `skills/web.py` | `intentar` | 53 | 12 | Separar búsqueda, navegación y scraping |
+| 🟡 10 | `cerebro.py` | `preguntar` | 93 | 11 | Extraer manejo de contexto a clase propia |
 
-| Prioridad | Archivo | Función | Línea | CC | Rango | Acción |
-|---|---|---|---|---|---|---|
-| 🔴 1 | `servidor.py` | `ejecutar_accion` | 161 | 27 | D | Descomponer por tipo de acción (patrón Strategy o tabla de despacho) |
-| 🔴 2 | `skills/aplicaciones.py` | `intentar` | 120 | 24 | D | Extraer casos en métodos privados especializados |
-| 🟠 3 | `skills/apps_instaladas.py` | `intentar` | 213 | 15 | C | Separar lógica de búsqueda y ejecución |
-| 🟠 4 | `skills/recordatorios.py` | `intentar` | 96 | 14 | C | Extraer validación de fecha/hora |
-| 🟠 5 | `skills/apps_instaladas.py` | `resolver` | 169 | 13 | C | Reducir anidamiento con retorno temprano |
-| 🟡 6 | `skills/multimedia.py` | `intentar` | 31 | 13 | C | Separar reproducción de control |
-| 🟡 7 | `skills/pestanas.py` | `intentar` | 33 | 13 | C | Tabla de despacho por comando |
-| 🟡 8 | `cerebro.py` | `actualizar_perfil_si_toca` | 136 | 12 | C | Extraer condiciones de temporización |
-| 🟡 9 | `main.py` | `escuchar` | 102 | 12 | C | Separar captura de audio y procesamiento |
-| 🟡 10 | `skills/memoria.py` | `intentar` | 61 | 12 | C | Extraer casos CRUD individuales |
+> **Patrón detectado:** Las 11 funciones en rango C son principalmente métodos `intentar()` de skills. Este patrón sugiere que el contrato de la interfaz de skills obliga a centralizar demasiada lógica condicional. Evaluar introducir un despachador de intenciones o sub-handlers por acción.
 
 ---
 
@@ -94,61 +94,78 @@ El proyecto Azmuth obtiene una calificación de **71 / 100**, apoyada en una cob
 
 | Riesgo | Probabilidad | Impacto | Acción preventiva |
 |---|---|---|---|
-| Defecto abierto en producción sin resolver | Alta | Alto | Bloquear el merge a `main` hasta cierre; añadir issue como *blocker* en el tablero |
-| DRE del 50 % permite que defectos graves lleguen a producción | Alta | Alto | Ampliar pruebas de integración de `main.py` y archivos con 0 % de cobertura antes del siguiente sprint |
-| `ejecutar_accion` (CC=27) y `intentar` (CC=24) generan ramas no testeadas | Media | Alto | Refactorizar en el siguiente sprint; agregar pruebas parametrizadas por rama |
-| `app_desktop.py` y `skills/interfaz.py` con 0 % de cobertura | Media | Medio | Crear pruebas unitarias con mocks de UI; meta mínima 60 % por archivo |
-| MTTD de ~11 días indica detección tardía de defectos | Media | Medio | Implementar alertas automáticas de errores en runtime (p. ej. Sentry o logging estructurado) |
-| Desviación del 25 % en estimación total (72 h estimadas vs. 90 h reales) | Alta | Medio | Aplicar factor de corrección de 1,25× en próximas estimaciones; usar velocidad histórica (7,86 pts/sprint) |
-| 14 infracciones de líneas largas en archivos críticos | Baja | Bajo | Configurar `ruff --fix` como *pre-commit hook* para impedir que se acumulen |
+| **DRE bajo (50 %): defectos graves llegan a producción sin detección previa** | Alta | Crítico | Diseñar casos de prueba específicos para los 4 defectos graves; implementar pruebas de mutación (p. ej. `mutmut`) para evaluar la calidad del suite |
+| **Cobertura 0 % en `app_desktop.py` e `interfaz.py`**: funcionalidad de UI sin pruebas | Alta | Alto | Integrar pruebas de UI con `pytest-qt` o `pywinauto`; al menos smoke tests antes del siguiente release |
+| **MTTD de ~11 días**: defectos permanecen ocultos demasiado tiempo | Media | Alto | Habilitar alertas automáticas de errores en runtime (logging estructurado + Sentry o similar) |
+| **Dependencias de APIs externas (Claude, ElevenLabs) sin pruebas de resiliencia** | Media | Alto | Agregar mocks/stubs de las APIs y pruebas de fallback; implementar circuit breaker |
+| **Desviación de estimación del 25 % global (60 % en Sprint 5)** | Media | Medio | Usar velocidad histórica (7.86 pts/sprint) y tres puntos para futuros sprints; agregar buffer del 15 % en módulos de integración |
+| **11 funciones con CC rango C concentradas en skills**: mayor probabilidad de regresiones** | Media | Medio | Refactorizar las 5 funciones 🔴 antes del próximo ciclo de features; exigir CC ≤ 10 en nuevos PRs |
+| **Núcleo de voz (`voice.py` 73 %, `cerebro.py` 70 %)** con cobertura insuficiente en el corazón del producto | Media | Alto | Elevar cobertura de ambos archivos al 85 % mínimo; priorizar ramas de manejo de errores de reconocimiento de voz |
 
 ---
 
 ## Plan de mejora
 
-### Acción 1 — Cerrar el defecto abierto y bloquear el merge *(Urgente — esta semana)*
-- **Qué:** Resolver el único defecto abierto; configurar GitHub Actions para bloquear PRs mientras existan issues con etiqueta `blocker`.
-- **Métrica que mejora:** `defectos_abiertos_por_kloc` → de 0,39 a 0,00; condición de liberación cumplida.
+> Ordenado por impacto en calidad y urgencia. Horizonte sugerido: **próximos 2 sprints**.
 
-### Acción 2 — Elevar la cobertura de `main.py`, `app_desktop.py` y `skills/interfaz.py` *(Sprint siguiente)*
-- **Qué:** Añadir pruebas unitarias con mocks (`unittest.mock`, `pytest-mock`) para los puntos de entrada de voz y la UI de escritorio; meta mínima 60 % en archivos con 0 % y 60 % en `main.py`.
-- **Métrica que mejora:** Cobertura total → de 76,62 % a ≥ 82 %; DRE → de 50 % a ≥ 65 %.
+### Acción 1 — Elevar el DRE mediante pruebas de los escenarios de defectos graves *(Prioridad: Crítica)*
+**Qué hacer:** Analizar los 4 defectos graves históricos; escribir al menos 1 caso de prueba de regresión por cada uno. Añadir pruebas de mutación con `mutmut` o `cosmic-ray` para validar la efectividad del suite.
+**Métrica que mejora:** DRE (objetivo: pasar de 50 % → ≥ 80 %) · Porcentaje de defectos detectados en pruebas vs. producción.
 
-### Acción 3 — Refactorizar `ejecutar_accion` y `intentar` de `skills/aplicaciones.py` *(Sprint siguiente)*
-- **Qué:** Aplicar patrón de tabla de despacho (`dict[str, Callable]`) en `ejecutar_accion` y extraer métodos privados en `intentar`; objetivo CC ≤ 10 (rango B) en ambas.
-- **Métrica que mejora:** Complejidad máxima → de 27 a ≤ 10; índice de mantenibilidad promedio → de 71,83 a ≥ 76.
+---
 
-### Acción 4 — Incorporar detección temprana de errores en runtime *(Próximas 2 semanas)*
-- **Qué:** Integrar logging estructurado (p. ej. `structlog`) con alertas automáticas en los módulos de mayor densidad de defectos (`main.py`, `servidor.py`, `estado.py`).
-- **Métrica que mejora:** MTTD → de 262 h a meta ≤ 72 h; defectos escapados a producción → de 8 a ≤ 4.
+### Acción 2 — Cubrir `app_desktop.py`, `skills/interfaz.py`, `cerebro.py` y `voice.py` *(Prioridad: Alta)*
+**Qué hacer:** Incorporar pruebas de integración y/o UI para los módulos con 0 % de cobertura. Para `cerebro.py` y `voice.py`, agregar pruebas unitarias de las ramas no cubiertas (manejo de excepciones, flujos alternativos).
+**Métrica que mejora:** Cobertura total (objetivo: 85.28 % → ≥ 90 %) · Cobertura de `cerebro.py` (70 % → ≥ 85 %) · `voice.py` (73 % → ≥ 85 %).
 
-### Acción 5 — Estandarizar el proceso de estimación con factor de corrección histórico *(Antes del próximo proyecto)*
-- **Qué:** Documentar la velocidad real (1,38–2,00 h/punto según sprint) y aplicar un factor de ajuste de 1,25× sobre las estimaciones futuras; usar PERT como técnica base con datos históricos del equipo.
-- **Métrica que mejora:** Desviación de estimación → de 25 % a ≤ 10 %; precisión de planificación de sprint.
+---
+
+### Acción 3 — Refactorizar las 5 funciones `intentar()` con CC ≥ 13 *(Prioridad: Alta)*
+**Qué hacer:** Aplicar el patrón de despacho por tabla de comandos o sub-handlers en `apps_instaladas.intentar`, `recordatorios.intentar`, `multimedia.intentar`, `pestanas.intentar` y `apps_instaladas.resolver`. Definir una regla de linting que rechace CC > 10 en nuevos PRs (configurable en `ruff` o `flake8-cognitive-complexity`).
+**Métrica que mejora:** Complejidad ciclomática máxima (15 → ≤ 10) · Índice de mantenibilidad promedio (72.32 → ≥ 78) · % funciones en rango A+B (94.27 % → ≥ 97 %).
+
+---
+
+### Acción 4 — Implementar resiliencia ante fallos de APIs externas *(Prioridad: Alta)*
+**Qué hacer:** Agregar mocks de Claude y ElevenLabs en el suite de pruebas para simular timeouts, errores HTTP 429/503 y respuestas malformadas. Implementar un patrón *circuit breaker* (p. ej. con `pybreaker`) en los adaptadores de API. Agregar prueba de integración que verifique el modo degradado (respuesta local si la API no responde).
+**Métrica que mejora:** Tolerancia a fallos (actualmente no medida → medible) · MTTR ante incidentes de API · Disponibilidad percibida por el usuario.
+
+---
+
+### Acción 5 — Instrumentar telemetría de errores en runtime para reducir MTTD *(Prioridad: Media)*
+**Qué hacer:** Integrar logging estructurado (p. ej. `structlog`) y una herramienta de rastreo de errores (Sentry OSS o similar) con alertas automáticas. Definir un SLO de MTTD objetivo (p. ej. ≤ 48 h). Revisar y fortalecer el proceso de revisión de código (actualmente captura solo el 18.75 % de defectos).
+**Métrica que mejora:** MTTD (262 h → objetivo ≤ 48 h) · Eficacia de revisión (18.75 % → ≥ 30 %) · Visibilidad de defectos en producción.
 
 ---
 
 ## Estimación (juicio experto de la IA)
 
-### Comparativa con las horas reales (90,0 h)
+### Comparativa contra las 90 horas reales
 
 | Técnica | Total estimado (h) | Error absoluto | Error relativo |
 |---|---|---|---|
-| **PERT (tres puntos)** | **81,85** | **8,15 h** | **9,1 %** |
-| Juicio de expertos (promedio) | 80,33 | 9,67 h | 10,7 % |
-| Puntos de función ajustados | 101,12 | 11,12 h | 12,4 % |
-| Estimación análoga | 126,87 | 36,87 h | 41,0 % |
+| Juicio de expertos (promedio) | 80.33 | 9.67 h | 10.7 % |
+| **Tres puntos — PERT** | **81.85** | **8.15 h** | **9.1 %** |
+| Puntos de función | 101.12 | 11.12 h | 12.4 % |
+| Análoga | 135.57 | 45.57 h | 50.6 % |
+| Alumno desarrollador (juicio individual) | 72.00 | 18.00 h | 20.0 % |
 
-### Análisis
+### Técnica más cercana: **Tres puntos (PERT) — 81.85 h**
 
-La técnica que más se acercó a las 90 horas reales fue **PERT/tres puntos** (error del 9,1 %), seguida muy de cerca por el **juicio de expertos** (10,7 %). Esto es coherente con las características del proyecto por las siguientes razones:
+La estimación por **tres puntos PERT** fue la que mejor aproximó las 90 horas reales, con un error del **9.1 %** y, lo más relevante, las 90 horas reales caen **dentro del rango de confianza del 95 % calculado [72.26 h – 91.44 h]**, lo que valida la técnica estadísticamente.
 
-1. **PERT capturó la asimetría del riesgo.** Al incluir escenarios optimista, más probable y pesimista por módulo, absorbió parcialmente la incertidumbre de los sprints con mayor variabilidad (Sprint 5: 60 % de desviación real). El rango del 95 % (72,26 – 91,44 h) **contuvo las 90 h reales**, lo que demuestra la validez estadística del método.
+**¿Por qué funcionó mejor?**
 
-2. **El juicio de expertos fue casi igual de preciso** porque la estimación de la IA (Claude, 86 h) compensó hacia arriba la subestimación del alumno desarrollador (72 h), acercando el promedio ponderado a la realidad. Esto ilustra el valor de incluir perspectivas externas en el *planning poker*.
+1. **Captura la incertidumbre explícitamente.** Al requerir estimaciones optimista (O), más probable (M) y pesimista (P) por módulo, obligó al equipo a razonar sobre los riesgos de cada componente, algo especialmente valioso en un proyecto con integraciones externas novedosas (Claude, ElevenLabs).
 
-3. **La estimación análoga sobreestimó en 41 %** porque el factor de ajuste (+10 %) fue insuficiente para reflejar la diferencia real de complejidad entre un CRUD (Easy Learning) y un sistema con APIs de voz, reconocimiento y LLM. Para proyectos con componentes de IA/voz se recomienda un factor de ajuste de al menos **+60 %** sobre la línea base CRUD.
+2. **Compensó sesgos individuales.** El alumno developer subestimó sistemáticamente (72 h, -20 %); los valores pesimistas del PERT corrigieron ese sesgo optimista sin caer en el exceso de la estimación análoga.
 
-4. **Puntos de función subestimó la complejidad de integración** al no modelar explícitamente la latencia y el manejo de errores de APIs externas (Claude, ElevenLabs), que fueron precisamente los módulos con mayor desviación (Núcleo de voz: +40 %; Interfaz y servidor: +60 %).
+3. **La estimación análoga falló significativamente (+50.6 %)** porque el proyecto de referencia (*Easy Learning*, CRUD en C#) no es comparable en complejidad arquitectural: Azmuth integra reconocimiento de voz, síntesis, LLMs y automatización del SO, dominios que el factor de ajuste del +10 % subestimó considerablemente.
 
-**Recomendación para proyectos futuros:** usar PERT con los rangos calibrados por velocidad histórica (1,38–2,00 h/punto) como técnica principal, y el juicio de expertos como validación cruzada.
+4. **Puntos de función** sobreestimaron (+12.4 %) probablemente porque el modelo de productividad de 0.45 h/PF no estaba calibrado para el stack Python del equipo ni para la curva de aprendizaje de las APIs de voz.
+
+**Recomendación:** En futuros proyectos del mismo equipo, usar **tres puntos como técnica primaria** y calibrar el coeficiente de productividad de puntos de función con al menos 2 proyectos históricos propios antes de usarlos como referencia.
+
+---
+
+*Informe generado automáticamente con base en los datos del pipeline. Todos los valores numéricos provienen exclusivamente de las métricas suministradas.*

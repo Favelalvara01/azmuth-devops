@@ -1,0 +1,71 @@
+Run started:2026-10-08 02:11:14.146833+00:00
+
+Test results:
+>> Issue: [B602:subprocess_popen_with_shell_equals_true] subprocess call with shell=True identified, security issue.
+   Severity: High   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b602_subprocess_popen_with_shell_equals_true.html
+   Location: ./acciones_remotas.py:29:4
+28	def _ps(script: str):
+29	    subprocess.run(["powershell", "-command", script], shell=True)
+30	
+
+--------------------------------------------------
+>> Issue: [B602:subprocess_popen_with_shell_equals_true] subprocess call with shell=True identified, security issue.
+   Severity: High   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b602_subprocess_popen_with_shell_equals_true.html
+   Location: ./acciones_remotas.py:33:4
+32	def _ps_corto(script: str):
+33	    subprocess.run(f'powershell -command "{script}"', shell=True)
+34	
+
+--------------------------------------------------
+>> Issue: [B602:subprocess_popen_with_shell_equals_true] subprocess call with shell=True identified, security issue.
+   Severity: High   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b602_subprocess_popen_with_shell_equals_true.html
+   Location: ./acciones_remotas.py:37:4
+36	def _cmd(linea: str):
+37	    subprocess.run(linea, shell=True)
+38	
+
+--------------------------------------------------
+>> Issue: [B602:subprocess_popen_with_shell_equals_true] subprocess call with shell=True identified, security issue.
+   Severity: High   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b602_subprocess_popen_with_shell_equals_true.html
+   Location: ./skills/aplicaciones.py:111:12
+110	        if "powershell" in objetivo.lower():
+111	            subprocess.run(objetivo, shell=True, check=True)
+112	            return None
+
+--------------------------------------------------
+>> Issue: [B602:subprocess_popen_with_shell_equals_true] subprocess call with shell=True identified, security issue.
+   Severity: High   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b602_subprocess_popen_with_shell_equals_true.html
+   Location: ./skills/aplicaciones.py:159:8
+158	    if "powershell" in proceso.lower():
+159	        subprocess.run(proceso, shell=True, check=False, capture_output=True, text=True)
+160	    else:
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 3201
+	Total lines skipped (#nosec): 0
+	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0
+		Low: 28
+		Medium: 0
+		High: 5
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 0
+		Medium: 4
+		High: 29
+Files skipped (0):

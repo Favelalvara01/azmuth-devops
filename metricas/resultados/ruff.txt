@@ -1,15 +1,1 @@
-servidor.py:174:141: E501 Line too long (142 > 140)
-servidor.py:177:141: E501 Line too long (336 > 140)
-servidor.py:181:141: E501 Line too long (336 > 140)
-servidor.py:185:141: E501 Line too long (328 > 140)
-servidor.py:189:141: E501 Line too long (328 > 140)
-servidor.py:193:141: E501 Line too long (273 > 140)
-servidor.py:198:141: E501 Line too long (363 > 140)
-servidor.py:231:141: E501 Line too long (373 > 140)
-servidor.py:245:141: E501 Line too long (368 > 140)
-servidor.py:249:141: E501 Line too long (247 > 140)
-servidor.py:253:141: E501 Line too long (245 > 140)
-skills/aplicaciones.py:53:141: E501 Line too long (233 > 140)
-skills/aplicaciones.py:54:141: E501 Line too long (221 > 140)
-skills/web.py:67:141: E501 Line too long (211 > 140)
-Found 14 errors.
+All checks passed!

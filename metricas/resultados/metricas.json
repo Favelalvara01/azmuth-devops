@@ -1,35 +1,21 @@
 {
-  "generado": "2026-10-07 07:05",
+  "generado": "2026-10-08 02:11",
   "producto": {
     "complejidad": {
-      "funciones_analizadas": 149,
-      "promedio": 4.06,
-      "mediana": 3,
-      "maxima": 27,
+      "funciones_analizadas": 192,
+      "promedio": 3.39,
+      "mediana": 2.0,
+      "maxima": 15,
       "distribucion_rangos": {
-        "A": 118,
-        "B": 17,
-        "C": 12,
-        "D": 2,
+        "A": 163,
+        "B": 18,
+        "C": 11,
+        "D": 0,
         "E": 0,
         "F": 0
       },
-      "porcentaje_A_B": 90.6,
+      "porcentaje_A_B": 94.27,
       "top10": [
-        {
-          "archivo": "servidor.py",
-          "funcion": "ejecutar_accion",
-          "linea": 161,
-          "complejidad": 27,
-          "rango": "D"
-        },
-        {
-          "archivo": "skills/aplicaciones.py",
-          "funcion": "intentar",
-          "linea": 120,
-          "complejidad": 24,
-          "rango": "D"
-        },
         {
           "archivo": "skills/apps_instaladas.py",
           "funcion": "intentar",
@@ -73,36 +59,56 @@
           "rango": "C"
         },
         {
-          "archivo": "main.py",
-          "funcion": "escuchar",
-          "linea": 102,
-          "complejidad": 12,
-          "rango": "C"
-        },
-        {
           "archivo": "skills/memoria.py",
           "funcion": "intentar",
           "linea": 61,
           "complejidad": 12,
           "rango": "C"
+        },
+        {
+          "archivo": "skills/recordatorios.py",
+          "funcion": "revisar_pendientes",
+          "linea": 170,
+          "complejidad": 12,
+          "rango": "C"
+        },
+        {
+          "archivo": "skills/web.py",
+          "funcion": "intentar",
+          "linea": 53,
+          "complejidad": 12,
+          "rango": "C"
+        },
+        {
+          "archivo": "cerebro.py",
+          "funcion": "preguntar",
+          "linea": 93,
+          "complejidad": 11,
+          "rango": "C"
         }
       ]
     },
     "lineas": {
-      "archivos": 28,
-      "loc": 3689,
-      "sloc": 2595,
-      "kloc": 2.6,
+      "archivos": 31,
+      "loc": 3980,
+      "sloc": 2773,
+      "kloc": 2.77,
       "por_archivo": {
+        "acciones_remotas.py": {
+          "loc": 123,
+          "sloc": 88,
+          "comentarios": 9,
+          "mi": 67.14
+        },
         "app_desktop.py": {
-          "loc": 105,
-          "sloc": 67,
-          "comentarios": 14,
-          "mi": 71.35
+          "loc": 111,
+          "sloc": 72,
+          "comentarios": 15,
+          "mi": 70.59
         },
         "basedatos.py": {
-          "loc": 126,
-          "sloc": 94,
+          "loc": 128,
+          "sloc": 95,
           "comentarios": 14,
           "mi": 100.0
         },
@@ -119,10 +125,10 @@
           "mi": 58.53
         },
         "config.py": {
-          "loc": 30,
-          "sloc": 16,
-          "comentarios": 10,
-          "mi": 92.99
+          "loc": 37,
+          "sloc": 18,
+          "comentarios": 14,
+          "mi": 91.04
         },
         "estado.py": {
           "loc": 169,
@@ -131,10 +137,10 @@
           "mi": 69.25
         },
         "main.py": {
-          "loc": 331,
-          "sloc": 230,
-          "comentarios": 40,
-          "mi": 45.76
+          "loc": 392,
+          "sloc": 268,
+          "comentarios": 43,
+          "mi": 41.65
         },
         "migrar_json_a_sqlite.py": {
           "loc": 166,
@@ -142,17 +148,29 @@
           "comentarios": 10,
           "mi": 52.14
         },
+        "monitoreo.py": {
+          "loc": 86,
+          "sloc": 62,
+          "comentarios": 7,
+          "mi": 68.94
+        },
         "nucleo.py": {
           "loc": 41,
           "sloc": 21,
           "comentarios": 12,
           "mi": 88.08
         },
+        "rutas.py": {
+          "loc": 15,
+          "sloc": 7,
+          "comentarios": 5,
+          "mi": 100.0
+        },
         "servidor.py": {
-          "loc": 585,
-          "sloc": 508,
-          "comentarios": 12,
-          "mi": 33.56
+          "loc": 542,
+          "sloc": 454,
+          "comentarios": 11,
+          "mi": 41.3
         },
         "voice.py": {
           "loc": 80,
@@ -167,10 +185,10 @@
           "mi": 77.63
         },
         "skills/aplicaciones.py": {
-          "loc": 195,
-          "sloc": 151,
-          "comentarios": 20,
-          "mi": 55.4
+          "loc": 225,
+          "sloc": 176,
+          "comentarios": 17,
+          "mi": 49.76
         },
         "skills/apps_instaladas.py": {
           "loc": 275,
@@ -257,27 +275,30 @@
           "mi": 75.04
         },
         "skills/web.py": {
-          "loc": 107,
-          "sloc": 72,
+          "loc": 111,
+          "sloc": 76,
           "comentarios": 18,
-          "mi": 69.05
+          "mi": 68.63
         }
       }
     },
     "cobertura": {
-      "total": 76.62,
+      "total": 85.28,
       "por_archivo": {
+        "acciones_remotas.py": 100.0,
         "app_desktop.py": 0.0,
         "basedatos.py": 100.0,
         "cerebro.py": 70.59,
         "chats.py": 96.2,
         "config.py": 100.0,
         "estado.py": 79.45,
-        "main.py": 26.01,
+        "main.py": 90.49,
+        "monitoreo.py": 88.89,
         "nucleo.py": 100.0,
-        "servidor.py": 97.07,
+        "rutas.py": 100.0,
+        "servidor.py": 95.65,
         "skills/__init__.py": 100.0,
-        "skills/aplicaciones.py": 82.95,
+        "skills/aplicaciones.py": 88.99,
         "skills/apps_instaladas.py": 82.49,
         "skills/ayuda.py": 100.0,
         "skills/contactos.py": 97.44,
@@ -295,14 +316,14 @@
         "skills/web.py": 91.18,
         "voice.py": 73.33
       },
-      "lineas_cubiertas": 1311,
-      "lineas_ejecutables": 1711
+      "lineas_cubiertas": 1553,
+      "lineas_ejecutables": 1821
     },
     "densidad_defectos": {
       "defectos_totales": 16,
-      "por_kloc": 6.17,
-      "abiertos": 1,
-      "abiertos_por_kloc": 0.39,
+      "por_kloc": 5.77,
+      "abiertos": 0,
+      "abiertos_por_kloc": 0.0,
       "por_archivo": {
         "app_desktop.py": 1,
         "main.py": 4,
@@ -316,14 +337,14 @@
         "servidor.py": 1
       }
     },
-    "mantenibilidad_promedio": 71.83
+    "mantenibilidad_promedio": 72.32
   },
   "proceso": {
     "mttd_horas": 262.18,
     "mttd_dias": 10.92,
-    "mttr_horas": 2.52,
-    "mttr_minutos": 151,
-    "defectos_reparados": 15,
+    "mttr_horas": 4.37,
+    "mttr_minutos": 262,
+    "defectos_reparados": 16,
     "defectos_por_fase": {
       "revision": 3,
       "pruebas": 5,
@@ -337,11 +358,11 @@
       "porcentaje_pruebas_vs_produccion": 38.46
     },
     "ejecucion_pruebas": {
-      "total": 167,
-      "aprobadas": 167,
+      "total": 227,
+      "aprobadas": 227,
       "fallidas": 0,
       "defectos_conocidos_xfail": 0,
-      "tiempo_seg": 3.18
+      "tiempo_seg": 4.01
     }
   },
   "proyecto": {
@@ -364,9 +385,9 @@
           "desviacion_horas": 4.0,
           "desviacion_porcentaje": 40.0,
           "puntos_historia": 8,
-          "sloc": 296,
+          "sloc": 336,
           "defectos": 5,
-          "densidad_defectos_kloc": 16.89,
+          "densidad_defectos_kloc": 14.88,
           "horas_por_punto": 1.75
         },
         {
@@ -390,9 +411,9 @@
           "desviacion_horas": 4.0,
           "desviacion_porcentaje": 28.57,
           "puntos_historia": 13,
-          "sloc": 335,
+          "sloc": 364,
           "defectos": 2,
-          "densidad_defectos_kloc": 5.97,
+          "densidad_defectos_kloc": 5.49,
           "horas_por_punto": 1.38
         },
         {
@@ -416,9 +437,9 @@
           "desviacion_horas": 6.0,
           "desviacion_porcentaje": 60.0,
           "puntos_historia": 8,
-          "sloc": 683,
+          "sloc": 634,
           "defectos": 5,
-          "densidad_defectos_kloc": 7.32,
+          "densidad_defectos_kloc": 7.89,
           "horas_por_punto": 2.0
         },
         {
@@ -429,7 +450,7 @@
           "desviacion_horas": -1.0,
           "desviacion_porcentaje": -16.67,
           "puntos_historia": 5,
-          "sloc": 230,
+          "sloc": 231,
           "defectos": 0,
           "densidad_defectos_kloc": 0.0,
           "horas_por_punto": 1.0
