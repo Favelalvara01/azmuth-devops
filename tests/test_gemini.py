@@ -130,3 +130,9 @@ def test_modelo_lento_pasa_al_siguiente(solo_gemini, monkeypatch):
     monkeypatch.setattr(gemini.time, "sleep", lambda *_: None)
     solo_gemini.side_effect = [gemini.requests.Timeout(), ok("rápido")]
     assert gemini.completar("s", [{"role": "user", "content": "x"}]) == "rápido"
+
+
+def test_pide_pensamiento_minimo_y_se_adapta_si_el_modelo_no_lo_acepta(solo_gemini):
+    solo_gemini.side_effect = [Resp(400, {"error": {"message": "thinking level is not supported"}}), ok("sin pensar")]
+    assert gemini.completar("s", [{"role": "user", "content": "x"}]) == "sin pensar"
+    assert "thinkingConfig" not in solo_gemini.call_args.kwargs["json"]["generationConfig"]

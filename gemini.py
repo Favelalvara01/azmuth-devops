@@ -50,7 +50,8 @@ def convertir(system: str, mensajes: list, max_tokens: int) -> dict:
         "contents": contenidos,
         # Los modelos Flash recientes "piensan" antes de contestar y eso también
         # gasta tokens de salida: se deja margen para que la respuesta no se corte.
-        "generationConfig": {"maxOutputTokens": max_tokens + 2048},
+        # Un asistente de voz necesita rapidez: se pide el mínimo de "pensamiento".
+        "generationConfig": {"maxOutputTokens": max_tokens + 2048, "thinkingConfig": {"thinkingLevel": "low"}},
     }
 
 
@@ -66,7 +67,9 @@ def _texto(datos: dict) -> str:
 def _avisar(texto: str):
     try:
         import estado
+        import monitoreo
         estado.log(texto)
+        monitoreo.registrar_evento(texto)  # queda en datos/errores.log para revisar tiempos
     except Exception:
         pass
 
@@ -89,7 +92,13 @@ def completar(system: str, mensajes: list, max_tokens: int = 800) -> str:
             r = requests.post(_URL.format(modelo=modelo), json=cuerpo, timeout=_TIMEOUT,
                               headers={"x-goog-api-key": config.GEMINI_API_KEY})
         except requests.Timeout:
+            _avisar(f"Gemini ({modelo}) tardó más de {_TIMEOUT} s, se prueba otro")
             continue  # tardó demasiado: siguiente modelo
+        if r.status_code == 400 and "thinking" in _detalle(r).lower() and "thinkingConfig" in cuerpo["generationConfig"]:
+            # este modelo no acepta el nivel de pensamiento: se repite la petición sin él
+            cuerpo["generationConfig"].pop("thinkingConfig")
+            r = requests.post(_URL.format(modelo=modelo), json=cuerpo, timeout=_TIMEOUT,
+                              headers={"x-goog-api-key": config.GEMINI_API_KEY})
         if r.status_code == 200:
             _modelo_que_funciona = modelo
             _avisar(f"🧠 Gemini ({modelo}) respondió en {time.time() - inicio:.1f} s")
@@ -100,6 +109,7 @@ def completar(system: str, mensajes: list, max_tokens: int = 800) -> str:
         if r.status_code not in _REINTENTABLES and not retirado:
             raise ErrorGemini(f"Gemini respondió {r.status_code}: {_detalle(r)}")
         ultimo = r
+        _avisar(f"Gemini ({modelo}) falló con {r.status_code}: {_detalle(r)[:80]}")
         if modelo == _modelo_que_funciona:
             _modelo_que_funciona = None  # dejó de funcionar: se vuelve a buscar
         time.sleep(0.3)  # el modelo no existe o está saturado: se intenta con el siguiente
