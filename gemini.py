@@ -7,12 +7,16 @@ de Azmuth no tiene que saber qué IA está usando.
 
 No usa ninguna librería nueva (solo `requests`), para no engordar Azmuth.exe.
 """
+import time
+
 import requests
 
 import config
 
 _URL = "https://generativelanguage.googleapis.com/v1beta/models/{modelo}:generateContent"
-_MODELO_RESPALDO = "gemini-2.5-flash"
+# Si un modelo no existe (404) o está saturado (503), se prueba el siguiente.
+_RESPALDOS = ("gemini-2.5-flash", "gemini-2.5-flash-lite")
+_REINTENTABLES = (404, 500, 503)
 _TIMEOUT = 60
 
 
@@ -55,21 +59,28 @@ def _texto(datos: dict) -> str:
     return "".join(p.get("text", "") for p in partes if not p.get("thought")).strip()
 
 
+def _detalle(r) -> str:
+    try:
+        return r.json()["error"]["message"]
+    except Exception:
+        return r.text[:200]
+
+
 def completar(system: str, mensajes: list, max_tokens: int = 800) -> str:
     cuerpo = convertir(system, mensajes, max_tokens)
-    modelos = [config.GEMINI_MODELO] + ([_MODELO_RESPALDO] if config.GEMINI_MODELO != _MODELO_RESPALDO else [])
-    for i, modelo in enumerate(modelos):
+    modelos = list(dict.fromkeys([config.GEMINI_MODELO, *_RESPALDOS]))
+    ultimo = None
+    for modelo in modelos:
         r = requests.post(_URL.format(modelo=modelo), json=cuerpo, timeout=_TIMEOUT,
                           headers={"x-goog-api-key": config.GEMINI_API_KEY})
-        if r.status_code == 404 and i + 1 < len(modelos):
-            continue  # el alias del modelo cambió: se intenta con el de respaldo
+        if r.status_code == 200:
+            return _texto(r.json())
         if r.status_code == 429:
             raise ErrorGemini("se alcanzó el límite gratuito de Gemini; espere un momento e intente de nuevo")
-        if r.status_code != 200:
-            try:
-                detalle = r.json()["error"]["message"]
-            except Exception:
-                detalle = r.text[:200]
-            raise ErrorGemini(f"Gemini respondió {r.status_code}: {detalle}")
-        return _texto(r.json())
-    raise ErrorGemini("no se encontró un modelo de Gemini disponible")
+        if r.status_code not in _REINTENTABLES:
+            raise ErrorGemini(f"Gemini respondió {r.status_code}: {_detalle(r)}")
+        ultimo = r
+        time.sleep(1)  # el modelo no existe o está saturado: se intenta con el siguiente
+    if ultimo is not None and ultimo.status_code == 503:
+        raise ErrorGemini("los servidores de Gemini están saturados en este momento; intente de nuevo en unos segundos")
+    raise ErrorGemini(f"ningún modelo de Gemini respondió ({_detalle(ultimo) if ultimo is not None else 'sin respuesta'})")

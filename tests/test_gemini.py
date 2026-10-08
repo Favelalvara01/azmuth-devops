@@ -67,9 +67,12 @@ def test_pantalla_manda_la_imagen_a_gemini(solo_gemini):
 
 
 def test_si_el_modelo_no_existe_usa_el_de_respaldo(solo_gemini):
+    monkeypatch_sleep = mock.patch.object(gemini.time, "sleep", lambda *_: None)
+    monkeypatch_sleep.start()
     solo_gemini.side_effect = [Resp(404, {"error": {"message": "not found"}}), ok("respaldo")]
     assert gemini.completar("s", [{"role": "user", "content": "x"}]) == "respaldo"
     assert "gemini-2.5-flash" in solo_gemini.call_args.args[0]
+    monkeypatch_sleep.stop()
 
 
 def test_limite_gratuito_da_mensaje_claro(solo_gemini):
@@ -90,3 +93,15 @@ def test_traduccion_y_apps_tambien_usan_gemini(solo_gemini):
     solo_gemini.return_value = ok("Discord")
     app, consultada = apps_instaladas.elegir_con_ia("discor", [(0.6, {"nombre": "Discord"})])
     assert consultada and app["nombre"] == "Discord"
+
+
+def test_modelo_saturado_prueba_el_siguiente(solo_gemini, monkeypatch):
+    monkeypatch.setattr(gemini.time, "sleep", lambda *_: None)
+    solo_gemini.side_effect = [Resp(503, {"error": {"message": "high demand"}}), ok("contesté con otro modelo")]
+    assert gemini.completar("s", [{"role": "user", "content": "x"}]) == "contesté con otro modelo"
+
+
+def test_todos_saturados_da_mensaje_claro(solo_gemini, monkeypatch):
+    monkeypatch.setattr(gemini.time, "sleep", lambda *_: None)
+    solo_gemini.return_value = Resp(503, {"error": {"message": "high demand"}})
+    assert "saturados" in cerebro.preguntar("hola")
