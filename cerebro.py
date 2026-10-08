@@ -128,6 +128,35 @@ def preguntar(texto_usuario: str, mensajes=None, modo: str = "voz") -> str:
         return f"Tuve un problema conectando con mi cerebro: {e}"
 
 
+def analizar_imagen(imagen_jpeg: bytes, pregunta: str, modo: str = "voz") -> str:
+    """Visión: manda una imagen (ej. captura de pantalla) a Claude con la pregunta."""
+    if not config.ANTHROPIC_API_KEY:
+        return "No tengo configurada mi clave de Anthropic todavía. Revise su archivo .env, por favor."
+    import base64
+    system = _construir_system_prompt()
+    if modo == "escritorio":
+        system += EXTRA_ESCRITORIO
+    else:
+        system += ("\nEstás viendo una captura de la pantalla del usuario. Responde en máximo 3 "
+                   "oraciones, sin Markdown, porque se va a decir en voz alta.")
+    contenido = [
+        {"type": "image", "source": {"type": "base64", "media_type": "image/jpeg",
+                                     "data": base64.b64encode(imagen_jpeg).decode("ascii")}},
+        {"type": "text", "text": pregunta},
+    ]
+    try:
+        respuesta = _obtener_cliente().messages.create(
+            model=config.MODELO_CLAUDE,
+            max_tokens=1500 if modo == "escritorio" else 400,
+            system=system,
+            messages=[{"role": "user", "content": contenido}],
+        )
+        texto = "".join(b.text for b in respuesta.content if b.type == "text").strip()
+        return texto or "No logré describir la pantalla."
+    except Exception as e:
+        return f"Tuve un problema analizando la pantalla: {e}"
+
+
 def borrar_historial():
     global _historial
     _historial = []

@@ -21,10 +21,10 @@ Ese es todo el contrato — no hay que tocar nada más del programa.
 """
 import re
 
-from . import (modos, tiempo, notas, recordatorios, memoria, contactos, habitos, web, sistema,
+from . import (modos, pantalla, tiempo, notas, recordatorios, memoria, contactos, habitos, web, sistema,
                multimedia, pestanas, ayuda, aplicaciones, apps_instaladas)
 
-SKILLS = [modos, sistema, tiempo, notas, recordatorios, memoria, contactos, habitos, web,
+SKILLS = [modos, pantalla, sistema, tiempo, notas, recordatorios, memoria, contactos, habitos, web,
           pestanas, multimedia, ayuda, aplicaciones, apps_instaladas]
 
 

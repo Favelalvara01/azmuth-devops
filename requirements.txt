@@ -13,3 +13,4 @@ pywebview
 sounddevice
 numpy
 pyngrok
+Pillow
