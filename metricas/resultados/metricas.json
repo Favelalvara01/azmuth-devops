@@ -1,20 +1,20 @@
 {
-  "generado": "2026-10-08 02:11",
+  "generado": "2026-10-08 02:34",
   "producto": {
     "complejidad": {
-      "funciones_analizadas": 192,
-      "promedio": 3.39,
-      "mediana": 2.0,
+      "funciones_analizadas": 201,
+      "promedio": 3.37,
+      "mediana": 2,
       "maxima": 15,
       "distribucion_rangos": {
-        "A": 163,
-        "B": 18,
+        "A": 170,
+        "B": 20,
         "C": 11,
         "D": 0,
         "E": 0,
         "F": 0
       },
-      "porcentaje_A_B": 94.27,
+      "porcentaje_A_B": 94.53,
       "top10": [
         {
           "archivo": "skills/apps_instaladas.py",
@@ -54,7 +54,7 @@
         {
           "archivo": "cerebro.py",
           "funcion": "actualizar_perfil_si_toca",
-          "linea": 136,
+          "linea": 165,
           "complejidad": 12,
           "rango": "C"
         },
@@ -89,10 +89,10 @@
       ]
     },
     "lineas": {
-      "archivos": 31,
-      "loc": 3980,
-      "sloc": 2773,
-      "kloc": 2.77,
+      "archivos": 33,
+      "loc": 4157,
+      "sloc": 2897,
+      "kloc": 2.9,
       "por_archivo": {
         "acciones_remotas.py": {
           "loc": 123,
@@ -113,10 +113,10 @@
           "mi": 100.0
         },
         "cerebro.py": {
-          "loc": 171,
-          "sloc": 116,
+          "loc": 200,
+          "sloc": 142,
           "comentarios": 28,
-          "mi": 61.79
+          "mi": 56.26
         },
         "chats.py": {
           "loc": 138,
@@ -137,10 +137,10 @@
           "mi": 69.25
         },
         "main.py": {
-          "loc": 392,
-          "sloc": 268,
+          "loc": 394,
+          "sloc": 270,
           "comentarios": 43,
-          "mi": 41.65
+          "mi": 41.52
         },
         "migrar_json_a_sqlite.py": {
           "loc": 166,
@@ -153,6 +153,12 @@
           "sloc": 62,
           "comentarios": 7,
           "mi": 68.94
+        },
+        "notificaciones.py": {
+          "loc": 61,
+          "sloc": 40,
+          "comentarios": 10,
+          "mi": 88.65
         },
         "nucleo.py": {
           "loc": 41,
@@ -167,10 +173,10 @@
           "mi": 100.0
         },
         "servidor.py": {
-          "loc": 542,
-          "sloc": 454,
-          "comentarios": 11,
-          "mi": 41.3
+          "loc": 558,
+          "sloc": 465,
+          "comentarios": 14,
+          "mi": 41.16
         },
         "voice.py": {
           "loc": 80,
@@ -197,8 +203,8 @@
           "mi": 41.14
         },
         "skills/ayuda.py": {
-          "loc": 74,
-          "sloc": 61,
+          "loc": 77,
+          "sloc": 64,
           "comentarios": 7,
           "mi": 100.0
         },
@@ -244,6 +250,12 @@
           "comentarios": 10,
           "mi": 81.64
         },
+        "skills/pantalla.py": {
+          "loc": 66,
+          "sloc": 42,
+          "comentarios": 10,
+          "mi": 75.72
+        },
         "skills/perfil.py": {
           "loc": 49,
           "sloc": 27,
@@ -283,20 +295,21 @@
       }
     },
     "cobertura": {
-      "total": 85.28,
+      "total": 85.56,
       "por_archivo": {
         "acciones_remotas.py": 100.0,
         "app_desktop.py": 0.0,
         "basedatos.py": 100.0,
-        "cerebro.py": 70.59,
+        "cerebro.py": 72.29,
         "chats.py": 96.2,
         "config.py": 100.0,
         "estado.py": 79.45,
-        "main.py": 90.49,
+        "main.py": 90.57,
         "monitoreo.py": 88.89,
+        "notificaciones.py": 100.0,
         "nucleo.py": 100.0,
         "rutas.py": 100.0,
-        "servidor.py": 95.65,
+        "servidor.py": 95.92,
         "skills/__init__.py": 100.0,
         "skills/aplicaciones.py": 88.99,
         "skills/apps_instaladas.py": 82.49,
@@ -308,6 +321,7 @@
         "skills/modos.py": 94.44,
         "skills/multimedia.py": 74.07,
         "skills/notas.py": 100.0,
+        "skills/pantalla.py": 88.24,
         "skills/perfil.py": 82.61,
         "skills/pestanas.py": 87.93,
         "skills/recordatorios.py": 95.0,
@@ -316,12 +330,12 @@
         "skills/web.py": 91.18,
         "voice.py": 73.33
       },
-      "lineas_cubiertas": 1553,
-      "lineas_ejecutables": 1821
+      "lineas_cubiertas": 1630,
+      "lineas_ejecutables": 1905
     },
     "densidad_defectos": {
-      "defectos_totales": 16,
-      "por_kloc": 5.77,
+      "defectos_totales": 17,
+      "por_kloc": 5.87,
       "abiertos": 0,
       "abiertos_por_kloc": 0.0,
       "por_archivo": {
@@ -334,42 +348,42 @@
         "skills/ayuda.py": 1,
         "skills/habitos.py": 1,
         "skills/multimedia.py": 1,
-        "servidor.py": 1
+        "servidor.py": 2
       }
     },
-    "mantenibilidad_promedio": 72.32
+    "mantenibilidad_promedio": 72.75
   },
   "proceso": {
-    "mttd_horas": 262.18,
-    "mttd_dias": 10.92,
-    "mttr_horas": 4.37,
-    "mttr_minutos": 262,
-    "defectos_reparados": 16,
+    "mttd_horas": 246.79,
+    "mttd_dias": 10.28,
+    "mttr_horas": 4.12,
+    "mttr_minutos": 247,
+    "defectos_reparados": 17,
     "defectos_por_fase": {
       "revision": 3,
       "pruebas": 5,
-      "produccion": 8
+      "produccion": 9
     },
     "eficacia_pruebas": {
       "detectados_en_pruebas": 5,
       "graves_detectados_en_pruebas": 0,
       "graves_totales": 4,
-      "dre_porcentaje": 50.0,
-      "porcentaje_pruebas_vs_produccion": 38.46
+      "dre_porcentaje": 47.06,
+      "porcentaje_pruebas_vs_produccion": 35.71
     },
     "ejecucion_pruebas": {
-      "total": 227,
-      "aprobadas": 227,
+      "total": 252,
+      "aprobadas": 252,
       "fallidas": 0,
       "defectos_conocidos_xfail": 0,
-      "tiempo_seg": 4.01
+      "tiempo_seg": 5.56
     }
   },
   "proyecto": {
     "eficacia_revision": {
       "defectos_en_revision": 3,
-      "defectos_totales": 16,
-      "porcentaje": 18.75
+      "defectos_totales": 17,
+      "porcentaje": 17.65
     },
     "desviacion": {
       "horas_estimadas": 72.0,
@@ -385,9 +399,9 @@
           "desviacion_horas": 4.0,
           "desviacion_porcentaje": 40.0,
           "puntos_historia": 8,
-          "sloc": 336,
+          "sloc": 338,
           "defectos": 5,
-          "densidad_defectos_kloc": 14.88,
+          "densidad_defectos_kloc": 14.79,
           "horas_por_punto": 1.75
         },
         {
@@ -398,9 +412,9 @@
           "desviacion_horas": 3.0,
           "desviacion_porcentaje": 25.0,
           "puntos_historia": 8,
-          "sloc": 283,
+          "sloc": 286,
           "defectos": 1,
-          "densidad_defectos_kloc": 3.53,
+          "densidad_defectos_kloc": 3.5,
           "horas_por_punto": 1.88
         },
         {
@@ -424,9 +438,9 @@
           "desviacion_horas": 1.0,
           "desviacion_porcentaje": 8.33,
           "puntos_historia": 8,
-          "sloc": 408,
+          "sloc": 434,
           "defectos": 1,
-          "densidad_defectos_kloc": 2.45,
+          "densidad_defectos_kloc": 2.3,
           "horas_por_punto": 1.62
         },
         {
@@ -437,9 +451,9 @@
           "desviacion_horas": 6.0,
           "desviacion_porcentaje": 60.0,
           "puntos_historia": 8,
-          "sloc": 634,
-          "defectos": 5,
-          "densidad_defectos_kloc": 7.89,
+          "sloc": 645,
+          "defectos": 6,
+          "densidad_defectos_kloc": 9.3,
           "horas_por_punto": 2.0
         },
         {
