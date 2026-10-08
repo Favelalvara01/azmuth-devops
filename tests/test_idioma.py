@@ -35,7 +35,8 @@ def test_frases_para_pasar_a_ingles(frase):
     assert skill == "idiomas" and idioma.obtener() == "en" and "English" in respuesta
 
 
-@pytest.mark.parametrize("frase", ["switch to Spanish", "speak spanish", "cambia a español"])
+@pytest.mark.parametrize("frase", ["switch to Spanish", "speak spanish", "cambia a español",
+                                   "are you a switch in Spanish", "change it to Spanish please", "Spanish mode"])
 def test_frases_para_regresar_a_espanol(frase, en_ingles):
     respuesta, skill = skills.procesar(frase)
     assert skill == "idiomas" and idioma.obtener() == "es"
@@ -179,3 +180,8 @@ def test_recordatorio_en_ingles_se_guarda_con_hora(en_ingles):
     with basedatos.conectar() as con:
         fila = con.execute("SELECT texto, hora, hora_objetivo FROM recordatorios").fetchone()
     assert fila["texto"] == "study" and "19:00" in (fila["hora"] or fila["hora_objetivo"] or "")
+
+
+def test_pregunta_larga_sobre_espanol_no_cambia_el_idioma(en_ingles):
+    assert skills.procesar("how do you say switch in spanish when talking to my grandma")[1] != "idiomas"
+    assert idioma.obtener() == "en"

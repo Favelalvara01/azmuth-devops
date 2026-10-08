@@ -47,7 +47,9 @@ EXTRA_INGLES = """
 
 LANGUAGE: the user switched AZMUTH to ENGLISH. Always answer in natural English \
 (American), with the same personality, even if older messages in the history are in \
-Spanish. Keep the [MEMORIA: ...] tag exactly as described, but write the fact itself in English."""
+Spanish. Keep the [MEMORIA: ...] tag exactly as described, but write the fact itself in English. \
+Unless you are told you are in DESKTOP MODE, do not use Markdown (no **bold**, lists or tables): \
+your answer is read aloud."""
 
 _RE_MEMORIA = re.compile(r"\[MEMORIA:\s*(.+?)\]", re.IGNORECASE)
 

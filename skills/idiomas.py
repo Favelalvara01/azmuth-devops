@@ -27,8 +27,22 @@ def _limpio(texto: str) -> str:
     return re.sub(r"^(?:(?:hey|ok|oye)\s+)?(?:azmuth\s+)?(?:please\s+|por\s+favor\s+)?", "", t).strip()
 
 
+# El dictado en inglés no siempre escribe la frase exacta ("are you a switch in
+# Spanish" en vez de "switch to Spanish"). En frases cortas basta con que aparezca
+# el idioma junto a una palabra de cambio.
+_VERBOS_CAMBIO = re.compile(r"\b(?:switch|change|speak|talk|mode|language|back|cambia|habla|modo|idioma|pon)\b")
+
+
+def _pide_cambio(t: str, idioma_nombre: str) -> bool:
+    return len(t.split()) <= 7 and bool(re.search(idioma_nombre, t)) and bool(_VERBOS_CAMBIO.search(t))
+
+
 def intentar(texto: str):
     t = _limpio(texto)
+    if not _A_ESPANOL.match(t) and idioma.es_ingles() and _pide_cambio(t, r"\b(?:spanish|espa[ñn]ol)\b"):
+        t = "spanish"
+    elif not _A_INGLES.match(t) and not idioma.es_ingles() and _pide_cambio(t, r"\bingl[eé]s\b|\benglish\b"):
+        t = "english"
     if _A_INGLES.match(t):
         if idioma.es_ingles():
             return "I'm already speaking English."
