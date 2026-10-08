@@ -18,8 +18,10 @@ _PANTALLA = r"(?:mi\s+|la\s+|esta\s+)?pantalla"
 _DISPARADORES = re.compile(
     r"\b(?:"
     r"qu[eé]\s+(?:hay|ves|tengo|sale|aparece|dice)\s+(?:en\s+)?" + _PANTALLA +
-    r"|(?:mira|lee|leeme|léeme|revisa|analiza|checa|explica|explicame|explícame|describe)\s+"
-    r"(?:lo\s+que\s+(?:hay|tengo|dice|sale)\s+en\s+)?" + _PANTALLA +
+    r"|(?:mira|lee|leeme|léeme|revisa|analiza|checa|explica|explicame|explícame|describe|"
+    r"ayuda|ayudame|ayúdame|resuelve|resuelveme|corrige|traduce|traduceme|resume|resumeme)\s+"
+    r"(?:(?:con|en)\s+)?(?:lo\s+que\s+(?:hay|tengo|dice|sale|aparece)\s+en\s+)?(?:(?:lo\s+)?de\s+)?" + _PANTALLA +
+    r"|lo\s+que\s+(?:hay|tengo|dice|sale|aparece)\s+en\s+" + _PANTALLA +
     r"|(?:ves|puedes\s+ver)\s+" + _PANTALLA +
     r")\b"
 )

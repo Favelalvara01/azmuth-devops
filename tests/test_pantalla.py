@@ -12,12 +12,15 @@ from skills import pantalla
 
 @pytest.mark.parametrize("frase", [
     "qué hay en mi pantalla", "¿Qué ves en la pantalla?", "mira mi pantalla y dime qué error tiene",
-    "léeme lo que dice la pantalla", "explícame lo que tengo en pantalla", "puedes ver mi pantalla"])
+    "léeme lo que dice la pantalla", "explícame lo que tengo en pantalla", "puedes ver mi pantalla",
+    "ayúdame con lo que hay en mi pantalla", "ayúdame con mi pantalla", "resuelve lo de mi pantalla",
+    "traduce lo que dice mi pantalla", "dime lo que aparece en la pantalla"])
 def test_detecta_preguntas_de_pantalla(frase):
     assert pantalla.es_pregunta_de_pantalla(frase)
 
 
-@pytest.mark.parametrize("frase", ["sube el brillo de la pantalla", "qué hora es", "abre paint"])
+@pytest.mark.parametrize("frase", ["sube el brillo de la pantalla", "baja el brillo de mi pantalla", "qué hora es", "abre paint",
+                                   "ayúdame con mi tarea"])
 def test_no_confunde_otras_frases(frase):
     assert not pantalla.es_pregunta_de_pantalla(frase)
 
