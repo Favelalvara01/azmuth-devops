@@ -109,7 +109,7 @@ jobs:
 
       - name: Guardar reportes como artefacto
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: reportes-calidad
           path: reports/
