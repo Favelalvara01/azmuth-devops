@@ -12,6 +12,9 @@ import rutas
 load_dotenv(os.path.join(rutas.CARPETA_APP, ".env"))
 
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
+# Alternativa gratuita: si no hay clave de Anthropic, Azmuth usa Google Gemini.
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
+GEMINI_MODELO = os.getenv("GEMINI_MODELO", "gemini-flash-latest").strip() or "gemini-flash-latest"
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "").strip()
 ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "JBFqnCBsd6RMkjVDRZzb").strip()
 PALABRA_CLAVE = os.getenv("PALABRA_CLAVE", "hora de ser heroe").strip().lower()
@@ -34,7 +37,9 @@ NGROK_DOMINIO = os.getenv("NGROK_DOMINIO", "").strip()
 # https://<tu-dominio>/reloj?token=TU_TOKEN y el celular lo recuerda.
 TOKEN_REMOTO = os.getenv("TOKEN_REMOTO", "").strip()
 
-if not ANTHROPIC_API_KEY:
-    print("⚠️  Falta ANTHROPIC_API_KEY en tu archivo .env — la conversación con la IA no va a funcionar todavía.")
+if not ANTHROPIC_API_KEY and GEMINI_API_KEY:
+    print("ℹ️  Sin ANTHROPIC_API_KEY: la conversación con la IA usará Google Gemini (GEMINI_API_KEY).")
+elif not ANTHROPIC_API_KEY:
+    print("⚠️  Falta ANTHROPIC_API_KEY o GEMINI_API_KEY en tu archivo .env — la conversación con la IA no va a funcionar todavía.")
 if not ELEVENLABS_API_KEY:
     print("⚠️  Falta ELEVENLABS_API_KEY en tu archivo .env — usaré la voz de reserva de Windows mientras tanto.")

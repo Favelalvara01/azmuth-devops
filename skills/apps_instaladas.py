@@ -134,16 +134,13 @@ def elegir_con_ia(frase: str, opciones):
     Regresa (app | None, consultada). consultada=False si no hay IA disponible."""
     try:
         import cerebro
-        import config
-        if not config.ANTHROPIC_API_KEY:
+        if not cerebro.proveedor():
             return None, False
         lista = "\n".join(f"- {a['nombre']}" for _, a in opciones)
-        r = cerebro._obtener_cliente().messages.create(
-            model=config.MODELO_CLAUDE, max_tokens=40,
-            system="Eliges aplicaciones. Responde SOLO con el nombre exacto de una opción de la lista, o NINGUNA.",
-            messages=[{"role": "user", "content": f'El usuario dijo: "{frase}". ¿Cuál de estas apps quiso abrir?\n{lista}'}],
-        )
-        elegido = "".join(b.text for b in r.content if b.type == "text").strip().strip('"').strip("- ")
+        respuesta = cerebro.completar(
+            "Eliges aplicaciones. Responde SOLO con el nombre exacto de una opción de la lista, o NINGUNA.",
+            [{"role": "user", "content": f'El usuario dijo: "{frase}". ¿Cuál de estas apps quiso abrir?\n{lista}'}], 40)
+        elegido = respuesta.strip().strip('"').strip("- ")
         return next((a for _, a in opciones if a["nombre"].lower() == elegido.lower()), None), True
     except Exception:
         return None, False

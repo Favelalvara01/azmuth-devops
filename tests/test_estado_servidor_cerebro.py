@@ -60,7 +60,7 @@ def test_extraer_memoria_automatica():
 
 def test_sin_clave_responde_aviso(monkeypatch):
     monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "")
-    assert "No tengo configurada mi clave" in cerebro.preguntar("hola")
+    assert "No tengo configurada ninguna clave" in cerebro.preguntar("hola")
 
 
 def test_preguntar_con_claude_simulado(monkeypatch):

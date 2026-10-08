@@ -57,6 +57,29 @@ _cliente = None
 _historial = []
 
 
+SIN_CLAVE = ("No tengo configurada ninguna clave de IA todavía. Ponga ANTHROPIC_API_KEY "
+             "o GEMINI_API_KEY (gratis) en su archivo .env, por favor.")
+
+
+def proveedor():
+    """'claude', 'gemini' o None. Claude tiene prioridad; Gemini es la opción gratuita."""
+    if config.ANTHROPIC_API_KEY:
+        return "claude"
+    if getattr(config, "GEMINI_API_KEY", ""):
+        return "gemini"
+    return None
+
+
+def completar(system: str, mensajes: list, max_tokens: int) -> str:
+    """Punto único para hablar con la IA, sea Claude o Gemini. Lanza excepción si falla."""
+    if proveedor() == "gemini":
+        import gemini
+        return gemini.completar(system, mensajes, max_tokens)
+    respuesta = _obtener_cliente().messages.create(
+        model=config.MODELO_CLAUDE, max_tokens=max_tokens, system=system, messages=mensajes)
+    return "".join(b.text for b in respuesta.content if b.type == "text").strip()
+
+
 def _obtener_cliente():
     global _cliente
     if _cliente is None:
@@ -109,10 +132,9 @@ def preguntar(texto_usuario: str, mensajes=None, modo: str = "voz") -> str:
     - Modo escritorio: recibe en `mensajes` el historial del chat escrito
       (ya incluye el mensaje actual del usuario) y permite respuestas largas
       con Markdown. Ese historial vive en la base de datos (ver chats.py)."""
-    if not config.ANTHROPIC_API_KEY:
-        return "No tengo configurada mi clave de Anthropic todavía. Revise su archivo .env, por favor."
+    if not proveedor():
+        return SIN_CLAVE
 
-    cliente = _obtener_cliente()
     usar_historial_voz = mensajes is None
     if usar_historial_voz:
         _historial.append({"role": "user", "content": texto_usuario})
@@ -123,13 +145,7 @@ def preguntar(texto_usuario: str, mensajes=None, modo: str = "voz") -> str:
         system += EXTRA_ESCRITORIO
 
     try:
-        respuesta = cliente.messages.create(
-            model=config.MODELO_CLAUDE,
-            max_tokens=2000 if modo == "escritorio" else 800,
-            system=system,
-            messages=mensajes,
-        )
-        texto = "".join(bloque.text for bloque in respuesta.content if bloque.type == "text").strip()
+        texto = completar(system, mensajes, 2000 if modo == "escritorio" else 800)
         texto = _extraer_y_guardar_memoria(texto) if texto else texto
         texto = texto or "No logré generar una respuesta. ¿Puede intentarlo de nuevo?"
         if usar_historial_voz:
@@ -141,8 +157,8 @@ def preguntar(texto_usuario: str, mensajes=None, modo: str = "voz") -> str:
 
 def analizar_imagen(imagen_jpeg: bytes, pregunta: str, modo: str = "voz") -> str:
     """Visión: manda una imagen (ej. captura de pantalla) a Claude con la pregunta."""
-    if not config.ANTHROPIC_API_KEY:
-        return "No tengo configurada mi clave de Anthropic todavía. Revise su archivo .env, por favor."
+    if not proveedor():
+        return SIN_CLAVE
     import base64
     system = _construir_system_prompt()
     if modo == "escritorio":
@@ -156,13 +172,7 @@ def analizar_imagen(imagen_jpeg: bytes, pregunta: str, modo: str = "voz") -> str
         {"type": "text", "text": pregunta},
     ]
     try:
-        respuesta = _obtener_cliente().messages.create(
-            model=config.MODELO_CLAUDE,
-            max_tokens=1500 if modo == "escritorio" else 400,
-            system=system,
-            messages=[{"role": "user", "content": contenido}],
-        )
-        texto = "".join(b.text for b in respuesta.content if b.type == "text").strip()
+        texto = completar(system, [{"role": "user", "content": contenido}], 1500 if modo == "escritorio" else 400)
         return texto or "No logré describir la pantalla."
     except Exception as e:
         return f"Tuve un problema analizando la pantalla: {e}"
@@ -174,21 +184,17 @@ _cache_traducciones = {}
 def traducir(texto: str, a: str = "en") -> str:
     """Traduce una respuesta corta de una skill (ej. "Abriendo paint.") al idioma
     pedido. Si no hay clave o falla, regresa el texto original: nunca rompe el flujo."""
-    if not texto or not config.ANTHROPIC_API_KEY:
+    if not texto or not proveedor():
         return texto
     clave = (texto, a)
     if clave in _cache_traducciones:
         return _cache_traducciones[clave]
     destino = "natural American English" if a == "en" else "español de México"
     try:
-        respuesta = _obtener_cliente().messages.create(
-            model=config.MODELO_CLAUDE,
-            max_tokens=600,
-            system=(f"Translate the user's text into {destino}. It is a reply from a voice assistant. "
-                    "Keep names, numbers, URLs, emojis and line breaks. Output ONLY the translation."),
-            messages=[{"role": "user", "content": texto}],
-        )
-        traducido = "".join(b.text for b in respuesta.content if b.type == "text").strip() or texto
+        traducido = completar(
+            f"Translate the user's text into {destino}. It is a reply from a voice assistant. "
+            "Keep names, numbers, URLs, emojis and line breaks. Output ONLY the translation.",
+            [{"role": "user", "content": texto}], 600) or texto
     except Exception:
         return texto
     if len(_cache_traducciones) > 300:
@@ -207,7 +213,7 @@ def actualizar_perfil_si_toca():
     toca regenerar el perfil (ver skills/perfil.py) y hay suficiente
     historial acumulado, le pide a Claude que sintetice un perfil de
     personalidad/estilo corto a partir de la memoria y los hábitos."""
-    if not config.ANTHROPIC_API_KEY or not perfil.toca_actualizar():
+    if not proveedor() or not perfil.toca_actualizar():
         return
 
     hechos = memoria.recordar_todo()
@@ -219,11 +225,8 @@ def actualizar_perfil_si_toca():
     entrada += "\n\nPatrones de uso (qué tanto y cuándo usa cada tipo de comando):\n" + (resumen_habitos or "(ninguno todavía)")
 
     try:
-        cliente = _obtener_cliente()
-        respuesta = cliente.messages.create(
-            model=config.MODELO_CLAUDE,
-            max_tokens=300,
-            system=(
+        texto = completar(
+            (
                 "A partir de estos datos sobre un usuario, escribe un perfil de "
                 "personalidad/estilo de 3 a 5 oraciones en español, en tercera persona, "
                 "que le sirva a un asistente de IA para adaptar su tono y sus sugerencias "
@@ -231,9 +234,7 @@ def actualizar_perfil_si_toca():
                 "los datos son pocos, di un perfil corto y modesto en vez de inventar. "
                 "Responde solo con el perfil, sin preámbulo."
             ),
-            messages=[{"role": "user", "content": entrada}],
-        )
-        texto = "".join(b.text for b in respuesta.content if b.type == "text").strip()
+            [{"role": "user", "content": entrada}], 300)
         if texto:
             perfil.guardar_perfil(texto)
     except Exception:

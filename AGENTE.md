@@ -251,3 +251,12 @@ la ventana de escritorio con el núcleo animado — nunca una terminal.
   se traducen al comando en español en `skills/ingles.py` y reutilizan las mismas skills; la respuesta se traduce con Claude.
 - Solo en español por ahora: WhatsApp, mapas, contactos y enseñar apodos de apps.
 - El idioma se guarda en la tabla `ajustes` y se conserva al reiniciar.
+
+## IA gratuita: Google Gemini
+
+- Si el `.env` no tiene `ANTHROPIC_API_KEY` pero sí `GEMINI_API_KEY`, Azmuth usa **Gemini** para todo lo que hace con IA:
+  conversación, visión de pantalla, traducción al inglés, perfil y elección de apps.
+- La clave es gratuita (con límites de uso) en https://aistudio.google.com. Si se alcanza el límite, Azmuth avisa y hay que esperar.
+- `gemini.py` traduce los mensajes del formato de Claude al de Gemini usando solo `requests` (no agrega librerías al .exe).
+- Si ambas claves existen, se usa Claude.
+
