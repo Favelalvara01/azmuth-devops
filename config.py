@@ -25,6 +25,8 @@ PALABRA_CLAVE = os.getenv("PALABRA_CLAVE", "hora de ser heroe").strip().lower()
 # Palabra clave extra para cuando Azmuth está en inglés. Si no la defines se usa la
 # misma de siempre (ej. "omnitrix", que se entiende igual en los dos idiomas).
 PALABRA_CLAVE_EN = (os.getenv("PALABRA_CLAVE_EN", "").strip() or PALABRA_CLAVE).lower()
+# Cómo te llama Azmuth ("Bienvenido, Favela"). Vacío = te dice "señor".
+NOMBRE_USUARIO = os.getenv("NOMBRE_USUARIO", "").strip()
 IDIOMA_VOZ = "es-MX"
 MODELO_CLAUDE = "claude-sonnet-4-6"
 

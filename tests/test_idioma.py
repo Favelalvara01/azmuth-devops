@@ -169,7 +169,7 @@ def test_endpoint_idioma():
 
 def test_la_interfaz_tiene_boton_y_textos_en_ingles():
     html = TestClient(servidor.app).get("/").text
-    assert "alternarIdioma()" in html and "DESKTOP MODE" in html and "HOW CAN I HELP, SIR?" in html
+    assert "alternarIdioma()" in html and "DESKTOP MODE" in html and "HOW CAN I HELP, {N}?" in html
 
 
 

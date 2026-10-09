@@ -131,6 +131,9 @@ def _construir_system_prompt():
     if perfil_texto:
         prompt += "\n\nPerfil de personalidad/estilo del usuario (generado a partir de su historial de uso):\n" + perfil_texto
 
+    if getattr(config, "NOMBRE_USUARIO", ""):
+        prompt += (f"\n\nEl usuario se llama {config.NOMBRE_USUARIO}. Cuando te dirijas a él, llámalo "
+                   f"«{config.NOMBRE_USUARIO}» en lugar de «señor» (sin repetirlo en cada respuesta).")
     prompt += tematicas.extra_prompt()
     if idioma.es_ingles():
         prompt += EXTRA_INGLES

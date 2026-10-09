@@ -17,6 +17,7 @@ que Azmuth aprende y cómo conversa.
 import re
 from datetime import datetime
 
+import idioma
 from basedatos import conectar
 
 
@@ -84,7 +85,7 @@ def intentar(texto: str):
         contenido = m.group(1).strip()
         if guardar_hecho(contenido, origen="voz"):
             return f"Guardado. Ya sé que {contenido}."
-        return "Eso ya lo tenía guardado, señor."
+        return f"Eso ya lo tenía guardado, {idioma.trato()}."
 
     # --- CONSULTAR ---
     m = re.match(r"^(?:qué recuerdas|que recuerdas|qué sabes|que sabes)(?:\s+(?:de|sobre|acerca de)\s+(.+))?$", tl)

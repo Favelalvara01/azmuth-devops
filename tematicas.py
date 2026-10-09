@@ -30,14 +30,14 @@ _TEMPORADAS = (
 
 _SALUDOS = {
     "normal": ("Sistema iniciado. A sus órdenes.", "System online. At your service."),
-    "halloween": ("Sistema iniciado... justo a tiempo para la noche más tenebrosa. ¡Feliz Halloween, señor! A sus órdenes.",
-                  "System online... just in time for the spookiest night. Happy Halloween, sir! At your service."),
+    "halloween": ("Sistema iniciado... justo a tiempo para la noche más tenebrosa. ¡Feliz Halloween, {trato}! A sus órdenes.",
+                  "System online... just in time for the spookiest night. Happy Halloween, {trato}! At your service."),
     "muertos": ("Sistema iniciado. Las velas están encendidas y el cempasúchil marca el camino. "
-                "¡Feliz Día de Muertos, señor! A sus órdenes.",
+                "¡Feliz Día de Muertos, {trato}! A sus órdenes.",
                 "System online. The candles are lit and the marigolds light the way. "
-                "Happy Day of the Dead, sir! At your service."),
-    "navidad": ("Sistema iniciado. Huele a ponche y a luces nuevas. ¡Felices fiestas, señor! A sus órdenes.",
-                "System online. Smells like hot punch and fresh lights. Happy holidays, sir! At your service."),
+                "Happy Day of the Dead, {trato}! At your service."),
+    "navidad": ("Sistema iniciado. Huele a ponche y a luces nuevas. ¡Felices fiestas, {trato}! A sus órdenes.",
+                "System online. Smells like hot punch and fresh lights. Happy holidays, {trato}! At your service."),
 }
 
 _TOQUES = {
@@ -106,7 +106,7 @@ def nombre_visible(tema: str = None) -> str:
 def saludo() -> str:
     import idioma
     es, en = _SALUDOS[obtener()]
-    return idioma.t(es, en)
+    return idioma.bienvenida() + idioma.t(es, en).format(trato=idioma.trato())
 
 
 def extra_prompt() -> str:

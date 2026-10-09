@@ -238,7 +238,7 @@ def procesar_comando(texto: str):
 
     if es_apagado(texto):
         estado.set_estado("ejecutando", "Apagando sistema")
-        voice.hablar(idioma.t("Apagando sistema. Hasta luego, señor.", "Shutting down. Goodbye, sir."))
+        voice.hablar(idioma.t(f"Apagando sistema. Hasta luego, {idioma.trato()}.", f"Shutting down. Goodbye, {idioma.trato()}."))
         time.sleep(1.5)
         # main.iniciar() corre en un hilo secundario cuando lo lanza app_desktop.py
         # (el hilo principal está ocupado con la ventana de webview). sys.exit(0)

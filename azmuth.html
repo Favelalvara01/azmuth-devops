@@ -510,7 +510,7 @@
                 marca: "MODO ESCRITORIO", nuevoChat: "+ Nuevo chat", btnVoz: "◉ MODO VOZ",
                 placeholder: "Escríbale a Azmuth…", ayudaEntrada: "Enter para enviar · Shift+Enter nueva línea · También puede hablarle con la palabra clave",
                 vozSi: "🔊 VOZ: SÍ", vozNo: "🔇 VOZ: NO", tituloNuevo: "Nuevo chat",
-                vacioTitulo: "¿EN QUÉ LE AYUDO, SEÑOR?", vacioTexto: "Escríbame como a cualquier IA. También ejecuto mis comandos: notas, recordatorios, abrir apps…",
+                vacioTitulo: "¿EN QUÉ LE AYUDO, {N}?", vacioTexto: "Escríbame como a cualquier IA. También ejecuto mis comandos: notas, recordatorios, abrir apps…",
                 sugerencias: ['¿Qué puedes hacer?', 'Explícame qué es DevOps', 'Recuérdame estudiar a las 7 pm', 'Mis notas', '¿Qué clima hace?', 'Hazme un script en Python que ordene una lista'],
                 estados: { reposo: "EN ESPERA", escuchando: "ESCUCHANDO", procesando: "PROCESANDO", ejecutando: "EJECUTANDO ORDEN" }
             },
@@ -519,12 +519,13 @@
                 marca: "DESKTOP MODE", nuevoChat: "+ New chat", btnVoz: "◉ VOICE MODE",
                 placeholder: "Message Azmuth…", ayudaEntrada: "Enter to send · Shift+Enter new line · You can also talk to me with the wake word",
                 vozSi: "🔊 VOICE: ON", vozNo: "🔇 VOICE: OFF", tituloNuevo: "New chat",
-                vacioTitulo: "HOW CAN I HELP, SIR?", vacioTexto: "Write to me like any AI. I also run my commands: notes, reminders, opening apps…",
+                vacioTitulo: "HOW CAN I HELP, {N}?", vacioTexto: "Write to me like any AI. I also run my commands: notes, reminders, opening apps…",
                 sugerencias: ['What can you do?', 'Explain what DevOps is', 'Remind me to study at 7 pm', 'My notes', "What's the weather?", 'Write a Python script that sorts a list'],
                 estados: { reposo: "STANDING BY", escuchando: "LISTENING", procesando: "PROCESSING", ejecutando: "EXECUTING" }
             }
         };
         let idiomaActual = 'es';
+        let nombreUsuario = '';
         let ETIQUETAS = TEXTOS.es.estados;
         const tx = (clave) => TEXTOS[idiomaActual][clave];
 
@@ -934,6 +935,11 @@
                 actualizarConsola(data.log, data.log_total);
                 aplicarModo(data.modo || 'voz');
                 aplicarIdioma(data.idioma || 'es');
+                if (data.nombre && data.nombre !== nombreUsuario) {
+                    nombreUsuario = data.nombre;
+                    const col = document.getElementById('columnaMensajes');
+                    if (col && col.querySelector('.vacio')) pintarVacio(col);
+                }
                 aplicarTematica(data.tematica || 'normal', data.tematica_pref);
                 if (modoActual === 'escritorio') actualizarEscritorio(data);
             } catch (e) {
@@ -1101,7 +1107,7 @@
 
         function pintarVacio(col) {
             col.innerHTML = '<div class="vacio"><div class="reactor-container estado-reposo"><div class="ring ring-1"></div><div class="ring ring-2"></div><div class="core"></div></div>' +
-                '<h3>' + tx('vacioTitulo') + '</h3><p>' + tx('vacioTexto') + '</p><div class="sugerencias"></div></div>';
+                '<h3>' + tx('vacioTitulo').replace('{N}', escaparHTML(nombreUsuario || (idiomaActual === 'en' ? 'sir' : 'señor')).toUpperCase()) + '</h3><p>' + tx('vacioTexto') + '</p><div class="sugerencias"></div></div>';
             const cont = col.querySelector('.sugerencias');
             tx('sugerencias').forEach(s => {
                 const b = document.createElement('button');

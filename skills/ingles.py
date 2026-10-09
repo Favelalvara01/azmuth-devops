@@ -47,6 +47,14 @@ _REGLAS = [
     (r"^(?:what\s+time\s+is\s+it|what'?s\s+the\s+time|tell\s+me\s+the\s+time)$", "qué hora es"),
     (r"^(?:what'?s|what\s+is)\s+(?:the\s+|today'?s\s+)?date(?:\s+today)?$|^what\s+day\s+is\s+(?:it|today)$", "qué fecha es"),
     (r"^(?:what'?s|what\s+is|how'?s|how\s+is)\s+the\s+weather(?:\s+(?:like|today))*$|^weather$", "qué clima hace"),
+    (r"^(?:will|is)\s+it\s+(?:going\s+to\s+)?rain\s+tomorrow$", "va a llover mañana"),
+    (r"^(?:will|is)\s+it\s+(?:going\s+to\s+)?rain(?:\s+today)?$", "va a llover hoy"),
+    (r"^(?:do\s+i\s+need|should\s+i\s+(?:take|bring))\s+an?\s+umbrella(?:\s+today)?$", "necesito paraguas"),
+    (r"^(?:what'?s|what\s+is)\s+the\s+(?:weather\s+)?forecast\s+(?:for\s+)?tomorrow$"
+     r"|^how\s+will\s+(?:the\s+)?(?:day|weather)\s+be\s+tomorrow$", "cómo estará el día mañana"),
+    (r"^(?:what'?s|what\s+is)\s+the\s+(?:weather\s+)?forecast(?:\s+for\s+today|\s+today)?$"
+     r"|^how\s+will\s+(?:the\s+)?(?:day|weather)\s+be(?:\s+today)?$", "cómo estará el día hoy"),
+    (r"^what\s+should\s+i\s+(?:wear|bring|take)(?:\s+today)?$", "qué me recomiendas llevar hoy"),
     # Hábitos, ayuda, sistema
     (r"^my\s+habits$", "mis hábitos"),
     (r"^(?:help|commands|what\s+can\s+you\s+do|show\s+(?:me\s+)?(?:your\s+)?commands)$", "ayuda"),

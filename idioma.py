@@ -7,6 +7,8 @@ inglés a los de español) y los textos de la interfaz. Se guarda en la tabla
 """
 import threading
 
+import config
+
 IDIOMAS = {
     "es": {"nombre": "español", "voz": "es-MX"},
     "en": {"nombre": "English", "voz": "en-US"},
@@ -30,6 +32,17 @@ def codigo_voz() -> str:
 def t(espanol: str, ingles: str) -> str:
     """Devuelve el texto en el idioma activo."""
     return ingles if _actual == "en" else espanol
+
+
+def trato() -> str:
+    """Cómo se dirige Azmuth al usuario: su nombre (NOMBRE_USUARIO en .env) o "señor"/"sir"."""
+    return getattr(config, "NOMBRE_USUARIO", "") or t("señor", "sir")
+
+
+def bienvenida() -> str:
+    """ "Bienvenido, Favela." si hay nombre; vacío si no (para no decir "Bienvenido, señor")."""
+    nombre = getattr(config, "NOMBRE_USUARIO", "")
+    return t(f"Bienvenido, {nombre}. ", f"Welcome, {nombre}. ") if nombre else ""
 
 
 def cambiar(codigo: str, guardar: bool = True) -> str:

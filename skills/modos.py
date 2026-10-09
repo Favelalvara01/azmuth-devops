@@ -9,6 +9,7 @@ app_desktop.py, que escucha los cambios de modo en estado.py.
 import re
 
 import estado
+import idioma
 
 _PREFIJO = r"^(?:(?:cambia|cambiar|pasa|pasar|ponte|activa|activar|entra|entrar|abre|abrir|vamos)\s+(?:a|al|en)?\s*(?:el\s+)?)?"
 _ESCRITORIO = re.compile(_PREFIJO + r"modo\s+(?:escritorio|chat|texto|escrito)\b")
@@ -19,12 +20,12 @@ def intentar(texto: str):
     t = (texto or "").lower().strip()
     if _ESCRITORIO.match(t):
         if estado.obtener_modo() == "escritorio":
-            return "Ya estamos en modo escritorio, señor. Escríbame lo que necesite."
+            return f"Ya estamos en modo escritorio, {idioma.trato()}. Escríbame lo que necesite."
         estado.set_modo("escritorio")
         return "Modo escritorio activado. Puede escribirme o seguir hablándome."
     if _VOZ.match(t):
         if estado.obtener_modo() == "voz":
             return "Ya estamos en modo voz."
         estado.set_modo("voz")
-        return "Modo voz activado. Lo escucho, señor."
+        return f"Modo voz activado. Lo escucho, {idioma.trato()}."
     return None

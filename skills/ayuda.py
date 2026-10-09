@@ -70,6 +70,7 @@ Háblame con la palabra clave o escríbeme en este chat. **Lo que no sea un coma
 
 ### 🕒 Hora, clima y hábitos
 - «qué hora es» · «qué fecha es» · «qué clima hace»
+- «va a llover hoy» · «cómo estará el día de hoy» · «necesito paraguas» · «hará frío mañana» · «qué me recomiendas llevar hoy» (pronóstico con consejos)
 - «mis hábitos» (también le sugiero cosas si noto un patrón)
 
 ### 🔁 Modos, idioma y sistema
@@ -82,8 +83,8 @@ Háblame con la palabra clave o escríbeme en este chat. **Lo que no sea un coma
 
 
 RESUMEN_VOZ_EN = (
-    "I can help you with notes, reminders with Windows notifications, memory, the time, date "
-    "and weather, web searches, music and volume, tabs and windows, opening or closing any app "
+    "I can help you with notes, reminders with Windows notifications, memory, the time, date, "
+    "weather and forecast advice, web searches, music and volume, tabs and windows, opening or closing any app "
     "you have installed, looking at your screen to help you, and seasonal themes. Anything else, I answer with "
     "artificial intelligence. To see every example, say desktop mode and type help."
 )
@@ -110,7 +111,7 @@ Say your **wake word** before a command, or type here. **Anything that is not a 
 
 ### 🗂️ Tabs, modes and more
 - "new tab" · "close tab" · "next tab" · "previous tab" · "tab 3" · "switch window"
-- "what time is it" · "what's the date" · "what's the weather" · "search for cats" · "my habits"
+- "what time is it" · "what's the date" · "what's the weather" · "will it rain today" · "do I need an umbrella" · "search for cats" · "my habits"
 - "desktop mode" / "voice mode" · **"switch to Spanish"** to go back
 
 *Some advanced commands (WhatsApp, maps, contacts, teaching app nicknames) are still Spanish only.*"""

@@ -74,6 +74,7 @@ def obtener_estado():
             "version_chat": _version_chat,
             "idioma": idioma.obtener(),
             "tematica": tematicas.obtener(),
+            "nombre": idioma.trato(),
             "tematica_pref": tematicas.preferencia(),
         }
 
