@@ -1,21 +1,28 @@
 {
-  "generado": "2026-10-09 01:37",
+  "generado": "2026-10-09 06:16",
   "producto": {
     "complejidad": {
-      "funciones_analizadas": 268,
-      "promedio": 3.59,
-      "mediana": 2.0,
+      "funciones_analizadas": 281,
+      "promedio": 3.62,
+      "mediana": 3,
       "maxima": 16,
       "distribucion_rangos": {
-        "A": 219,
-        "B": 35,
-        "C": 14,
+        "A": 231,
+        "B": 34,
+        "C": 16,
         "D": 0,
         "E": 0,
         "F": 0
       },
-      "porcentaje_A_B": 94.78,
+      "porcentaje_A_B": 94.31,
       "top10": [
+        {
+          "archivo": "tematicas.py",
+          "funcion": "_sintetizar",
+          "linea": 238,
+          "complejidad": 16,
+          "rango": "C"
+        },
         {
           "archivo": "skills/tiempo.py",
           "funcion": "_pronostico",
@@ -66,33 +73,26 @@
           "rango": "C"
         },
         {
+          "archivo": "deepseek_ia.py",
+          "funcion": "completar",
+          "linea": 82,
+          "complejidad": 12,
+          "rango": "C"
+        },
+        {
           "archivo": "groq_ia.py",
           "funcion": "completar",
           "linea": 85,
-          "complejidad": 12,
-          "rango": "C"
-        },
-        {
-          "archivo": "tematicas.py",
-          "funcion": "_sintetizar",
-          "linea": 233,
-          "complejidad": 12,
-          "rango": "C"
-        },
-        {
-          "archivo": "skills/memoria.py",
-          "funcion": "intentar",
-          "linea": 62,
           "complejidad": 12,
           "rango": "C"
         }
       ]
     },
     "lineas": {
-      "archivos": 39,
-      "loc": 5298,
-      "sloc": 3732,
-      "kloc": 3.73,
+      "archivos": 40,
+      "loc": 5472,
+      "sloc": 3857,
+      "kloc": 3.86,
       "por_archivo": {
         "acciones_remotas.py": {
           "loc": 123,
@@ -113,10 +113,10 @@
           "mi": 100.0
         },
         "cerebro.py": {
-          "loc": 269,
-          "sloc": 192,
+          "loc": 298,
+          "sloc": 211,
           "comentarios": 33,
-          "mi": 46.64
+          "mi": 43.06
         },
         "chats.py": {
           "loc": 138,
@@ -125,10 +125,16 @@
           "mi": 58.53
         },
         "config.py": {
-          "loc": 52,
-          "sloc": 27,
-          "comentarios": 20,
-          "mi": 80.85
+          "loc": 67,
+          "sloc": 35,
+          "comentarios": 24,
+          "mi": 77.11
+        },
+        "deepseek_ia.py": {
+          "loc": 111,
+          "sloc": 79,
+          "comentarios": 10,
+          "mi": 56.9
         },
         "estado.py": {
           "loc": 175,
@@ -155,10 +161,10 @@
           "mi": 71.03
         },
         "main.py": {
-          "loc": 409,
-          "sloc": 281,
+          "loc": 410,
+          "sloc": 282,
           "comentarios": 46,
-          "mi": 41.15
+          "mi": 41.09
         },
         "migrar_json_a_sqlite.py": {
           "loc": 166,
@@ -197,10 +203,10 @@
           "mi": 38.21
         },
         "tematicas.py": {
-          "loc": 290,
-          "sloc": 217,
-          "comentarios": 18,
-          "mi": 33.39
+          "loc": 304,
+          "sloc": 231,
+          "comentarios": 20,
+          "mi": 32.67
         },
         "voice.py": {
           "loc": 101,
@@ -227,10 +233,10 @@
           "mi": 41.68
         },
         "skills/ayuda.py": {
-          "loc": 135,
-          "sloc": 93,
+          "loc": 136,
+          "sloc": 94,
           "comentarios": 9,
-          "mi": 84.77
+          "mi": 84.69
         },
         "skills/contactos.py": {
           "loc": 87,
@@ -311,10 +317,10 @@
           "mi": 100.0
         },
         "skills/temas.py": {
-          "loc": 79,
-          "sloc": 61,
+          "loc": 82,
+          "sloc": 64,
           "comentarios": 6,
-          "mi": 66.87
+          "mi": 66.51
         },
         "skills/tiempo.py": {
           "loc": 170,
@@ -331,19 +337,20 @@
       }
     },
     "cobertura": {
-      "total": 88.44,
+      "total": 88.16,
       "por_archivo": {
         "acciones_remotas.py": 100.0,
         "app_desktop.py": 0.0,
         "basedatos.py": 100.0,
-        "cerebro.py": 81.2,
+        "cerebro.py": 82.24,
         "chats.py": 96.2,
-        "config.py": 96.15,
+        "config.py": 97.06,
+        "deepseek_ia.py": 75.0,
         "estado.py": 80.0,
         "gemini.py": 94.25,
         "groq_ia.py": 95.89,
         "idioma.py": 89.47,
-        "main.py": 90.88,
+        "main.py": 90.91,
         "monitoreo.py": 88.89,
         "notificaciones.py": 100.0,
         "nucleo.py": 100.0,
@@ -369,15 +376,15 @@
         "skills/temas.py": 97.44,
         "skills/tiempo.py": 94.29,
         "skills/web.py": 91.18,
-        "tematicas.py": 95.7,
+        "tematicas.py": 95.9,
         "voice.py": 72.88
       },
-      "lineas_cubiertas": 2264,
-      "lineas_ejecutables": 2560
+      "lineas_cubiertas": 2353,
+      "lineas_ejecutables": 2669
     },
     "densidad_defectos": {
       "defectos_totales": 18,
-      "por_kloc": 4.82,
+      "por_kloc": 4.67,
       "abiertos": 0,
       "abiertos_por_kloc": 0.0,
       "por_archivo": {
@@ -394,7 +401,7 @@
         "skills/idiomas.py": 1
       }
     },
-    "mantenibilidad_promedio": 68.83
+    "mantenibilidad_promedio": 68.32
   },
   "proceso": {
     "mttd_horas": 233.09,
@@ -415,11 +422,11 @@
       "porcentaje_pruebas_vs_produccion": 33.33
     },
     "ejecucion_pruebas": {
-      "total": 392,
-      "aprobadas": 392,
+      "total": 415,
+      "aprobadas": 415,
       "fallidas": 0,
       "defectos_conocidos_xfail": 0,
-      "tiempo_seg": 12.62
+      "tiempo_seg": 11.09
     }
   },
   "proyecto": {
@@ -442,9 +449,9 @@
           "desviacion_horas": 4.0,
           "desviacion_porcentaje": 40.0,
           "puntos_historia": 8,
-          "sloc": 374,
+          "sloc": 383,
           "defectos": 5,
-          "densidad_defectos_kloc": 13.37,
+          "densidad_defectos_kloc": 13.05,
           "horas_por_punto": 1.75
         },
         {
@@ -455,9 +462,9 @@
           "desviacion_horas": 3.0,
           "desviacion_porcentaje": 25.0,
           "puntos_historia": 8,
-          "sloc": 448,
+          "sloc": 449,
           "defectos": 3,
-          "densidad_defectos_kloc": 6.7,
+          "densidad_defectos_kloc": 6.68,
           "horas_por_punto": 1.88
         },
         {
@@ -481,9 +488,9 @@
           "desviacion_horas": 1.0,
           "desviacion_porcentaje": 8.33,
           "puntos_historia": 8,
-          "sloc": 485,
+          "sloc": 504,
           "defectos": 1,
-          "densidad_defectos_kloc": 2.06,
+          "densidad_defectos_kloc": 1.98,
           "horas_por_punto": 1.62
         },
         {

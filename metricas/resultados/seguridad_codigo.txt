@@ -1,4 +1,4 @@
-Run started:2026-10-09 01:37:00.408167+00:00
+Run started:2026-10-09 06:16:40.996648+00:00
 
 Test results:
 >> Issue: [B602:subprocess_popen_with_shell_equals_true] subprocess call with shell=True identified, security issue.
@@ -53,19 +53,19 @@ Test results:
 --------------------------------------------------
 
 Code scanned:
-	Total lines of code: 4214
+	Total lines of code: 4351
 	Total lines skipped (#nosec): 0
 	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
 
 Run metrics:
 	Total issues (by severity):
 		Undefined: 0
-		Low: 40
+		Low: 42
 		Medium: 0
 		High: 5
 	Total issues (by confidence):
 		Undefined: 0
 		Low: 0
 		Medium: 4
-		High: 41
+		High: 43
 Files skipped (0):
