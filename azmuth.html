@@ -264,50 +264,54 @@
         ::-webkit-scrollbar-track { background: transparent; }
 
         /* ================= TEMÁTICAS DE TEMPORADA (tematicas.py) =================
-           Cada temática solo define variables; las reglas de abajo las aplican.
-           Los colores de ESCUCHANDO / PROCESANDO / EJECUTANDO no cambian, para
-           que siempre se note en qué estado está Azmuth. */
+           Cada temática define variables y su arte vive en el JS (ARTE_TEMA): núcleo
+           dibujado en SVG, escenario de fondo, marco de la tarjeta y partículas.
+           Los colores de ESCUCHANDO / PROCESANDO / EJECUTANDO siguen siendo los de
+           siempre (anillos y brillo del núcleo), para que el estado se note. */
+        /* Letras de las temáticas: van incluidas en imagenes/fuentes (funcionan sin internet) */
+        @font-face { font-family: 'Creepster'; src: url('/imagenes/fuentes/creepster.woff2') format('woff2'); font-display: swap; }
+        @font-face { font-family: 'Lobster'; src: url('/imagenes/fuentes/lobster.woff2') format('woff2'); font-display: swap; }
+        @font-face { font-family: 'Mountains of Christmas'; src: url('/imagenes/fuentes/mountains-of-christmas.woff2') format('woff2'); font-weight: 700; font-display: swap; }
         body.tema-halloween {
-            --t-fondo1: #1d0a2b; --t-fondo2: #07030c; --t-texto: #fdba74; --t-titulo: #fb923c;
+            --t-fondo1: #2a1140; --t-fondo2: #07030c; --t-texto: #fdba74; --t-titulo: #fb923c;
             --t-acento: #f97316; --t-acento2: #a855f7; --t-glow: rgba(249, 115, 22, 0.35);
-            --t-card: rgba(28, 10, 40, 0.92); --t-consola-bg: rgba(10, 4, 16, 0.95); --t-consola: #fdba74;
-            --t-borde: #6b21a8; --t-panel: rgba(16, 6, 24, 0.96); --t-boton: #431407;
-            --t-core: radial-gradient(circle, #fde047 0%, #f97316 55%, #9a3412 100%); --t-emoji: '🎃';
+            --t-card: rgba(24, 8, 36, 0.88); --t-consola-bg: rgba(10, 4, 16, 0.94); --t-consola: #fdba74;
+            --t-borde: #6b21a8; --t-panel: rgba(16, 6, 24, 0.94); --t-boton: #431407;
+            --t-core: radial-gradient(circle, #fde047 0%, #f97316 55%, #9a3412 100%);
+            --t-fuente: 'Creepster', 'Chiller', 'Papyrus', fantasy; --t-tam-titulo: 25px; --t-esp-titulo: 3px;
         }
         body.tema-muertos {
-            --t-fondo1: #2a0a2a; --t-fondo2: #0b030d; --t-texto: #fde68a; --t-titulo: #f59e0b;
+            --t-fondo1: #3b0d3a; --t-fondo2: #0b030d; --t-texto: #fde68a; --t-titulo: #fbbf24;
             --t-acento: #f59e0b; --t-acento2: #ec4899; --t-glow: rgba(236, 72, 153, 0.35);
-            --t-card: rgba(40, 10, 38, 0.92); --t-consola-bg: rgba(14, 4, 14, 0.95); --t-consola: #fcd34d;
-            --t-borde: #be185d; --t-panel: rgba(24, 6, 22, 0.96); --t-boton: #831843;
-            --t-core: radial-gradient(circle, #fef3c7 0%, #f59e0b 50%, #db2777 100%); --t-emoji: '💀';
+            --t-card: rgba(38, 8, 36, 0.88); --t-consola-bg: rgba(14, 4, 14, 0.94); --t-consola: #fcd34d;
+            --t-borde: #be185d; --t-panel: rgba(24, 6, 22, 0.94); --t-boton: #831843;
+            --t-core: radial-gradient(circle, #fef3c7 0%, #f59e0b 50%, #db2777 100%);
+            --t-fuente: 'Lobster', 'Segoe Script', cursive; --t-tam-titulo: 24px; --t-esp-titulo: 1.5px;
         }
         body.tema-navidad {
-            --t-fondo1: #0b2a1a; --t-fondo2: #020b06; --t-texto: #fecaca; --t-titulo: #fde68a;
+            --t-fondo1: #0d2f4a; --t-fondo2: #020812; --t-texto: #e0f2fe; --t-titulo: #fde68a;
             --t-acento: #ef4444; --t-acento2: #22c55e; --t-glow: rgba(239, 68, 68, 0.35);
-            --t-card: rgba(8, 36, 22, 0.92); --t-consola-bg: rgba(3, 14, 8, 0.95); --t-consola: #d9f99d;
-            --t-borde: #b91c1c; --t-panel: rgba(4, 22, 13, 0.96); --t-boton: #7f1d1d;
-            --t-core: radial-gradient(circle, #ffffff 0%, #fca5a5 40%, #dc2626 100%); --t-emoji: '🎄';
+            --t-card: rgba(6, 30, 22, 0.88); --t-consola-bg: rgba(3, 14, 10, 0.94); --t-consola: #d9f99d;
+            --t-borde: #b91c1c; --t-panel: rgba(4, 20, 16, 0.94); --t-boton: #7f1d1d;
+            --t-core: radial-gradient(circle, #ffffff 0%, #fca5a5 40%, #dc2626 100%);
+            --t-fuente: 'Mountains of Christmas', 'Segoe Print', cursive; --t-tam-titulo: 26px; --t-esp-titulo: 2px;
         }
-        body.tematica { background: radial-gradient(circle, var(--t-fondo1) 0%, var(--t-fondo2) 100%); color: var(--t-texto); }
-        body.tematica h1, body.tematica .vacio h3, body.tematica .marca-texto b, body.tematica .burbuja h3 { color: var(--t-titulo); text-shadow: 0 0 10px var(--t-glow); }
-        body.tematica .card { background: var(--t-card); border-color: var(--t-acento); box-shadow: 0 0 25px var(--t-glow); position: relative; z-index: 1; }
-        body.tematica .console-box { background: var(--t-consola-bg); border-color: var(--t-borde); color: var(--t-consola); box-shadow: inset 0 0 10px var(--t-glow); }
+
+        /* ---- Colores generales ---- */
+        body.tematica { background: radial-gradient(ellipse at 50% 20%, var(--t-fondo1) 0%, var(--t-fondo2) 85%); color: var(--t-texto); }
+        body.tematica .card { background: var(--t-card); border-color: var(--t-acento); box-shadow: 0 0 28px var(--t-glow); position: relative; z-index: 2; }
+        body.tematica .console-box { background: var(--t-consola-bg); border-color: var(--t-borde); color: var(--t-consola); box-shadow: inset 0 0 12px var(--t-glow); }
         body.tematica .log-line { border-bottom-color: rgba(255, 255, 255, 0.08); }
-        body.tematica #statusText.reposo, body.tematica #statusText:not([class]), body.tematica .marca-texto span, body.tematica .vacio p, body.tematica #estadoChat:not(.procesando):not(.escuchando):not(.ejecutando) { color: var(--t-texto); }
-        body.tematica .btn-modo { color: var(--t-titulo); border-color: var(--t-borde); background: rgba(255, 255, 255, 0.04); }
+        body.tematica #statusText.reposo, body.tematica .marca-texto span, body.tematica .vacio p,
+        body.tematica #estadoChat:not(.procesando):not(.escuchando):not(.ejecutando) { color: var(--t-texto); }
+        body.tematica .btn-modo { color: var(--t-titulo); border-color: var(--t-borde); background: rgba(255, 255, 255, 0.05); }
         body.tematica .btn-modo:hover { background: var(--t-glow); }
         body.tematica .estado-reposo .ring-1 { border-color: var(--t-acento) transparent var(--t-acento) transparent; }
         body.tematica .estado-reposo .ring-2 { border-color: transparent var(--t-acento2) transparent var(--t-acento2); }
-        body.tematica .estado-reposo .core, body.tematica .mini-core.estado-reposo, body.tematica .avatar {
-            background: var(--t-core); box-shadow: 0 0 20px var(--t-acento), 0 0 40px var(--t-acento2);
-        }
-        body.tematica .estado-reposo .core { display: grid; place-items: center; }
-        body.tematica .estado-reposo .core::after { content: var(--t-emoji); font-size: 30px; line-height: 1; }
-        body.tematica .mini-core.estado-reposo { display: grid; place-items: center; }
-        body.tematica .mini-core.estado-reposo::after { content: var(--t-emoji); font-size: 15px; line-height: 1; }
-        body.tematica .lateral { background: var(--t-panel); border-right-color: var(--t-borde); }
+        body.tematica .avatar { background: var(--t-core); box-shadow: 0 0 10px var(--t-glow); }
+        body.tematica .lateral { background: var(--t-panel); border-right-color: var(--t-borde); position: relative; z-index: 2; }
         body.tematica .lateral-top, body.tematica .lateral-pie, body.tematica .barra { border-color: var(--t-borde); }
-        body.tematica .principal { background: radial-gradient(ellipse at top, var(--t-fondo1) 0%, var(--t-fondo2) 75%); }
+        body.tematica .principal { background: transparent; position: relative; z-index: 2; }
         body.tematica .btn-nuevo, body.tematica .msg.user .burbuja { background: var(--t-boton); border-color: var(--t-acento); color: #fff7ed; }
         body.tematica .chat-item { color: var(--t-texto); }
         body.tematica .chat-item.activo, body.tematica .chat-item:hover { background: var(--t-glow); }
@@ -317,38 +321,118 @@
         body.tematica .msg.assistant .burbuja { color: #fdf4ff; }
         body.tematica ::-webkit-scrollbar-thumb { background: var(--t-borde); }
 
-        .insignia-tema { display: none; font-size: 10px; letter-spacing: 1.5px; color: var(--t-acento2, #86efac); margin: -4px 0 4px; }
+        /* ---- Tipografía de la temática ---- */
+        body.tematica h1, body.tematica .vacio h3, body.tematica .marca-texto b {
+            font-family: var(--t-fuente); font-weight: 700; color: var(--t-titulo);
+            letter-spacing: var(--t-esp-titulo); text-shadow: 0 0 12px var(--t-glow), 0 2px 0 rgba(0, 0, 0, 0.6);
+        }
+        body.tematica h1 { font-size: var(--t-tam-titulo); margin: 10px 0 2px; white-space: nowrap; }
+        body.tematica .vacio h3 { font-size: 26px; }
+        body.tematica .marca-texto b { font-size: 18px; }
+        body.tema-halloween h1 { animation: titila-titulo 4s ease-in-out infinite; }
+        @keyframes titila-titulo { 0%, 92%, 100% { opacity: 1; } 94% { opacity: 0.55; } 96% { opacity: 1; } 97% { opacity: 0.7; } }
+        body.tema-navidad h1 { background: linear-gradient(90deg, #fde68a, #fff, #fca5a5, #fde68a); background-size: 300% 100%;
+            -webkit-background-clip: text; background-clip: text; color: transparent; animation: brillo-titulo 6s linear infinite; }
+        @keyframes brillo-titulo { to { background-position: 300% 0; } }
+        body.tema-navidad h1, body.tema-muertos h1 { text-shadow: none; filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.7)) drop-shadow(0 0 8px var(--t-glow)); }
+        body.tema-muertos h1 { background: linear-gradient(90deg, #fbbf24, #f472b6, #22d3ee, #fbbf24); background-size: 300% 100%;
+            -webkit-background-clip: text; background-clip: text; color: transparent; animation: brillo-titulo 8s linear infinite; }
+
+        .insignia-tema { display: none; font-size: 13px; letter-spacing: 1px; color: var(--t-acento2, #86efac); margin: 0 0 2px; font-family: var(--t-fuente); }
         body.tematica .insignia-tema { display: block; }
         .lateral .insignia-tema { margin: 0 0 10px; text-align: left; }
         .fila-voz { display: flex; gap: 6px; }
         .fila-voz .btn-modo { flex: 1; margin-top: 6px; }
 
-        /* Decoración animada (murciélagos, cempasúchil, nieve): encima, pero sin estorbar clics */
-        #decoTema { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 5; opacity: 0.75; }
-        body.modo-escritorio #decoTema { opacity: 0.3; }
-        #decoTema span { position: absolute; display: block; line-height: 1; will-change: transform; }
+        /* ---- Núcleo dibujado (SVG) en lugar de la esfera ---- */
+        body.tematica .core, body.tematica .mini-core { background: none !important; box-shadow: none !important; display: grid; place-items: center; }
+        body.tematica .core { width: 66px; height: 66px; }
+        body.tematica .mini-core { width: 32px; height: 32px; }
+        .core svg, .mini-core svg { width: 100%; height: 100%; overflow: visible; transition: filter 0.4s ease; }
+        body.tematica .estado-reposo svg.nucleo { filter: drop-shadow(0 0 7px var(--t-acento)) drop-shadow(0 0 16px var(--t-glow)); }
+        body.tematica .estado-escuchando svg.nucleo { filter: drop-shadow(0 0 8px #22d3ee) drop-shadow(0 0 18px #0ea5e9); }
+        body.tematica .estado-procesando svg.nucleo { filter: drop-shadow(0 0 8px #c084fc) drop-shadow(0 0 18px #7c3aed); }
+        body.tematica .estado-ejecutando svg.nucleo { filter: drop-shadow(0 0 8px #fb923c) drop-shadow(0 0 18px #ef4444); }
+
+        /* ---- Capas: escenario (atrás), partículas (enfrente, sin estorbar clics) ---- */
+        #escenaTema, #decoTema { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+        #escenaTema { z-index: 0; }
+        #decoTema { z-index: 5; }
+        body.modo-escritorio #escenaTema { opacity: 0.45; }
+        body.modo-escritorio #decoTema { opacity: 0.35; }
+        #escenaTema svg.paisaje { position: absolute; left: 0; bottom: 0; width: 100%; height: 46vh; }
+        #escenaTema .estrellas { position: absolute; inset: 0; }
+        #escenaTema .estrella { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; animation: titilar 3s ease-in-out infinite; }
+        @keyframes titilar { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.9; } }
+        .niebla { position: absolute; left: -50%; width: 200%; height: 120px; bottom: 0; opacity: 0.5;
+            background: radial-gradient(ellipse 18% 45% at 20% 60%, rgba(216, 180, 254, 0.22), transparent 70%),
+                        radial-gradient(ellipse 22% 50% at 55% 70%, rgba(216, 180, 254, 0.18), transparent 70%),
+                        radial-gradient(ellipse 16% 40% at 85% 55%, rgba(216, 180, 254, 0.2), transparent 70%);
+            animation: niebla 26s linear infinite; }
+        .niebla.n2 { bottom: 30px; opacity: 0.35; animation-duration: 40s; animation-direction: reverse; }
+        @keyframes niebla { from { transform: translateX(0); } to { transform: translateX(25%); } }
+        .estrella-fugaz { position: absolute; top: 12%; left: -20%; width: 90px; height: 2px; border-radius: 2px;
+            background: linear-gradient(90deg, transparent, #fff); transform: rotate(18deg); animation: fugaz 9s ease-in infinite; }
+        @keyframes fugaz { 0%, 80% { left: -20%; top: 6%; opacity: 0; } 82% { opacity: 1; } 100% { left: 110%; top: 30%; opacity: 0; } }
+
+        #decoTema .p svg { filter: drop-shadow(0 0 3px rgba(168, 85, 247, 0.8)); }
+        #decoTema .p { position: absolute; display: block; line-height: 0; will-change: transform; }
         .deco-vuela { left: 0; animation: volar linear infinite; }
         .deco-cae { top: 0; animation: caer linear infinite; }
         .deco-flota { animation: flotar ease-in-out infinite alternate; }
+        .deco-nieve { top: 0; border-radius: 50%; background: #fff; animation: nevar linear infinite; }
         @keyframes volar {
-            0% { transform: translate(-12vw, 0) scale(1); } 25% { transform: translate(22vw, -4vh) scale(1.1); }
-            50% { transform: translate(55vw, 3vh) scale(0.9); } 75% { transform: translate(85vw, -3vh) scale(1.05); }
-            100% { transform: translate(112vw, 0) scale(1); }
+            0% { transform: translate(-14vw, 0) scale(1); } 20% { transform: translate(16vw, -6vh) scale(1.1); }
+            45% { transform: translate(45vw, 4vh) scale(0.85); } 70% { transform: translate(75vw, -5vh) scale(1.05); }
+            100% { transform: translate(114vw, 2vh) scale(1); }
         }
-        @keyframes caer { 0% { transform: translate(0, -8vh) rotate(0deg); } 100% { transform: translate(6vw, 108vh) rotate(320deg); } }
-        @keyframes flotar { 0% { transform: translateY(0); opacity: 0.25; } 100% { transform: translateY(-18px); opacity: 0.7; } }
+        @keyframes caer {
+            0% { transform: translate(0, -8vh) rotate(0deg); } 25% { transform: translate(4vw, 22vh) rotate(90deg); }
+            50% { transform: translate(-2vw, 50vh) rotate(180deg); } 75% { transform: translate(5vw, 78vh) rotate(270deg); }
+            100% { transform: translate(1vw, 108vh) rotate(360deg); }
+        }
+        @keyframes nevar { 0% { transform: translate(0, -5vh); } 50% { transform: translate(3vw, 50vh); } 100% { transform: translate(-1vw, 105vh); } }
+        @keyframes flotar { 0% { transform: translateY(0); opacity: 0.15; } 100% { transform: translateY(-22px); opacity: 0.75; } }
 
-        /* Papel picado (Día de Muertos) y luces (Navidad) colgando arriba */
-        .guirnalda { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-around; }
-        .guirnalda::before { content: ''; position: absolute; top: 2px; left: 0; right: 0; height: 1px; background: rgba(255, 255, 255, 0.35); }
-        #decoTema .bandera { position: relative; width: 26px; height: 30px; opacity: 0.9;
-            clip-path: polygon(0 0, 100% 0, 100% 78%, 87% 100%, 75% 78%, 62% 100%, 50% 78%, 37% 100%, 25% 78%, 12% 100%, 0 78%); }
-        #decoTema .foco { position: relative; top: 2px; width: 7px; height: 11px; border-radius: 50% 50% 45% 45%; animation: parpadeo 1.6s ease-in-out infinite; }
-        @keyframes parpadeo { 0%, 100% { opacity: 1; box-shadow: 0 0 9px currentColor; } 50% { opacity: 0.35; box-shadow: none; } }
-        @media (prefers-reduced-motion: reduce) { #decoTema { display: none; } }
+        /* ---- Marcos de la tarjeta ---- */
+        .marco-tema { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+        .marco-tema svg { position: absolute; overflow: visible; }
+        /* Halloween: telarañas en las esquinas y una araña que sube y baja */
+        .marco-tema .tela-izq { top: -2px; left: -2px; width: 74px; height: 74px; }
+        .marco-tema .tela-der { top: -2px; right: -2px; width: 74px; height: 74px; transform: scaleX(-1); }
+        .marco-tema .arana { top: 0; right: 30px; width: 18px; height: 120px; }
+        /* Día de Muertos: cempasúchil en las esquinas y doble filete */
+        body.tema-muertos .card { box-shadow: 0 0 28px var(--t-glow), inset 0 0 0 4px rgba(0, 0, 0, 0.25), inset 0 0 0 5px #ec4899; }
+        .marco-tema .flor { width: 38px; height: 38px; }
+        .marco-tema .f1 { top: -16px; left: -14px; } .marco-tema .f2 { top: -16px; right: -14px; }
+        .marco-tema .f3 { bottom: -16px; left: -14px; } .marco-tema .f4 { bottom: -16px; right: -14px; }
+        /* Navidad: borde de bastón de caramelo, nieve encima y acebo */
+        body.tema-navidad .card { border-color: transparent; }
+        body.tema-navidad .card::before { content: ''; position: absolute; inset: -2px; border-radius: 14px; padding: 4px; pointer-events: none;
+            background: repeating-linear-gradient(45deg, #dc2626 0 9px, #f8fafc 9px 18px);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+        .marco-tema .nieve-tope { top: -11px; left: 6px; width: calc(100% - 12px); height: 18px; }
+        .marco-tema .acebo { top: -18px; left: -16px; width: 52px; height: 40px; }
+        .marco-tema .acebo.der { left: auto; right: -16px; transform: scaleX(-1); }
+
+        /* Papel picado colgando arriba de la ventana */
+        .guirnalda { position: absolute; top: 0; left: -10px; right: -10px; display: flex; justify-content: space-between; z-index: 1; }
+        .guirnalda::before { content: ''; position: absolute; top: 2px; left: 0; right: 0; height: 1px; background: rgba(255, 255, 255, 0.45); }
+        .guirnalda .bandera { position: relative; width: 38px; height: 44px; transform-origin: 50% 0; animation: mecer 3s ease-in-out infinite alternate; }
+        .guirnalda .foco { position: relative; top: 2px; width: 8px; height: 12px; border-radius: 50% 50% 45% 45%; animation: parpadeo 1.6s ease-in-out infinite; }
+        .guirnalda .foco::before { content: ''; position: absolute; top: -3px; left: 2px; width: 4px; height: 4px; background: #334155; border-radius: 1px; }
+        @keyframes mecer { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+        @keyframes parpadeo { 0%, 100% { opacity: 1; box-shadow: 0 0 10px currentColor, 0 0 3px currentColor; } 50% { opacity: 0.35; box-shadow: none; } }
+        body.modo-escritorio .guirnalda { display: none; }
+
+        @media (prefers-reduced-motion: reduce) { #decoTema { display: none; } #escenaTema * { animation: none !important; } }
+        body.tema-muertos:not(.modo-escritorio) { padding-top: 40px; }
+        body.tema-navidad:not(.modo-escritorio) { padding-top: 22px; }
     </style>
 </head>
 <body>
+<div id="escenaTema" aria-hidden="true"></div>
 <div id="decoTema" aria-hidden="true"></div>
 <div id="vistaVoz">
     <div class="card">
@@ -463,30 +547,252 @@
 
 
         // ===================== TEMÁTICAS DE TEMPORADA =====================
+        // Todo el arte es SVG/CSS dentro de este archivo: no depende de imágenes
+        // ni de internet (las fuentes de Google se usan si hay conexión; si no,
+        // se usan las de Windows de respaldo).
         const TEMATICAS = {
             normal:    { es: 'NORMAL', en: 'NORMAL', insignia: { es: '', en: '' } },
-            halloween: { es: 'HALLOWEEN', en: 'HALLOWEEN', insignia: { es: '🎃 EDICIÓN HALLOWEEN 🦇', en: '🎃 HALLOWEEN EDITION 🦇' } },
-            muertos:   { es: 'MUERTOS', en: 'DAY OF DEAD', insignia: { es: '🌼 EDICIÓN DÍA DE MUERTOS 💀', en: '🌼 DAY OF THE DEAD EDITION 💀' } },
-            navidad:   { es: 'NAVIDAD', en: 'HOLIDAYS', insignia: { es: '🎄 EDICIÓN NAVIDEÑA ❄', en: '🎄 HOLIDAY EDITION ❄' } }
+            halloween: { es: 'HALLOWEEN', en: 'HALLOWEEN', insignia: { es: '🎃 Edición Halloween 🦇', en: '🎃 Halloween Edition 🦇' } },
+            muertos:   { es: 'MUERTOS', en: 'DAY OF DEAD', insignia: { es: '🌼 Día de Muertos 💀', en: '🌼 Day of the Dead 💀' } },
+            navidad:   { es: 'NAVIDAD', en: 'HOLIDAYS', insignia: { es: '🎄 Edición Navideña ❄', en: '🎄 Holiday Edition ❄' } }
         };
         const ORDEN_TEMATICAS = ['auto', 'normal', 'halloween', 'muertos', 'navidad'];
         let tematicaActual = null, preferenciaTematica = 'auto';
-
         const azar = (a, b) => a + Math.random() * (b - a);
-        function decoracion(clase, emoji, cantidad, tam, dur, extra) {
-            const deco = document.getElementById('decoTema');
-            for (let i = 0; i < cantidad; i++) {
-                const s = document.createElement('span');
-                s.className = clase; s.textContent = emoji;
-                s.style.fontSize = azar(tam[0], tam[1]) + 'px';
-                s.style.animationDuration = azar(dur[0], dur[1]) + 's';
-                s.style.animationDelay = (-azar(0, dur[1])) + 's';
-                if (clase === 'deco-vuela') s.style.top = azar(4, 70) + 'vh';
-                else s.style.left = azar(-4, 100) + 'vw';
-                if (clase === 'deco-flota') s.style.top = azar(10, 90) + 'vh';
-                if (extra) extra(s, i);
-                deco.appendChild(s);
-            }
+        const NS = 'xmlns="http://www.w3.org/2000/svg"';
+
+        // Degradados y máscaras compartidos (un solo <defs> visible: si vivieran
+        // dentro de un SVG oculto, Chromium no los pintaría en los demás).
+        const DEFS_TEMA = `<svg ${NS} width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+            <radialGradient id="tCalabaza" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffc06a"/><stop offset=".55" stop-color="#f97316"/><stop offset="1" stop-color="#8a2c0d"/></radialGradient>
+            <radialGradient id="tLuzVela" cx="50%" cy="60%" r="60%"><stop offset="0" stop-color="#fffbe0"/><stop offset=".45" stop-color="#fde047"/><stop offset="1" stop-color="#f59e0b"/></radialGradient>
+            <radialGradient id="tHueso" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#fdf2f8"/><stop offset="1" stop-color="#f5d0e6"/></radialGradient>
+            <radialGradient id="tEsfera" cx="34%" cy="30%" r="75%"><stop offset="0" stop-color="#fecaca"/><stop offset=".3" stop-color="#ef4444"/><stop offset=".8" stop-color="#991b1b"/><stop offset="1" stop-color="#3f0707"/></radialGradient>
+            <linearGradient id="tOro" x1="0" x2="1"><stop offset="0" stop-color="#b45309"/><stop offset=".5" stop-color="#fde68a"/><stop offset="1" stop-color="#b45309"/></linearGradient>
+            <radialGradient id="tLuna" cx="40%" cy="40%" r="60%"><stop offset="0" stop-color="#fffbeb"/><stop offset=".8" stop-color="#fde68a"/><stop offset="1" stop-color="#f6c453"/></radialGradient>
+            <radialGradient id="tHalo"><stop offset="0" stop-color="#fde68a" stop-opacity=".45"/><stop offset="1" stop-color="#fde68a" stop-opacity="0"/></radialGradient>
+            <radialGradient id="tHaloNaranja"><stop offset="0" stop-color="#fb923c" stop-opacity=".55"/><stop offset="1" stop-color="#fb923c" stop-opacity="0"/></radialGradient>
+            <linearGradient id="tSueloNieve" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1f5f9"/><stop offset="1" stop-color="#94a3b8"/></linearGradient>
+            <clipPath id="tClipEsfera"><circle cx="0" cy="6" r="33"/></clipPath>
+            <mask id="tPicado" maskContentUnits="objectBoundingBox">
+                <rect width="1" height="1" fill="#fff"/>
+                <g fill="#000">
+                    <circle cx=".5" cy=".42" r=".1"/>
+                    <ellipse cx=".5" cy=".22" rx=".05" ry=".09"/><ellipse cx=".5" cy=".62" rx=".05" ry=".09"/>
+                    <ellipse cx=".3" cy=".42" rx=".09" ry=".05"/><ellipse cx=".7" cy=".42" rx=".09" ry=".05"/>
+                    <circle cx=".16" cy=".14" r=".04"/><circle cx=".84" cy=".14" r=".04"/>
+                    <circle cx=".16" cy=".7" r=".04"/><circle cx=".84" cy=".7" r=".04"/>
+                    <path d="M.12 .86 L.2 .8 L.28 .86 L.36 .8 L.44 .86 L.52 .8 L.6 .86 L.68 .8 L.76 .86 L.84 .8 L.88 .84 L.88 .82 L.12 .82 Z"/>
+                </g>
+            </mask>
+        </defs></svg>`;
+
+        // ---------- Núcleos (reemplazan a la esfera cuando hay temática) ----------
+        const NUCLEOS = {
+            halloween: `<svg class="nucleo" ${NS} viewBox="-50 -52 100 100">
+                <path d="M-3,-24 C-5,-32 -2,-39 5,-43 L8,-39 C3,-35 3,-30 4,-24 Z" fill="#4d7c0f"/>
+                <path d="M4,-36 C12,-44 20,-38 16,-32" fill="none" stroke="#65a30d" stroke-width="2" stroke-linecap="round"/>
+                <g stroke="#7c2d12" stroke-width="1" stroke-opacity=".55" fill="url(#tCalabaza)">
+                    <ellipse cx="-24" cy="6" rx="17" ry="26"/><ellipse cx="24" cy="6" rx="17" ry="26"/>
+                    <ellipse cx="-13" cy="5" rx="20" ry="29"/><ellipse cx="13" cy="5" rx="20" ry="29"/>
+                    <ellipse cx="0" cy="4" rx="20" ry="30"/>
+                </g>
+                <g class="cara" fill="url(#tLuzVela)" stroke="#5a1d08" stroke-width="1.4" stroke-linejoin="round">
+                    <path d="M-21,-3 L-7,-3 L-14,-16 Z"/><path d="M7,-3 L21,-3 L14,-16 Z"/>
+                    <path d="M-3,6 L3,6 L0,0 Z"/>
+                    <path d="M-23,11 Q0,38 23,11 L17,16 L13,11 L8,18 L3,12 L-3,18 L-8,12 L-13,18 L-17,12 Z"/>
+                    <animate attributeName="opacity" values="1;.7;.95;.8;1" dur="1.9s" repeatCount="indefinite"/>
+                </g>
+            </svg>`,
+            muertos: `<svg class="nucleo" ${NS} viewBox="-50 -50 100 100">
+                <g><animateTransform attributeName="transform" type="rotate" values="-5;5;-5" dur="4s" repeatCount="indefinite"/>
+                <path d="M0,-40 C24,-40 38,-24 38,-4 C38,10 31,18 24,22 L24,31 C24,38 18,42 12,42 L-12,42 C-18,42 -24,38 -24,31 L-24,22 C-31,18 -38,10 -38,-4 C-38,-24 -24,-40 0,-40 Z" fill="url(#tHueso)" stroke="#f9a8d4" stroke-width="1.2"/>
+                <g transform="translate(0,-25)"><g fill="#f59e0b">
+                    <ellipse rx="3" ry="6" transform="rotate(0)"/><ellipse rx="3" ry="6" transform="rotate(72)"/><ellipse rx="3" ry="6" transform="rotate(144)"/>
+                    <ellipse rx="3" ry="6" transform="rotate(216)"/><ellipse rx="3" ry="6" transform="rotate(288)"/></g>
+                    <circle r="2.6" fill="#ec4899"/></g>
+                <circle cx="-14" cy="-2" r="11.5" fill="#1e1b4b"/><circle cx="14" cy="-2" r="11.5" fill="#1e1b4b"/>
+                <g transform="translate(-14,-2)"><g><animateTransform attributeName="transform" type="rotate" values="0;360" dur="9s" repeatCount="indefinite"/>
+                    <g fill="#ec4899"><ellipse rx="2.3" ry="6" transform="rotate(0)"/><ellipse rx="2.3" ry="6" transform="rotate(60)"/><ellipse rx="2.3" ry="6" transform="rotate(120)"/></g>
+                    <circle r="2.6" fill="#facc15"/></g></g>
+                <g transform="translate(14,-2)"><g><animateTransform attributeName="transform" type="rotate" values="360;0" dur="9s" repeatCount="indefinite"/>
+                    <g fill="#22d3ee"><ellipse rx="2.3" ry="6" transform="rotate(0)"/><ellipse rx="2.3" ry="6" transform="rotate(60)"/><ellipse rx="2.3" ry="6" transform="rotate(120)"/></g>
+                    <circle r="2.6" fill="#facc15"/></g></g>
+                <g fill="#a855f7">${[0, 40, 80, 120, 160, 200, 240].map(a => `<circle cx="${(-14 + 15 * Math.cos((a + 190) * Math.PI / 180)).toFixed(1)}" cy="${(-2 + 15 * Math.sin((a + 190) * Math.PI / 180)).toFixed(1)}" r="1.4"/><circle cx="${(14 - 15 * Math.cos((a + 190) * Math.PI / 180)).toFixed(1)}" cy="${(-2 + 15 * Math.sin((a + 190) * Math.PI / 180)).toFixed(1)}" r="1.4"/>`).join('')}</g>
+                <path d="M0,20 C-7,13 -7,8 -4,7 C-2,6 0,7 0,9 C0,7 2,6 4,7 C7,8 7,13 0,20 Z" fill="#1e1b4b"/>
+                <path d="M-15,31 L15,31" stroke="#1e1b4b" stroke-width="1.6"/>
+                <g stroke="#1e1b4b" stroke-width="1.3">${[-11, -5.5, 0, 5.5, 11].map(x => `<path d="M${x},27 L${x},35"/>`).join('')}</g>
+                <g fill="none" stroke="#22d3ee" stroke-width="1.4" stroke-linecap="round">
+                    <path d="M-30,12 c3,-4 8,-1 5,2 c-2,2 -4,0 -3,-1"/><path d="M30,12 c-3,-4 -8,-1 -5,2 c2,2 4,0 3,-1"/></g>
+                </g>
+            </svg>`,
+            navidad: `<svg class="nucleo" ${NS} viewBox="-50 -52 100 100">
+                <g><animateTransform attributeName="transform" type="rotate" values="-7 0 -44;7 0 -44;-7 0 -44" dur="3.2s" repeatCount="indefinite"/>
+                <circle cx="0" cy="-41" r="4.5" fill="none" stroke="#fbbf24" stroke-width="2"/>
+                <rect x="-8" y="-37" width="16" height="9" rx="2" fill="url(#tOro)"/>
+                <g stroke="#92400e" stroke-width=".8" opacity=".6"><path d="M-4,-37 v9 M0,-37 v9 M4,-37 v9"/></g>
+                <circle cx="0" cy="6" r="33" fill="url(#tEsfera)"/>
+                <g clip-path="url(#tClipEsfera)">
+                    <rect x="-34" y="-1" width="68" height="3" fill="url(#tOro)"/><rect x="-34" y="12" width="68" height="3" fill="url(#tOro)"/>
+                    <polyline points="${Array.from({ length: 13 }, (_, i) => `${-36 + i * 6},${i % 2 ? 4 : 10}`).join(' ')}" fill="none" stroke="#fde68a" stroke-width="2"/>
+                    ${[-24, -12, 0, 12, 24].map(x => `<circle cx="${x}" cy="7" r="1.3" fill="#fff"/>`).join('')}
+                    <path d="M-20,-14 l2,-4 l2,4 l4,2 l-4,2 l-2,4 l-2,-4 l-4,-2 Z" fill="#fff" opacity=".7"/>
+                    <path d="M14,24 l1.5,-3 l1.5,3 l3,1.5 l-3,1.5 l-1.5,3 l-1.5,-3 l-3,-1.5 Z" fill="#fff" opacity=".6"/>
+                </g>
+                <ellipse cx="-13" cy="-9" rx="10" ry="5" transform="rotate(-35 -13 -9)" fill="#fff" opacity=".5"/>
+                <g transform="translate(18,-16)"><path d="M0,-7 L1.6,-1.6 L7,0 L1.6,1.6 L0,7 L-1.6,1.6 L-7,0 L-1.6,-1.6 Z" fill="#fff">
+                    <animateTransform attributeName="transform" type="scale" values=".2;1.1;.2" dur="2.2s" repeatCount="indefinite"/></path></g>
+                </g>
+            </svg>`
+        };
+
+        // ---------- Personajes de las partículas ----------
+        const MURCIELAGO = `<svg ${NS} viewBox="-32 -14 64 28" width="100%" height="100%">
+            <g fill="#1a0726" stroke="#fb923c" stroke-opacity=".85" stroke-width=".9">
+                <g><path d="M2,-2 C10,-13 22,-13 30,-4 C25,-4 23,0 21,3 C19,-1 16,-1 14,3 C12,-1 9,-1 6,3 Z">
+                    <animateTransform attributeName="transform" type="scale" values="1 1;1 -.35;1 1" dur=".32s" repeatCount="indefinite"/></path></g>
+                <g transform="scale(-1,1)"><path d="M2,-2 C10,-13 22,-13 30,-4 C25,-4 23,0 21,3 C19,-1 16,-1 14,3 C12,-1 9,-1 6,3 Z">
+                    <animateTransform attributeName="transform" type="scale" values="1 1;1 -.35;1 1" dur=".32s" repeatCount="indefinite"/></path></g>
+                <ellipse cx="0" cy="1" rx="4" ry="6"/><path d="M-3,-4 L-4,-9 L-1,-5 L1,-5 L4,-9 L3,-4 Z"/>
+            </g>
+            <circle cx="-1.5" cy="-3" r=".9" fill="#f87171"/><circle cx="1.5" cy="-3" r=".9" fill="#f87171"/>
+        </svg>`;
+        const FANTASMA = `<svg ${NS} viewBox="-16 -22 32 36" width="100%" height="100%">
+            <path d="M-14,11 L-14,-5 C-14,-15 -8,-21 0,-21 C8,-21 14,-15 14,-5 L14,11 L9,7 L5,12 L0,7 L-5,12 L-9,7 Z" fill="#f5f3ff" opacity=".85"/>
+            <ellipse cx="-5" cy="-7" rx="2.2" ry="3.2" fill="#1e1b4b"/><ellipse cx="5" cy="-7" rx="2.2" ry="3.2" fill="#1e1b4b"/>
+            <ellipse cx="0" cy="1" rx="2.5" ry="3" fill="#1e1b4b" opacity=".8"/>
+        </svg>`;
+        const PETALO = c => `<svg ${NS} viewBox="-6 -10 12 20" width="100%" height="100%"><path d="M0,-9 C6,-5 6,5 0,9 C-6,5 -6,-5 0,-9 Z" fill="${c}"/><path d="M0,-7 L0,7" stroke="#b45309" stroke-width=".7" opacity=".5"/></svg>`;
+        const MONARCA = `<svg ${NS} viewBox="-22 -16 44 32" width="100%" height="100%">
+            <g><animateTransform attributeName="transform" type="scale" values="1 1;.25 1;1 1" dur=".45s" repeatCount="indefinite"/>
+                <path d="M0,0 C-6,-14 -20,-16 -20,-6 C-20,0 -10,2 0,0 Z M0,0 C-8,4 -16,10 -12,14 C-8,16 -2,8 0,0 Z" fill="#f97316" stroke="#1c1917" stroke-width="1.5"/>
+                <path d="M0,0 C6,-14 20,-16 20,-6 C20,0 10,2 0,0 Z M0,0 C8,4 16,10 12,14 C8,16 2,8 0,0 Z" fill="#f97316" stroke="#1c1917" stroke-width="1.5"/>
+                <path d="M-3,-3 L-15,-8 M-3,2 L-11,9 M3,-3 L15,-8 M3,2 L11,9" stroke="#1c1917" stroke-width=".9"/>
+                <g fill="#fff"><circle cx="-18" cy="-6" r=".9"/><circle cx="18" cy="-6" r=".9"/><circle cx="-13" cy="12" r=".8"/><circle cx="13" cy="12" r=".8"/></g>
+            </g>
+            <ellipse rx="1.5" ry="7" fill="#1c1917"/>
+        </svg>`;
+        const COPO = `<svg ${NS} viewBox="-10 -10 20 20" width="100%" height="100%"><g stroke="#fff" stroke-width="1.2" stroke-linecap="round">
+            ${[0, 60, 120].map(a => `<g transform="rotate(${a})"><path d="M0,-9 L0,9 M0,-6 L-2.5,-8 M0,-6 L2.5,-8 M0,6 L-2.5,8 M0,6 L2.5,8"/></g>`).join('')}
+            <animateTransform attributeName="transform" type="rotate" values="0;360" dur="8s" repeatCount="indefinite"/></g></svg>`;
+        const CEMPASUCHIL = `<svg class="flor" ${NS} viewBox="-20 -20 40 40">
+            <g fill="#ea580c">${Array.from({ length: 12 }, (_, i) => `<ellipse rx="4.5" ry="9" transform="rotate(${i * 30}) translate(0,-9)"/>`).join('')}</g>
+            <g fill="#f59e0b">${Array.from({ length: 10 }, (_, i) => `<ellipse rx="3.6" ry="7" transform="rotate(${i * 36 + 15}) translate(0,-6)"/>`).join('')}</g>
+            <g fill="#fbbf24">${Array.from({ length: 8 }, (_, i) => `<ellipse rx="2.6" ry="4.5" transform="rotate(${i * 45}) translate(0,-3.5)"/>`).join('')}</g>
+            <circle r="2.6" fill="#b45309"/>
+            <animateTransform attributeName="transform" type="rotate" values="0;20;0" dur="6s" repeatCount="indefinite"/>
+        </svg>`;
+
+        // ---------- Escenarios (parte de abajo de la ventana) ----------
+        const PINO = (x, y, s, c) => `<g transform="translate(${x},${y}) scale(${s})"><path d="M0,-40 L11,-22 L6,-22 L16,-8 L9,-8 L20,6 L-20,6 L-9,-8 L-16,-8 L-6,-22 L-11,-22 Z" fill="${c}"/>
+            <path d="M0,-40 L5,-31 L1,-33 L-4,-30 Z M-6,-22 L6,-22 L3,-19 L-1,-21 L-4,-19 Z M-9,-8 L9,-8 L6,-5 L1,-7 L-4,-5 Z M-20,6 L20,6 L15,4 L6,6 L-3,4 L-12,6 Z" fill="#f1f5f9"/>
+            <rect x="-2.5" y="6" width="5" height="6" fill="#3f2a1d"/></g>`;
+        const VELA = (x, y, h, d) => `<g transform="translate(${x},${y})"><circle cy="${-h - 4}" r="9" fill="url(#tHaloNaranja)"/>
+            <rect x="-2.2" y="${-h}" width="4.4" height="${h}" rx="1" fill="#fef3c7"/>
+            <ellipse cy="${-h - 4}" rx="2" ry="4" fill="#fde047"><animate attributeName="ry" values="4;5.2;3.6;4.6;4" dur="${d}s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="1;.8;1" dur="${d / 2}s" repeatCount="indefinite"/></ellipse>
+            <ellipse cy="${-h - 3}" rx="1" ry="2" fill="#fff"/></g>`;
+        const FLOR_SUELO = (x, y, s) => `<g transform="translate(${x},${y}) scale(${s})"><circle r="6" fill="#ea580c"/><circle r="4.5" fill="#f59e0b"/><circle r="2.5" fill="#fbbf24"/><circle r="1" fill="#b45309"/></g>`;
+
+        const ESCENAS = {
+            halloween: `<svg class="paisaje" ${NS} viewBox="0 0 400 240" preserveAspectRatio="xMidYMax slice">
+                <circle cx="318" cy="78" r="78" fill="url(#tHalo)"/>
+                <circle cx="318" cy="78" r="38" fill="url(#tLuna)"/>
+                <g fill="#f6c453" opacity=".45"><circle cx="305" cy="66" r="7"/><circle cx="330" cy="92" r="5"/><circle cx="328" cy="64" r="3"/><circle cx="306" cy="92" r="3.5"/></g>
+                <path d="M0,168 Q70,128 160,148 T400,138 L400,240 L0,240 Z" fill="#170828"/>
+                <g fill="#0d0416">
+                    <path d="M58,152 L58,118 L72,104 L86,118 L86,152 Z"/><path d="M84,152 L84,126 L118,126 L118,152 Z"/>
+                    <path d="M80,128 L101,108 L122,128 Z"/><path d="M64,118 L64,92 L72,78 L80,92 L80,118 Z"/>
+                    <path d="M108,126 L108,112 L113,112 L113,126 Z"/>
+                </g>
+                <g fill="#fde047">
+                    <rect x="68" y="98" width="4" height="6"><animate attributeName="opacity" values="1;.3;1;1;.6;1" dur="5s" repeatCount="indefinite"/></rect>
+                    <rect x="92" y="134" width="6" height="7"/><rect x="104" y="134" width="6" height="7"><animate attributeName="opacity" values=".9;.9;.2;.9" dur="7s" repeatCount="indefinite"/></rect>
+                    <rect x="64" y="124" width="5" height="7" opacity=".8"/>
+                </g>
+                <path d="M0,206 Q100,184 200,200 T400,194 L400,240 L0,240 Z" fill="#08020d"/>
+                <g fill="none" stroke="#08020d" stroke-linecap="round">
+                    <path d="M26,240 C28,212 24,192 30,164 C31,150 28,140 32,124" stroke-width="7"/>
+                    <path d="M30,184 C18,176 12,168 4,154 M29,170 C42,160 50,156 60,142 M30,150 C22,140 18,134 16,122 M31,140 C40,134 46,126 48,114 M48,150 C54,146 60,148 66,152 M12,166 C8,160 2,160 -4,162" stroke-width="3"/>
+                    <path d="M376,240 C374,214 380,194 372,170 C370,158 374,148 370,132" stroke-width="7"/>
+                    <path d="M373,188 C386,180 392,170 402,160 M372,172 C360,164 352,158 344,146 M371,152 C380,142 384,136 386,124 M346,152 C338,146 332,148 326,150" stroke-width="3"/>
+                </g>
+                <g fill="#1e0d2b" stroke="#2e1a3b" stroke-width="1">
+                    <path d="M176,206 v-18 a10,10 0 0 1 20,0 v18 z"/><path d="M226,203 v-24 h-5 v-6 h5 v-6 h6 v6 h5 v6 h-5 v24 z"/>
+                    <path d="M252,204 v-12 a7,7 0 0 1 14,0 v12 z"/>
+                </g>
+                <text x="186" y="196" font-size="5" fill="#4c3366" text-anchor="middle" font-family="serif">RIP</text>
+                ${[[140, 214, 1], [300, 210, .8]].map(([x, y, s]) => `<g transform="translate(${x},${y}) scale(${s})"><circle r="14" fill="url(#tHaloNaranja)"/><ellipse rx="8" ry="6.5" fill="#ea580c"/><ellipse rx="4" ry="6.5" fill="#f97316"/><rect x="-1" y="-9" width="2" height="4" fill="#4d7c0f"/><g fill="#fde047"><path d="M-5,-1 L-2,-1 L-3.5,-4 Z M2,-1 L5,-1 L3.5,-4 Z M-4,2 Q0,6 4,2 Z"><animate attributeName="opacity" values="1;.6;1" dur="1.4s" repeatCount="indefinite"/></path></g></g>`).join('')}
+            </svg><div class="niebla"></div><div class="niebla n2"></div>`,
+            muertos: `<svg class="paisaje" ${NS} viewBox="0 0 400 240" preserveAspectRatio="xMidYMax slice">
+                <ellipse cx="200" cy="240" rx="260" ry="90" fill="url(#tHaloNaranja)" opacity=".5"/>
+                <circle cx="64" cy="104" r="40" fill="url(#tHalo)"/><path d="M58,82 a22,22 0 1 0 14,38 a17,17 0 1 1 -14,-38 Z" fill="#fde68a" opacity=".9"/>
+                <path d="M0,170 Q90,140 200,156 T400,150 L400,240 L0,240 Z" fill="#22081f"/>
+                <g fill="#160514">
+                    <path d="M262,156 L262,108 L320,108 L320,156 Z"/><path d="M270,108 Q291,72 312,108 Z"/>
+                    <path d="M289,82 L289,66 M283,72 L295,72" stroke="#160514" stroke-width="3"/>
+                    <path d="M322,156 L322,96 L338,96 L338,156 Z"/><path d="M320,96 L330,80 L340,96 Z"/>
+                    <path d="M150,162 v-14 h-4 v-4 h4 v-4 h4 v4 h4 v4 h-4 v14 z"/><path d="M110,164 v-10 h-3 v-3 h3 v-3 h3 v3 h3 v3 h-3 v10 z"/>
+                    <path d="M196,160 v-12 a6,6 0 0 1 12,0 v12 z"/>
+                </g>
+                <g fill="#fbbf24" opacity=".9"><rect x="286" y="120" width="10" height="16" rx="5"/><rect x="327" y="110" width="5" height="9" rx="2.5"/></g>
+                <path d="M0,206 Q100,190 200,202 T400,198 L400,240 L0,240 Z" fill="#0d030c"/>
+                ${[[40, 214, 16, 1.7], [58, 218, 11, 2.1], [86, 212, 20, 1.5], [312, 214, 18, 1.9], [336, 218, 12, 1.6], [360, 212, 22, 2.3], [380, 218, 10, 1.8]].map(([x, y, h, d]) => VELA(x, y, h, d)).join('')}
+                ${Array.from({ length: 26 }, (_, i) => FLOR_SUELO(i * 16 + (i % 2) * 5, 228 + (i % 3) * 5, .8 + (i % 4) * .12)).join('')}
+                ${Array.from({ length: 14 }, (_, i) => `<circle cx="${130 + i * 10}" cy="${214 + Math.sin(i) * 3}" r="1.6" fill="#f59e0b" opacity=".8"/>`).join('')}
+            </svg>`,
+            navidad: `<svg class="paisaje" ${NS} viewBox="0 0 400 240" preserveAspectRatio="xMidYMax slice">
+                <path d="M0,150 L50,96 L86,130 L140,70 L196,128 L240,92 L300,140 L350,84 L400,124 L400,240 L0,240 Z" fill="#1e3a5f"/>
+                <path d="M140,70 L156,88 L148,86 L140,94 L132,86 L124,90 Z M50,96 L62,109 L54,107 L46,112 L38,108 Z M350,84 L364,99 L356,97 L348,104 L340,98 Z M240,92 L252,104 L244,103 L236,108 L230,101 Z" fill="#e2e8f0" opacity=".9"/>
+                <path d="M0,184 Q100,160 200,176 T400,170 L400,240 L0,240 Z" fill="#cbd5e1" opacity=".22"/>
+                ${[[20, 186, .9], [48, 192, 1.2], [80, 186, .8], [318, 188, 1], [350, 194, 1.3], [384, 186, .85]].map(([x, y, s]) => PINO(x, y, s, '#064e3b')).join('')}
+                <g transform="translate(170,190)">
+                    <rect x="0" y="-22" width="44" height="26" fill="#5b3a25"/><path d="M-6,-20 L22,-40 L50,-20 Z" fill="#3f2a1d"/>
+                    <path d="M-7,-19 L22,-41 L51,-19 L46,-18 L22,-35 L-2,-18 Z" fill="#f8fafc"/>
+                    <rect x="32" y="-40" width="6" height="12" fill="#3f2a1d"/>
+                    <rect x="8" y="-14" width="10" height="9" fill="#fde047"><animate attributeName="opacity" values="1;.85;1" dur="3s" repeatCount="indefinite"/></rect>
+                    <rect x="27" y="-12" width="8" height="16" fill="#2a1a10"/>
+                    <g fill="#e2e8f0">${[0, 1, 2].map(i => `<circle cx="35" cy="-44" r="${3 + i}"><animate attributeName="cy" values="-44;-70" dur="4s" begin="${i * 1.3}s" repeatCount="indefinite"/><animate attributeName="opacity" values=".6;0" dur="4s" begin="${i * 1.3}s" repeatCount="indefinite"/></circle>`).join('')}</g>
+                </g>
+                <path d="M0,206 Q100,192 200,204 T400,198 L400,240 L0,240 Z" fill="url(#tSueloNieve)"/>
+            </svg><div class="estrella-fugaz"></div>`
+        };
+
+        // ---------- Marcos de la tarjeta ----------
+        const TELARANA = cls => `<svg class="${cls}" ${NS} viewBox="0 0 74 74"><g fill="none" stroke="#e9d5ff" stroke-opacity=".45" stroke-width=".8">
+            ${[0, 22, 45, 68, 90].map(a => `<path d="M0,0 L${(74 * Math.cos(a * Math.PI / 180)).toFixed(1)},${(74 * Math.sin(a * Math.PI / 180)).toFixed(1)}"/>`).join('')}
+            ${[16, 30, 44, 58].map(r => { const p = [0, 22, 45, 68, 90].map(a => [r * Math.cos(a * Math.PI / 180), r * Math.sin(a * Math.PI / 180)]);
+                return '<path d="M' + p.map((q, i) => (i ? 'Q' + ((p[i - 1][0] + q[0]) * 0.42).toFixed(1) + ',' + ((p[i - 1][1] + q[1]) * 0.42).toFixed(1) + ' ' : '') + q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' ') + '"/>'; }).join('')}
+            </g></svg>`;
+        const MARCOS = {
+            halloween: TELARANA('tela-izq') + TELARANA('tela-der') + `<svg class="arana" ${NS} viewBox="0 0 18 120">
+                <g><animateTransform attributeName="transform" type="translate" values="0,0;0,70;0,70;0,0;0,0" keyTimes="0;.35;.55;.9;1" dur="9s" repeatCount="indefinite"/>
+                    <line x1="9" y1="-200" x2="9" y2="8" stroke="#e9d5ff" stroke-opacity=".5" stroke-width=".7"/>
+                    <g stroke="#14061d" stroke-width="1.2" fill="none"><path d="M9,12 L1,6 M9,12 L0,12 M9,13 L1,18 M9,14 L3,22 M9,12 L17,6 M9,12 L18,12 M9,13 L17,18 M9,14 L15,22"/></g>
+                    <ellipse cx="9" cy="14" rx="4" ry="5" fill="#14061d"/><circle cx="9" cy="9" r="3" fill="#14061d"/>
+                    <circle cx="8" cy="8.5" r=".7" fill="#f87171"/><circle cx="10" cy="8.5" r=".7" fill="#f87171"/></g></svg>`,
+            muertos: ['f1', 'f2', 'f3', 'f4'].map(c => CEMPASUCHIL.replace('class="flor"', `class="flor ${c}"`)).join(''),
+            navidad: `<svg class="nieve-tope" ${NS} viewBox="0 0 300 18" preserveAspectRatio="none">
+                <path d="M0,11 C10,2 22,3 30,9 C40,1 55,2 62,8 C74,0 90,4 98,9 C110,2 126,3 134,8 C146,0 160,4 170,9 C180,2 196,2 204,8 C216,1 232,3 240,9 C252,2 266,3 274,8 C284,2 296,5 300,10 L300,14 C280,18 20,18 0,14 Z" fill="#f8fafc"/>
+                <g fill="#f8fafc"><path d="M40,14 q2,7 4,0 Z"/><path d="M120,14 q2,9 4,0 Z"/><path d="M210,14 q2,6 4,0 Z"/><path d="M262,14 q2,8 4,0 Z"/></g></svg>` +
+                ['', ' der'].map(c => `<svg class="acebo${c}" ${NS} viewBox="0 0 52 40">
+                <path d="M6,22 C10,12 20,8 26,14 C22,14 22,18 18,18 C20,22 16,24 12,22 C12,26 8,26 6,22 Z" fill="#15803d" stroke="#052e16" stroke-width=".8"/>
+                <path d="M26,14 C34,6 46,8 48,18 C44,16 42,20 38,18 C38,22 34,24 32,20 C30,24 26,22 26,14 Z" fill="#166534" stroke="#052e16" stroke-width=".8"/>
+                <g fill="#dc2626" stroke="#7f1d1d" stroke-width=".6"><circle cx="24" cy="18" r="4"/><circle cx="30" cy="19" r="3.6"/><circle cx="27" cy="13" r="3.4"/></g>
+                <circle cx="23" cy="16.5" r="1" fill="#fff" opacity=".7"/></svg>`).join('')
+        };
+
+        // ---------- Pintar ----------
+        function particula(html, clase, tam, dur, colocar) {
+            const s = document.createElement('span');
+            s.className = 'p ' + clase;
+            s.innerHTML = html;
+            s.style.width = tam[0] + 'px'; s.style.height = (tam[1] || tam[0]) + 'px';
+            s.style.animationDuration = dur + 's';
+            s.style.animationDelay = (-azar(0, dur)) + 's';
+            colocar(s);
+            document.getElementById('decoTema').appendChild(s);
+            return s;
         }
         function guirnalda(cantidad, crear) {
             const fila = document.createElement('div');
@@ -494,23 +800,61 @@
             for (let i = 0; i < cantidad; i++) fila.appendChild(crear(i));
             document.getElementById('decoTema').appendChild(fila);
         }
-        function pintarDecoracion(tema) {
-            const deco = document.getElementById('decoTema');
-            deco.innerHTML = '';
+        function estrellas(n) {
+            const cont = document.createElement('div');
+            cont.className = 'estrellas';
+            for (let i = 0; i < n; i++) {
+                const e = document.createElement('span');
+                e.className = 'estrella';
+                e.style.left = azar(0, 100) + '%'; e.style.top = azar(0, 60) + '%';
+                e.style.animationDelay = (-azar(0, 3)) + 's'; e.style.animationDuration = azar(2, 5) + 's';
+                if (Math.random() < 0.2) { e.style.width = e.style.height = '3px'; }
+                cont.appendChild(e);
+            }
+            document.getElementById('escenaTema').appendChild(cont);
+        }
+
+        function pintarTematica(tema) {
+            const escena = document.getElementById('escenaTema'), deco = document.getElementById('decoTema');
+            escena.innerHTML = ''; deco.innerHTML = '';
+            document.querySelectorAll('.marco-tema').forEach(m => m.remove());
+            ponerNucleos();
+            if (tema === 'normal') return;
+            estrellas(tema === 'navidad' ? 60 : 40);
+            escena.insertAdjacentHTML('beforeend', ESCENAS[tema]);
+            const card = document.querySelector('#vistaVoz .card');
+            if (card) card.insertAdjacentHTML('afterbegin', `<div class="marco-tema" aria-hidden="true">${MARCOS[tema]}</div>`);
+            const arriba = s => { s.style.top = azar(4, 60) + 'vh'; };
+            const izquierda = s => { s.style.left = azar(-4, 100) + 'vw'; };
             if (tema === 'halloween') {
-                decoracion('deco-vuela', '🦇', 6, [14, 24], [9, 16]);
-                decoracion('deco-flota', '👻', 2, [16, 22], [3, 5]);
+                for (let i = 0; i < 6; i++) particula(MURCIELAGO, 'deco-vuela', [azar(26, 44), 0], azar(10, 18), arriba).style.height = '22px';
+                for (let i = 0; i < 2; i++) particula(FANTASMA, 'deco-flota', [azar(20, 28)], azar(3, 5), s => { s.style.left = azar(5, 90) + 'vw'; s.style.top = azar(55, 90) + 'vh'; });
             } else if (tema === 'muertos') {
                 const colores = ['#ec4899', '#f59e0b', '#22d3ee', '#a855f7', '#84cc16', '#f97316'];
-                guirnalda(12, i => { const b = document.createElement('span'); b.className = 'bandera'; b.style.background = colores[i % colores.length]; return b; });
-                decoracion('deco-cae', '🌼', 10, [11, 18], [9, 15]);
-                decoracion('deco-flota', '💀', 2, [14, 18], [3, 5]);
+                guirnalda(11, i => {
+                    const b = document.createElement('span'); b.className = 'bandera';
+                    b.style.animationDelay = (-i * 0.4) + 's';
+                    b.innerHTML = `<svg ${NS} viewBox="0 0 38 44" width="100%" height="100%"><path d="M0,0 H38 V36 L33,44 L28,36 L23,44 L19,36 L15,44 L10,36 L5,44 L0,36 Z" fill="${colores[i % colores.length]}" mask="url(#tPicado)"/></svg>`;
+                    return b;
+                });
+                for (let i = 0; i < 14; i++) particula(PETALO(['#f59e0b', '#ea580c', '#fbbf24'][i % 3]), 'deco-cae', [azar(7, 12), 0], azar(9, 16), izquierda).style.height = '14px';
+                for (let i = 0; i < 3; i++) particula(MONARCA, 'deco-vuela', [azar(24, 32), 0], azar(18, 26), arriba).style.height = '20px';
             } else if (tema === 'navidad') {
-                const colores = ['#ef4444', '#facc15', '#22c55e', '#3b82f6'];
-                guirnalda(16, i => { const f = document.createElement('span'); f.className = 'foco'; f.style.background = f.style.color = colores[i % colores.length]; f.style.animationDelay = (i % 4) * 0.4 + 's'; return f; });
-                decoracion('deco-cae', '❄', 26, [8, 16], [7, 14], s => { s.style.color = '#fff'; s.style.opacity = azar(0.4, 0.9); });
+                const colores = ['#ef4444', '#facc15', '#22c55e', '#3b82f6', '#e879f9'];
+                guirnalda(18, i => { const f = document.createElement('span'); f.className = 'foco'; f.style.background = f.style.color = colores[i % colores.length]; f.style.animationDelay = (i % 5) * 0.32 + 's'; return f; });
+                // Nieve con profundidad: lejana (chica, lenta y tenue), media y cercana (copos dibujados)
+                for (let i = 0; i < 34; i++) { const t = azar(2, 3.5); particula('', 'deco-nieve', [t], azar(14, 22), izquierda).style.opacity = 0.45; }
+                for (let i = 0; i < 18; i++) { const t = azar(4, 6); particula('', 'deco-nieve', [t], azar(9, 13), izquierda).style.opacity = 0.75; }
+                for (let i = 0; i < 6; i++) particula(COPO, 'deco-nieve', [azar(12, 18)], azar(7, 10), izquierda).style.background = 'none';
             }
         }
+
+        // Pone el núcleo dibujado en cada esfera (voz, chat vacío y mini del escritorio)
+        function ponerNucleos() {
+            const svg = tematicaActual && tematicaActual !== 'normal' ? NUCLEOS[tematicaActual] : '';
+            document.querySelectorAll('.core, .mini-core').forEach(el => { if (el.dataset.tema !== (tematicaActual || '')) { el.innerHTML = svg; el.dataset.tema = tematicaActual || ''; } });
+        }
+
         function pintarBotonTema() {
             // En automático la insignia ya dice cuál temporada es; el botón solo dice AUTO
             const nombre = preferenciaTematica === 'auto' ? 'AUTO' : TEMATICAS[preferenciaTematica][idiomaActual];
@@ -526,8 +870,9 @@
                 document.body.classList.toggle('tematica', tema !== 'normal');
                 if (tema !== 'normal') document.body.classList.add('tema-' + tema);
                 tematicaActual = tema;
-                pintarDecoracion(tema);
+                pintarTematica(tema);
             }
+            ponerNucleos();
             pintarBotonTema();
         }
         async function siguienteTematica() {
@@ -535,6 +880,7 @@
             const nueva = ORDEN_TEMATICAS[(i + 1) % ORDEN_TEMATICAS.length];
             try { const r = await api('/tematica', 'POST', { tematica: nueva }); aplicarTematica(r.tematica, r.preferencia); } catch (e) { console.log(e); }
         }
+        document.body.insertAdjacentHTML('afterbegin', DEFS_TEMA);
 
         // Antes se comparaba contra log.length (el tamaño de la lista ya
         // recortada por el backend a 40 líneas). En cuanto el historial

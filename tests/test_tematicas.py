@@ -103,3 +103,12 @@ def test_sonidos_son_wav_validos(tema):
 def test_sin_winsound_no_truena(monkeypatch):
     monkeypatch.setattr(tematicas, "_reproducir", lambda datos: (_ for _ in ()).throw(ImportError("winsound")))
     assert tematicas.reproducir_sonido("navidad") is False
+
+
+@pytest.mark.parametrize("fuente", ["creepster.woff2", "lobster.woff2", "mountains-of-christmas.woff2"])
+def test_letras_de_las_tematicas_van_incluidas(fuente):
+    """Las fuentes se sirven desde el propio Azmuth: funcionan sin internet y en el .exe."""
+    cliente = TestClient(servidor.app)
+    assert f"/imagenes/fuentes/{fuente}" in cliente.get("/").text
+    r = cliente.get(f"/imagenes/fuentes/{fuente}")
+    assert r.status_code == 200 and r.content[:4] == b"wOF2"
