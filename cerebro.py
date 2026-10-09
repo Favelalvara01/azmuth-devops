@@ -11,6 +11,7 @@ import re
 import anthropic
 import config
 import idioma
+import tematicas
 from skills import memoria, habitos, perfil
 
 SYSTEM_PROMPT = """Eres AZMUTH, un asistente de inteligencia artificial personal que vive \
@@ -130,6 +131,7 @@ def _construir_system_prompt():
     if perfil_texto:
         prompt += "\n\nPerfil de personalidad/estilo del usuario (generado a partir de su historial de uso):\n" + perfil_texto
 
+    prompt += tematicas.extra_prompt()
     if idioma.es_ingles():
         prompt += EXTRA_INGLES
     return prompt

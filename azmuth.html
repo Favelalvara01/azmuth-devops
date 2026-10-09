@@ -262,12 +262,98 @@
         ::-webkit-scrollbar { width: 9px; height: 9px; }
         ::-webkit-scrollbar-thumb { background: #065f46; border-radius: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
+
+        /* ================= TEMÁTICAS DE TEMPORADA (tematicas.py) =================
+           Cada temática solo define variables; las reglas de abajo las aplican.
+           Los colores de ESCUCHANDO / PROCESANDO / EJECUTANDO no cambian, para
+           que siempre se note en qué estado está Azmuth. */
+        body.tema-halloween {
+            --t-fondo1: #1d0a2b; --t-fondo2: #07030c; --t-texto: #fdba74; --t-titulo: #fb923c;
+            --t-acento: #f97316; --t-acento2: #a855f7; --t-glow: rgba(249, 115, 22, 0.35);
+            --t-card: rgba(28, 10, 40, 0.92); --t-consola-bg: rgba(10, 4, 16, 0.95); --t-consola: #fdba74;
+            --t-borde: #6b21a8; --t-panel: rgba(16, 6, 24, 0.96); --t-boton: #431407;
+            --t-core: radial-gradient(circle, #fde047 0%, #f97316 55%, #9a3412 100%); --t-emoji: '🎃';
+        }
+        body.tema-muertos {
+            --t-fondo1: #2a0a2a; --t-fondo2: #0b030d; --t-texto: #fde68a; --t-titulo: #f59e0b;
+            --t-acento: #f59e0b; --t-acento2: #ec4899; --t-glow: rgba(236, 72, 153, 0.35);
+            --t-card: rgba(40, 10, 38, 0.92); --t-consola-bg: rgba(14, 4, 14, 0.95); --t-consola: #fcd34d;
+            --t-borde: #be185d; --t-panel: rgba(24, 6, 22, 0.96); --t-boton: #831843;
+            --t-core: radial-gradient(circle, #fef3c7 0%, #f59e0b 50%, #db2777 100%); --t-emoji: '💀';
+        }
+        body.tema-navidad {
+            --t-fondo1: #0b2a1a; --t-fondo2: #020b06; --t-texto: #fecaca; --t-titulo: #fde68a;
+            --t-acento: #ef4444; --t-acento2: #22c55e; --t-glow: rgba(239, 68, 68, 0.35);
+            --t-card: rgba(8, 36, 22, 0.92); --t-consola-bg: rgba(3, 14, 8, 0.95); --t-consola: #d9f99d;
+            --t-borde: #b91c1c; --t-panel: rgba(4, 22, 13, 0.96); --t-boton: #7f1d1d;
+            --t-core: radial-gradient(circle, #ffffff 0%, #fca5a5 40%, #dc2626 100%); --t-emoji: '🎄';
+        }
+        body.tematica { background: radial-gradient(circle, var(--t-fondo1) 0%, var(--t-fondo2) 100%); color: var(--t-texto); }
+        body.tematica h1, body.tematica .vacio h3, body.tematica .marca-texto b, body.tematica .burbuja h3 { color: var(--t-titulo); text-shadow: 0 0 10px var(--t-glow); }
+        body.tematica .card { background: var(--t-card); border-color: var(--t-acento); box-shadow: 0 0 25px var(--t-glow); position: relative; z-index: 1; }
+        body.tematica .console-box { background: var(--t-consola-bg); border-color: var(--t-borde); color: var(--t-consola); box-shadow: inset 0 0 10px var(--t-glow); }
+        body.tematica .log-line { border-bottom-color: rgba(255, 255, 255, 0.08); }
+        body.tematica #statusText.reposo, body.tematica #statusText:not([class]), body.tematica .marca-texto span, body.tematica .vacio p, body.tematica #estadoChat:not(.procesando):not(.escuchando):not(.ejecutando) { color: var(--t-texto); }
+        body.tematica .btn-modo { color: var(--t-titulo); border-color: var(--t-borde); background: rgba(255, 255, 255, 0.04); }
+        body.tematica .btn-modo:hover { background: var(--t-glow); }
+        body.tematica .estado-reposo .ring-1 { border-color: var(--t-acento) transparent var(--t-acento) transparent; }
+        body.tematica .estado-reposo .ring-2 { border-color: transparent var(--t-acento2) transparent var(--t-acento2); }
+        body.tematica .estado-reposo .core, body.tematica .mini-core.estado-reposo, body.tematica .avatar {
+            background: var(--t-core); box-shadow: 0 0 20px var(--t-acento), 0 0 40px var(--t-acento2);
+        }
+        body.tematica .estado-reposo .core { display: grid; place-items: center; }
+        body.tematica .estado-reposo .core::after { content: var(--t-emoji); font-size: 30px; line-height: 1; }
+        body.tematica .mini-core.estado-reposo { display: grid; place-items: center; }
+        body.tematica .mini-core.estado-reposo::after { content: var(--t-emoji); font-size: 15px; line-height: 1; }
+        body.tematica .lateral { background: var(--t-panel); border-right-color: var(--t-borde); }
+        body.tematica .lateral-top, body.tematica .lateral-pie, body.tematica .barra { border-color: var(--t-borde); }
+        body.tematica .principal { background: radial-gradient(ellipse at top, var(--t-fondo1) 0%, var(--t-fondo2) 75%); }
+        body.tematica .btn-nuevo, body.tematica .msg.user .burbuja { background: var(--t-boton); border-color: var(--t-acento); color: #fff7ed; }
+        body.tematica .chat-item { color: var(--t-texto); }
+        body.tematica .chat-item.activo, body.tematica .chat-item:hover { background: var(--t-glow); }
+        body.tematica .caja-entrada, body.tematica .sugerencia { border-color: var(--t-borde); background: var(--t-card); }
+        body.tematica .caja-entrada:focus-within { border-color: var(--t-acento); }
+        body.tematica #btnEnviar { background: var(--t-acento); color: #fff; }
+        body.tematica .msg.assistant .burbuja { color: #fdf4ff; }
+        body.tematica ::-webkit-scrollbar-thumb { background: var(--t-borde); }
+
+        .insignia-tema { display: none; font-size: 10px; letter-spacing: 1.5px; color: var(--t-acento2, #86efac); margin: -4px 0 4px; }
+        body.tematica .insignia-tema { display: block; }
+        .lateral .insignia-tema { margin: 0 0 10px; text-align: left; }
+        .fila-voz { display: flex; gap: 6px; }
+        .fila-voz .btn-modo { flex: 1; margin-top: 6px; }
+
+        /* Decoración animada (murciélagos, cempasúchil, nieve): encima, pero sin estorbar clics */
+        #decoTema { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 5; opacity: 0.75; }
+        body.modo-escritorio #decoTema { opacity: 0.3; }
+        #decoTema span { position: absolute; display: block; line-height: 1; will-change: transform; }
+        .deco-vuela { left: 0; animation: volar linear infinite; }
+        .deco-cae { top: 0; animation: caer linear infinite; }
+        .deco-flota { animation: flotar ease-in-out infinite alternate; }
+        @keyframes volar {
+            0% { transform: translate(-12vw, 0) scale(1); } 25% { transform: translate(22vw, -4vh) scale(1.1); }
+            50% { transform: translate(55vw, 3vh) scale(0.9); } 75% { transform: translate(85vw, -3vh) scale(1.05); }
+            100% { transform: translate(112vw, 0) scale(1); }
+        }
+        @keyframes caer { 0% { transform: translate(0, -8vh) rotate(0deg); } 100% { transform: translate(6vw, 108vh) rotate(320deg); } }
+        @keyframes flotar { 0% { transform: translateY(0); opacity: 0.25; } 100% { transform: translateY(-18px); opacity: 0.7; } }
+
+        /* Papel picado (Día de Muertos) y luces (Navidad) colgando arriba */
+        .guirnalda { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-around; }
+        .guirnalda::before { content: ''; position: absolute; top: 2px; left: 0; right: 0; height: 1px; background: rgba(255, 255, 255, 0.35); }
+        #decoTema .bandera { position: relative; width: 26px; height: 30px; opacity: 0.9;
+            clip-path: polygon(0 0, 100% 0, 100% 78%, 87% 100%, 75% 78%, 62% 100%, 50% 78%, 37% 100%, 25% 78%, 12% 100%, 0 78%); }
+        #decoTema .foco { position: relative; top: 2px; width: 7px; height: 11px; border-radius: 50% 50% 45% 45%; animation: parpadeo 1.6s ease-in-out infinite; }
+        @keyframes parpadeo { 0%, 100% { opacity: 1; box-shadow: 0 0 9px currentColor; } 50% { opacity: 0.35; box-shadow: none; } }
+        @media (prefers-reduced-motion: reduce) { #decoTema { display: none; } }
     </style>
 </head>
 <body>
+<div id="decoTema" aria-hidden="true"></div>
 <div id="vistaVoz">
     <div class="card">
         <h1 data-i18n="titulo">AZMUTH OS ONLINE</h1>
+        <div class="insignia-tema"></div>
 
         <!-- Núcleo Visual Estilo JARVIS: la clase estado-XXX cambia sola -->
         <div class="reactor-container estado-reposo" id="reactorContainer">
@@ -282,7 +368,10 @@
             <div class="log-line">&gt; Sistema inicializado correctamente.</div>
         </div>
         <button class="btn-modo" onclick="cambiarModo('escritorio')" title="Abrir el chat escrito" data-i18n="btnEscritorio">⌨ MODO ESCRITORIO</button>
-        <button class="btn-modo btn-idioma" onclick="alternarIdioma()" title="Cambiar idioma / Change language" data-i18n="btnIdioma">🌐 ENGLISH</button>
+        <div class="fila-voz">
+            <button class="btn-modo btn-tema" onclick="siguienteTematica()" title="Cambiar temática / Change theme">🎨 TEMA</button>
+            <button class="btn-modo btn-idioma" onclick="alternarIdioma()" title="Cambiar idioma / Change language" data-i18n="btnIdioma">🌐 ENGLISH</button>
+        </div>
     </div>
 
 </div>
@@ -295,6 +384,7 @@
                 <div class="mini-core" id="miniCore"></div>
                 <div class="marca-texto"><b>AZMUTH OS</b><span data-i18n="marca">MODO ESCRITORIO</span></div>
             </div>
+            <div class="insignia-tema"></div>
             <button class="btn-nuevo" onclick="nuevoChat()" data-i18n="nuevoChat">+ Nuevo chat</button>
         </div>
         <div class="lista-chats" id="listaChats"></div>
@@ -304,7 +394,10 @@
                 <button class="btn-modo" id="btnVozChat" onclick="alternarVozChat()" title="Leer en voz alta las respuestas escritas">🔊 VOZ: SÍ</button>
                 <button class="btn-modo" onclick="cambiarModo('voz')" title="Regresar a la ventana compacta" data-i18n="btnVoz">◉ MODO VOZ</button>
             </div>
-            <button class="btn-modo btn-idioma" onclick="alternarIdioma()" title="Cambiar idioma / Change language" data-i18n="btnIdioma">🌐 ENGLISH</button>
+            <div class="fila-pie">
+                <button class="btn-modo btn-tema" onclick="siguienteTematica()" title="Cambiar temática / Change theme">🎨 TEMA</button>
+                <button class="btn-modo btn-idioma" onclick="alternarIdioma()" title="Cambiar idioma / Change language" data-i18n="btnIdioma">🌐 ENGLISH</button>
+            </div>
         </div>
     </aside>
     <main class="principal">
@@ -368,6 +461,81 @@
             try { await api('/idioma', 'POST', { idioma: nuevo }); aplicarIdioma(nuevo); } catch (e) { console.log(e); }
         }
 
+
+        // ===================== TEMÁTICAS DE TEMPORADA =====================
+        const TEMATICAS = {
+            normal:    { es: 'NORMAL', en: 'NORMAL', insignia: { es: '', en: '' } },
+            halloween: { es: 'HALLOWEEN', en: 'HALLOWEEN', insignia: { es: '🎃 EDICIÓN HALLOWEEN 🦇', en: '🎃 HALLOWEEN EDITION 🦇' } },
+            muertos:   { es: 'MUERTOS', en: 'DAY OF DEAD', insignia: { es: '🌼 EDICIÓN DÍA DE MUERTOS 💀', en: '🌼 DAY OF THE DEAD EDITION 💀' } },
+            navidad:   { es: 'NAVIDAD', en: 'HOLIDAYS', insignia: { es: '🎄 EDICIÓN NAVIDEÑA ❄', en: '🎄 HOLIDAY EDITION ❄' } }
+        };
+        const ORDEN_TEMATICAS = ['auto', 'normal', 'halloween', 'muertos', 'navidad'];
+        let tematicaActual = null, preferenciaTematica = 'auto';
+
+        const azar = (a, b) => a + Math.random() * (b - a);
+        function decoracion(clase, emoji, cantidad, tam, dur, extra) {
+            const deco = document.getElementById('decoTema');
+            for (let i = 0; i < cantidad; i++) {
+                const s = document.createElement('span');
+                s.className = clase; s.textContent = emoji;
+                s.style.fontSize = azar(tam[0], tam[1]) + 'px';
+                s.style.animationDuration = azar(dur[0], dur[1]) + 's';
+                s.style.animationDelay = (-azar(0, dur[1])) + 's';
+                if (clase === 'deco-vuela') s.style.top = azar(4, 70) + 'vh';
+                else s.style.left = azar(-4, 100) + 'vw';
+                if (clase === 'deco-flota') s.style.top = azar(10, 90) + 'vh';
+                if (extra) extra(s, i);
+                deco.appendChild(s);
+            }
+        }
+        function guirnalda(cantidad, crear) {
+            const fila = document.createElement('div');
+            fila.className = 'guirnalda';
+            for (let i = 0; i < cantidad; i++) fila.appendChild(crear(i));
+            document.getElementById('decoTema').appendChild(fila);
+        }
+        function pintarDecoracion(tema) {
+            const deco = document.getElementById('decoTema');
+            deco.innerHTML = '';
+            if (tema === 'halloween') {
+                decoracion('deco-vuela', '🦇', 6, [14, 24], [9, 16]);
+                decoracion('deco-flota', '👻', 2, [16, 22], [3, 5]);
+            } else if (tema === 'muertos') {
+                const colores = ['#ec4899', '#f59e0b', '#22d3ee', '#a855f7', '#84cc16', '#f97316'];
+                guirnalda(12, i => { const b = document.createElement('span'); b.className = 'bandera'; b.style.background = colores[i % colores.length]; return b; });
+                decoracion('deco-cae', '🌼', 10, [11, 18], [9, 15]);
+                decoracion('deco-flota', '💀', 2, [14, 18], [3, 5]);
+            } else if (tema === 'navidad') {
+                const colores = ['#ef4444', '#facc15', '#22c55e', '#3b82f6'];
+                guirnalda(16, i => { const f = document.createElement('span'); f.className = 'foco'; f.style.background = f.style.color = colores[i % colores.length]; f.style.animationDelay = (i % 4) * 0.4 + 's'; return f; });
+                decoracion('deco-cae', '❄', 26, [8, 16], [7, 14], s => { s.style.color = '#fff'; s.style.opacity = azar(0.4, 0.9); });
+            }
+        }
+        function pintarBotonTema() {
+            // En automático la insignia ya dice cuál temporada es; el botón solo dice AUTO
+            const nombre = preferenciaTematica === 'auto' ? 'AUTO' : TEMATICAS[preferenciaTematica][idiomaActual];
+            document.querySelectorAll('.btn-tema').forEach(b => b.textContent = '🎨 ' + nombre);
+            const insignia = tematicaActual ? TEMATICAS[tematicaActual].insignia[idiomaActual] : '';
+            document.querySelectorAll('.insignia-tema').forEach(el => el.textContent = insignia);
+        }
+        function aplicarTematica(tema, preferencia) {
+            if (!TEMATICAS[tema]) tema = 'normal';
+            preferenciaTematica = preferencia || 'auto';
+            if (tema !== tematicaActual) {
+                Object.keys(TEMATICAS).forEach(t => document.body.classList.remove('tema-' + t));
+                document.body.classList.toggle('tematica', tema !== 'normal');
+                if (tema !== 'normal') document.body.classList.add('tema-' + tema);
+                tematicaActual = tema;
+                pintarDecoracion(tema);
+            }
+            pintarBotonTema();
+        }
+        async function siguienteTematica() {
+            const i = ORDEN_TEMATICAS.indexOf(preferenciaTematica);
+            const nueva = ORDEN_TEMATICAS[(i + 1) % ORDEN_TEMATICAS.length];
+            try { const r = await api('/tematica', 'POST', { tematica: nueva }); aplicarTematica(r.tematica, r.preferencia); } catch (e) { console.log(e); }
+        }
+
         // Antes se comparaba contra log.length (el tamaño de la lista ya
         // recortada por el backend a 40 líneas). En cuanto el historial
         // llegaba a ese tope, su tamaño se quedaba fijo en 40 para
@@ -420,6 +588,7 @@
                 actualizarConsola(data.log, data.log_total);
                 aplicarModo(data.modo || 'voz');
                 aplicarIdioma(data.idioma || 'es');
+                aplicarTematica(data.tematica || 'normal', data.tematica_pref);
                 if (modoActual === 'escritorio') actualizarEscritorio(data);
             } catch (e) {
                 // Silencioso: si el servidor tarda un instante en levantar,

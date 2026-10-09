@@ -23,7 +23,7 @@ RESUMEN_VOZ = (
     "Puedo ayudarle con: notas, recordatorios con aviso en Windows, memoria, hábitos, "
     "hora, fecha y clima, búsquedas, mapas y WhatsApp, contactos, música y volumen, "
     "pestañas y ventanas, abrir o cerrar cualquier aplicación que tenga instalada, "
-    "y ver lo que hay en su pantalla para ayudarle. Lo que no sea un comando se lo contesto "
+    "ver lo que hay en su pantalla para ayudarle y cambiar mi temática de temporada. Lo que no sea un comando se lo contesto "
     "con inteligencia artificial. Para ver todos los ejemplos diga modo escritorio y escriba ayuda."
 )
 
@@ -31,7 +31,11 @@ MANUAL = """## 🟢 Lo que puedo hacer
 
 Háblame con la palabra clave o escríbeme en este chat. **Lo que no sea un comando lo contesta Claude** con el historial del chat.
 
-### 🖥️ Pantalla (nuevo)
+### 🎃 Temáticas de temporada (nuevo)
+- «temática de Halloween» · «temática de Día de Muertos» · «temática de Navidad» · «temática normal»
+- «temática automática» (cambia sola según la fecha) · «qué temáticas tienes» · botón **🎨 TEMA**
+
+### 🖥️ Pantalla
 - «qué hay en mi pantalla» · «ayúdame con lo que hay en mi pantalla»
 - «mira mi pantalla y dime qué error tiene» · «traduce lo que dice mi pantalla» · «resuelve lo de mi pantalla»
 - *Toma una captura, Claude la analiza y no se guarda.*
@@ -80,13 +84,16 @@ Háblame con la palabra clave o escríbeme en este chat. **Lo que no sea un coma
 RESUMEN_VOZ_EN = (
     "I can help you with notes, reminders with Windows notifications, memory, the time, date "
     "and weather, web searches, music and volume, tabs and windows, opening or closing any app "
-    "you have installed, and looking at your screen to help you. Anything else, I answer with "
+    "you have installed, looking at your screen to help you, and seasonal themes. Anything else, I answer with "
     "artificial intelligence. To see every example, say desktop mode and type help."
 )
 
 MANUAL_EN = """## 🟢 What I can do (English mode)
 
 Say your **wake word** before a command, or type here. **Anything that is not a command is answered by Claude.**
+
+### 🎃 Seasonal themes
+- "Halloween theme" · "Day of the Dead theme" · "Christmas theme" · "normal theme" · "automatic theme"
 
 ### 🖥️ Screen
 - "what's on my screen" · "help me with my screen" · "explain what's on my screen" · "translate my screen"

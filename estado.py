@@ -18,6 +18,7 @@ Estados válidos:
   - "ejecutando"  → realizando la acción y/o hablando la respuesta.
 """
 import idioma
+import tematicas
 import threading
 import time
 
@@ -72,6 +73,8 @@ def obtener_estado():
             "modo": _modo_actual,
             "version_chat": _version_chat,
             "idioma": idioma.obtener(),
+            "tematica": tematicas.obtener(),
+            "tematica_pref": tematicas.preferencia(),
         }
 
 

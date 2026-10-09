@@ -66,3 +66,14 @@ def sin_efectos_externos(monkeypatch):
     if hasattr(os, "startfile"):
         monkeypatch.setattr(os, "startfile", mock.MagicMock(side_effect=OSError("bloqueado en pruebas")))
     yield abiertos
+
+
+@pytest.fixture(autouse=True)
+def tematica_normal(monkeypatch):
+    """Las pruebas no dependen de la fecha real (en octubre sería Halloween) ni hacen ruido."""
+    import datetime
+    import tematicas
+    monkeypatch.setattr(tematicas, "_preferencia", None)
+    monkeypatch.setattr(tematicas, "_hoy", lambda: datetime.date(2026, 6, 15))
+    monkeypatch.setattr(tematicas, "_reproducir", mock.MagicMock(name="winsound"))
+    yield

@@ -21,10 +21,10 @@ Ese es todo el contrato — no hay que tocar nada más del programa.
 """
 import re
 
-from . import (idiomas, ingles, modos, pantalla, tiempo, notas, recordatorios, memoria, contactos, habitos, web, sistema,
+from . import (idiomas, ingles, temas, modos, pantalla, tiempo, notas, recordatorios, memoria, contactos, habitos, web, sistema,
                multimedia, pestanas, ayuda, aplicaciones, apps_instaladas)
 
-SKILLS = [idiomas, modos, pantalla, sistema, tiempo, notas, recordatorios, memoria, contactos, habitos, web,
+SKILLS = [idiomas, temas, modos, pantalla, sistema, tiempo, notas, recordatorios, memoria, contactos, habitos, web,
           pestanas, multimedia, ayuda, aplicaciones, apps_instaladas]
 
 
@@ -55,7 +55,7 @@ def variantes(texto: str):
 
 
 # Respuestas que ya vienen de Claude en el idioma correcto (no se traducen otra vez)
-_SIN_TRADUCIR = {"idiomas", "pantalla", "ayuda"}
+_SIN_TRADUCIR = {"idiomas", "temas", "pantalla", "ayuda"}
 
 
 def procesar(texto: str):
@@ -69,7 +69,7 @@ def procesar(texto: str):
     if respuesta is None:
         # Sin traducción solo se prueban las skills que entienden inglés por sí
         # mismas: así "next friday I have an exam" no se toma como "siguiente canción".
-        respuesta, skill = _procesar_es(texto, solo=(idiomas, pantalla))
+        respuesta, skill = _procesar_es(texto, solo=(idiomas, temas, pantalla))
     if respuesta is not None and skill not in _SIN_TRADUCIR:
         import cerebro
         respuesta = cerebro.traducir(respuesta, "en")

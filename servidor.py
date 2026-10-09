@@ -16,6 +16,7 @@ import estado
 import idioma
 import monitoreo
 import rutas
+import tematicas
 
 app = FastAPI()
 
@@ -113,6 +114,25 @@ def cambiar_idioma(datos: CambioIdioma):
     if datos.idioma not in idioma.IDIOMAS:
         raise HTTPException(status_code=400, detail="Idioma no soportado")
     return {"idioma": idioma.cambiar(datos.idioma)}
+
+
+class CambioTematica(BaseModel):
+    tematica: str
+
+
+@app.get("/tematica")
+def ver_tematica():
+    return {"tematica": tematicas.obtener(), "preferencia": tematicas.preferencia(),
+            "disponibles": ["auto", *tematicas.TEMAS]}
+
+
+@app.post("/tematica")
+def cambiar_tematica(datos: CambioTematica):
+    if datos.tematica != "auto" and datos.tematica not in tematicas.TEMAS:
+        raise HTTPException(status_code=400, detail="Temática no soportada")
+    activa = tematicas.cambiar(datos.tematica)
+    threading.Thread(target=tematicas.reproducir_sonido, daemon=True).start()
+    return {"tematica": activa, "preferencia": tematicas.preferencia()}
 
 
 @app.get("/salud")

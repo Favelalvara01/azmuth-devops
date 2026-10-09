@@ -18,6 +18,7 @@ import cerebro
 import skills
 import estado
 import idioma
+import tematicas
 import monitoreo
 import notificaciones
 import nucleo
@@ -369,7 +370,8 @@ def iniciar():
     estado.log("=" * 40)
 
     estado.set_estado("ejecutando", "Iniciando sistema")
-    voice.hablar(idioma.t("Sistema iniciado. A sus órdenes.", "System online. At your service."))
+    tematicas.reproducir_sonido()  # sonido de temporada (Halloween, Muertos, Navidad); nada en la normal
+    voice.hablar(tematicas.saludo())
     estado.set_estado("reposo")
 
     threading.Thread(target=_vigilar_recordatorios, daemon=True).start()
