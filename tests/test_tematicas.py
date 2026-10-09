@@ -24,6 +24,7 @@ def espanol_al_terminar():
 @pytest.mark.parametrize("fecha, tema", [
     ((2026, 10, 1), "halloween"), ((2026, 10, 31), "halloween"), ((2026, 11, 2), "muertos"),
     ((2026, 12, 24), "navidad"), ((2027, 1, 6), "navidad"), ((2027, 1, 7), "normal"), ((2026, 6, 15), "normal"),
+    ((2027, 2, 1), "sanvalentin"), ((2027, 2, 14), "sanvalentin"), ((2027, 2, 15), "normal"),
 ])
 def test_temporada_por_fecha(fecha, tema):
     assert tematicas.por_fecha(datetime.date(*fecha)) == tema
@@ -41,6 +42,8 @@ def test_automatica_sigue_la_fecha(monkeypatch):
     ("tema día de muertos", "muertos"), ("temática del día de muertos", "muertos"),
     ("activa la temática de navidad", "navidad"), ("modo navideño", "navidad"),
     ("temática normal", "normal"), ("quita la temática", "normal"),
+    ("temática de San Valentín", "sanvalentin"), ("modo san valentin", "sanvalentin"),
+    ("tema del día del amor y la amistad", "sanvalentin"), ("Valentine's theme", "sanvalentin"),
     ("Halloween theme", "halloween"), ("Christmas mode", "navidad"), ("day of the dead theme", "muertos"),
 ])
 def test_cambiar_por_voz_o_chat(frase, tema, monkeypatch):
@@ -92,7 +95,7 @@ def test_toque_de_temporada_en_la_ia():
     assert "Halloween" in cerebro._construir_system_prompt()
 
 
-@pytest.mark.parametrize("tema", ["halloween", "muertos", "navidad"])
+@pytest.mark.parametrize("tema", ["halloween", "muertos", "navidad", "sanvalentin"])
 def test_sonidos_son_wav_validos(tema):
     datos = tematicas._sintetizar(tema)
     with wave.open(io.BytesIO(datos)) as w:
@@ -105,7 +108,7 @@ def test_sin_winsound_no_truena(monkeypatch):
     assert tematicas.reproducir_sonido("navidad") is False
 
 
-@pytest.mark.parametrize("fuente", ["creepster.woff2", "lobster.woff2", "mountains-of-christmas.woff2"])
+@pytest.mark.parametrize("fuente", ["creepster.woff2", "lobster.woff2", "mountains-of-christmas.woff2", "dancing-script.woff2"])
 def test_letras_de_las_tematicas_van_incluidas(fuente):
     """Las fuentes se sirven desde el propio Azmuth: funcionan sin internet y en el .exe."""
     cliente = TestClient(servidor.app)
@@ -121,3 +124,10 @@ def test_sonido_propio_tiene_prioridad(tmp_path, monkeypatch):
     (tmp_path / "sonidos" / "halloween.wav").write_bytes(b"RIFF-mi-risa")
     assert tematicas.reproducir_sonido("halloween") is True
     tematicas._reproducir.assert_called_with(b"RIFF-mi-risa")
+
+
+def test_san_valentin_saluda_con_amor(monkeypatch):
+    monkeypatch.setattr(tematicas, "_hoy", lambda: datetime.date(2027, 2, 14))
+    assert tematicas.obtener() == "sanvalentin"
+    assert "Amor y la Amistad" in tematicas.saludo()
+    assert "San Valentín" in cerebro._construir_system_prompt()

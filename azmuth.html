@@ -272,6 +272,15 @@
         @font-face { font-family: 'Creepster'; src: url('/imagenes/fuentes/creepster.woff2') format('woff2'); font-display: swap; }
         @font-face { font-family: 'Lobster'; src: url('/imagenes/fuentes/lobster.woff2') format('woff2'); font-display: swap; }
         @font-face { font-family: 'Mountains of Christmas'; src: url('/imagenes/fuentes/mountains-of-christmas.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+        @font-face { font-family: 'Dancing Script'; src: url('/imagenes/fuentes/dancing-script.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+        body.tema-sanvalentin {
+            --t-fondo1: #4c0b31; --t-fondo2: #12030b; --t-texto: #fbcfe8; --t-titulo: #f9a8d4;
+            --t-acento: #f43f5e; --t-acento2: #f472b6; --t-glow: rgba(244, 63, 94, 0.38);
+            --t-card: rgba(46, 8, 30, 0.88); --t-consola-bg: rgba(18, 3, 11, 0.94); --t-consola: #fbcfe8;
+            --t-borde: #be185d; --t-panel: rgba(30, 5, 18, 0.94); --t-boton: #9f1239;
+            --t-core: radial-gradient(circle, #ffe4e6 0%, #fb7185 45%, #be123c 100%);
+            --t-fuente: 'Dancing Script', 'Segoe Script', cursive; --t-tam-titulo: 28px; --t-esp-titulo: 1px;
+        }
         body.tema-halloween {
             --t-fondo1: #2a1140; --t-fondo2: #07030c; --t-texto: #fdba74; --t-titulo: #fb923c;
             --t-acento: #f97316; --t-acento2: #a855f7; --t-glow: rgba(249, 115, 22, 0.35);
@@ -334,7 +343,9 @@
         body.tema-navidad h1 { background: linear-gradient(90deg, #fde68a, #fff, #fca5a5, #fde68a); background-size: 300% 100%;
             -webkit-background-clip: text; background-clip: text; color: transparent; animation: brillo-titulo 6s linear infinite; }
         @keyframes brillo-titulo { to { background-position: 300% 0; } }
-        body.tema-navidad h1, body.tema-muertos h1 { text-shadow: none; filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.7)) drop-shadow(0 0 8px var(--t-glow)); }
+        body.tema-sanvalentin h1 { background: linear-gradient(90deg, #fda4af, #fff1f2, #f472b6, #fb7185, #fda4af); background-size: 300% 100%;
+            -webkit-background-clip: text; background-clip: text; color: transparent; animation: brillo-titulo 7s linear infinite; }
+        body.tema-navidad h1, body.tema-muertos h1, body.tema-sanvalentin h1 { text-shadow: none; filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.7)) drop-shadow(0 0 8px var(--t-glow)); }
         body.tema-muertos h1 { background: linear-gradient(90deg, #fbbf24, #f472b6, #22d3ee, #fbbf24); background-size: 300% 100%;
             -webkit-background-clip: text; background-clip: text; color: transparent; animation: brillo-titulo 8s linear infinite; }
 
@@ -359,6 +370,7 @@
         #escenaTema { z-index: 0; }
         #decoTema { z-index: 5; }
         body.modo-escritorio #escenaTema { opacity: 0.45; }
+        body.modo-escritorio #escenaTema svg.paisaje { height: 60vw; max-height: 92vh; }  /* ventana ancha: se ve el escenario completo */
         body.modo-escritorio #decoTema { opacity: 0.35; }
         #escenaTema svg.paisaje { position: absolute; left: 0; bottom: 0; width: 100%; height: 46vh; }
         #escenaTema .estrellas { position: absolute; inset: 0; }
@@ -391,6 +403,12 @@
             50% { transform: translate(-2vw, 50vh) rotate(180deg); } 75% { transform: translate(5vw, 78vh) rotate(270deg); }
             100% { transform: translate(1vw, 108vh) rotate(360deg); }
         }
+        .deco-sube { top: 0; animation: subir linear infinite; }
+        @keyframes subir {
+            0% { transform: translate(0, 106vh) rotate(-8deg) scale(0.8); opacity: 0; } 10% { opacity: 0.95; }
+            35% { transform: translate(4vw, 70vh) rotate(8deg) scale(0.95); } 65% { transform: translate(-3vw, 35vh) rotate(-6deg) scale(1.05); }
+            90% { opacity: 0.8; } 100% { transform: translate(2vw, -10vh) rotate(6deg) scale(1.1); opacity: 0; }
+        }
         @keyframes nevar { 0% { transform: translate(0, -5vh); } 50% { transform: translate(3vw, 50vh); } 100% { transform: translate(-1vw, 105vh); } }
         @keyframes flotar { 0% { transform: translateY(0); opacity: 0.15; } 100% { transform: translateY(-22px); opacity: 0.75; } }
 
@@ -415,6 +433,16 @@
         .marco-tema .nieve-tope { top: -11px; left: 6px; width: calc(100% - 12px); height: 18px; }
         .marco-tema .acebo { top: -18px; left: -16px; width: 52px; height: 40px; }
         .marco-tema .acebo.der { left: auto; right: -16px; transform: scaleX(-1); }
+
+        /* San Valentín: borde doble rosa, rosas en las esquinas y un moño arriba */
+        body.tema-sanvalentin .card { border: 3px double #fb7185; box-shadow: 0 0 30px var(--t-glow), inset 0 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 0 5px rgba(249, 168, 212, 0.5); }
+        .marco-tema .rosa { width: 42px; height: 42px; }
+        .marco-tema .r1 { top: -18px; left: -16px; } .marco-tema .r2 { top: -18px; right: -16px; transform: scaleX(-1); }
+        .marco-tema .mono { top: -15px; left: 50%; width: 58px; height: 28px; margin-left: -29px; }
+        .marco-tema .cz { width: 20px; height: 20px; bottom: -9px; }
+        .marco-tema .cz1 { left: -8px; } .marco-tema .cz2 { right: -8px; }
+        .guirnalda .corazon { position: relative; width: 20px; height: 20px; margin-top: 4px; transform-origin: 50% -4px; animation: mecer 2.6s ease-in-out infinite alternate; }
+        body.tema-sanvalentin:not(.modo-escritorio) { padding-top: 30px; }
 
         /* Papel picado colgando arriba de la ventana */
         .guirnalda { position: absolute; top: 0; left: -10px; right: -10px; display: flex; justify-content: space-between; z-index: 1; }
@@ -555,9 +583,10 @@
             normal:    { es: 'NORMAL', en: 'NORMAL', insignia: { es: '', en: '' } },
             halloween: { es: 'HALLOWEEN', en: 'HALLOWEEN', insignia: { es: '🎃 Edición Halloween 🦇', en: '🎃 Halloween Edition 🦇' } },
             muertos:   { es: 'MUERTOS', en: 'DAY OF DEAD', insignia: { es: '🌼 Día de Muertos 💀', en: '🌼 Day of the Dead 💀' } },
-            navidad:   { es: 'NAVIDAD', en: 'HOLIDAYS', insignia: { es: '🎄 Edición Navideña ❄', en: '🎄 Holiday Edition ❄' } }
+            navidad:   { es: 'NAVIDAD', en: 'HOLIDAYS', insignia: { es: '🎄 Edición Navideña ❄', en: '🎄 Holiday Edition ❄' } },
+            sanvalentin: { es: 'SAN VALENTÍN', en: 'VALENTINE', insignia: { es: '💘 Día del Amor y la Amistad 💕', en: "💘 Valentine's Edition 💕" } }
         };
-        const ORDEN_TEMATICAS = ['auto', 'normal', 'halloween', 'muertos', 'navidad'];
+        const ORDEN_TEMATICAS = ['auto', 'normal', 'halloween', 'muertos', 'navidad', 'sanvalentin'];
         let tematicaActual = null, preferenciaTematica = 'auto';
         const azar = (a, b) => a + Math.random() * (b - a);
         const NS = 'xmlns="http://www.w3.org/2000/svg"';
@@ -574,6 +603,10 @@
             <radialGradient id="tHalo"><stop offset="0" stop-color="#fde68a" stop-opacity=".45"/><stop offset="1" stop-color="#fde68a" stop-opacity="0"/></radialGradient>
             <radialGradient id="tHaloNaranja"><stop offset="0" stop-color="#fb923c" stop-opacity=".55"/><stop offset="1" stop-color="#fb923c" stop-opacity="0"/></radialGradient>
             <linearGradient id="tSueloNieve" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1f5f9"/><stop offset="1" stop-color="#94a3b8"/></linearGradient>
+<radialGradient id="tCorazon" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#ffe4e6"/><stop offset=".3" stop-color="#fb7185"/><stop offset=".75" stop-color="#e11d48"/><stop offset="1" stop-color="#881337"/></radialGradient>
+            <radialGradient id="tCopaRosa" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#fbcfe8"/><stop offset=".6" stop-color="#f472b6"/><stop offset="1" stop-color="#be185d"/></radialGradient>
+            <radialGradient id="tAtardecer"><stop offset="0" stop-color="#fb7185" stop-opacity=".55"/><stop offset=".6" stop-color="#f472b6" stop-opacity=".15"/><stop offset="1" stop-color="#f472b6" stop-opacity="0"/></radialGradient>
+            <radialGradient id="tLuzFarol"><stop offset="0" stop-color="#fde68a" stop-opacity=".7"/><stop offset="1" stop-color="#fde68a" stop-opacity="0"/></radialGradient>
             <clipPath id="tClipEsfera"><circle cx="0" cy="6" r="33"/></clipPath>
             <mask id="tPicado" maskContentUnits="objectBoundingBox">
                 <rect width="1" height="1" fill="#fff"/>
@@ -627,6 +660,19 @@
                     <path d="M-30,12 c3,-4 8,-1 5,2 c-2,2 -4,0 -3,-1"/><path d="M30,12 c-3,-4 -8,-1 -5,2 c2,2 4,0 3,-1"/></g>
                 </g>
             </svg>`,
+            sanvalentin: `<svg class="nucleo" ${NS} viewBox="-50 -50 100 100">
+                <g stroke="#fbbf24" stroke-width="2.6" stroke-linecap="round"><path d="M-46,24 L12,-6"/></g>
+                <g stroke="#fde68a" stroke-width="2" stroke-linecap="round"><path d="M-44,23 l-7,-5 M-44,23 l-3,8 M-39,20.5 l-7,-5 M-39,20.5 l-3,8 M-34,18 l-7,-5 M-34,18 l-3,8"/></g>
+                <g><animateTransform attributeName="transform" type="scale" values="1;1.13;1;1.07;1;1" keyTimes="0;.12;.24;.34;.5;1" dur="1.25s" repeatCount="indefinite"/>
+                    <path d="M0,34 C-30,14 -43,-4 -37,-20 C-31,-36 -10,-38 0,-22 C10,-38 31,-36 37,-20 C43,-4 30,14 0,34 Z" fill="url(#tCorazon)" stroke="#9f1239" stroke-width="1.2"/>
+                    <ellipse cx="-19" cy="-18" rx="8" ry="5" transform="rotate(-35 -19 -18)" fill="#fff" opacity=".55"/>
+                    <circle cx="-9" cy="-25" r="2" fill="#fff" opacity=".7"/>
+                </g>
+                <g stroke="#fbbf24" stroke-width="2.6" stroke-linecap="round"><path d="M14,-7 L42,-21"/></g>
+                <path d="M47,-23.5 L36,-25 L41,-15 Z" fill="#fbbf24"/>
+                <g transform="translate(26,22)"><path d="M0,-6 L1.4,-1.4 L6,0 L1.4,1.4 L0,6 L-1.4,1.4 L-6,0 L-1.4,-1.4 Z" fill="#fff">
+                    <animateTransform attributeName="transform" type="scale" values=".2;1;.2" dur="1.9s" repeatCount="indefinite"/></path></g>
+            </svg>`,
             navidad: `<svg class="nucleo" ${NS} viewBox="-50 -52 100 100">
                 <g><animateTransform attributeName="transform" type="rotate" values="-7 0 -44;7 0 -44;-7 0 -44" dur="3.2s" repeatCount="indefinite"/>
                 <circle cx="0" cy="-41" r="4.5" fill="none" stroke="#fbbf24" stroke-width="2"/>
@@ -672,6 +718,22 @@
                 <g fill="#fff"><circle cx="-18" cy="-6" r=".9"/><circle cx="18" cy="-6" r=".9"/><circle cx="-13" cy="12" r=".8"/><circle cx="13" cy="12" r=".8"/></g>
             </g>
             <ellipse rx="1.5" ry="7" fill="#1c1917"/>
+        </svg>`;
+        const CORAZON = c => `<svg ${NS} viewBox="-12 -11 24 22" width="100%" height="100%"><path d="M0,10 C-9,4 -12,-1 -10.5,-5.5 C-9,-10 -3,-10.5 0,-6 C3,-10.5 9,-10 10.5,-5.5 C12,-1 9,4 0,10 Z" fill="${c}"/><ellipse cx="-5" cy="-5" rx="2.4" ry="1.5" transform="rotate(-35 -5 -5)" fill="#fff" opacity=".5"/></svg>`;
+        const ROSA = cls => `<svg class="rosa ${cls}" ${NS} viewBox="-20 -20 40 40">
+            <path d="M-4,6 C-14,4 -19,12 -18,18 C-12,18 -5,14 -4,6 Z" fill="#15803d" stroke="#052e16" stroke-width=".7"/>
+            <path d="M5,7 C14,8 18,16 15,20 C9,19 4,14 5,7 Z" fill="#166534" stroke="#052e16" stroke-width=".7"/>
+            <circle r="12" fill="#be123c"/><circle r="9.5" fill="#e11d48"/>
+            <path d="M-11,2 C-12,-8 -4,-13 3,-11 C10,-9 12,-1 9,5" fill="none" stroke="#9f1239" stroke-width="1.4"/>
+            <path d="M0,1 c2,-2 5,0 4,3 c-1,4 -7,4 -8,0 c-1,-5 4,-9 9,-7 c4,2 5,7 2,10" fill="none" stroke="#881337" stroke-width="1.5" stroke-linecap="round"/>
+            <ellipse cx="-4" cy="-6" rx="3" ry="1.6" transform="rotate(-30 -4 -6)" fill="#fda4af" opacity=".7"/>
+        </svg>`;
+        const MONO = `<svg class="mono" ${NS} viewBox="-30 -14 60 28">
+            <path d="M-2,0 C-12,-14 -28,-12 -26,0 C-28,12 -12,14 -2,0 Z" fill="#e11d48" stroke="#881337" stroke-width="1"/>
+            <path d="M2,0 C12,-14 28,-12 26,0 C28,12 12,14 2,0 Z" fill="#e11d48" stroke="#881337" stroke-width="1"/>
+            <path d="M-3,2 L-10,14 L-5,12 L-3,15 Z M3,2 L10,14 L5,12 L3,15 Z" fill="#be123c"/>
+            <path d="M-20,-4 C-14,-6 -8,-4 -4,-1 M20,-4 C14,-6 8,-4 4,-1" fill="none" stroke="#fda4af" stroke-width="1.2" opacity=".8"/>
+            <rect x="-4.5" y="-5" width="9" height="10" rx="3" fill="#f43f5e" stroke="#881337" stroke-width="1"/>
         </svg>`;
         const COPO = `<svg ${NS} viewBox="-10 -10 20 20" width="100%" height="100%"><g stroke="#fff" stroke-width="1.2" stroke-linecap="round">
             ${[0, 60, 120].map(a => `<g transform="rotate(${a})"><path d="M0,-9 L0,9 M0,-6 L-2.5,-8 M0,-6 L2.5,-8 M0,6 L-2.5,8 M0,6 L2.5,8"/></g>`).join('')}
@@ -742,6 +804,33 @@
                 ${Array.from({ length: 26 }, (_, i) => FLOR_SUELO(i * 16 + (i % 2) * 5, 228 + (i % 3) * 5, .8 + (i % 4) * .12)).join('')}
                 ${Array.from({ length: 14 }, (_, i) => `<circle cx="${130 + i * 10}" cy="${214 + Math.sin(i) * 3}" r="1.6" fill="#f59e0b" opacity=".8"/>`).join('')}
             </svg>`,
+            sanvalentin: `<svg class="paisaje" ${NS} viewBox="0 0 400 240" preserveAspectRatio="xMidYMax slice">
+                <ellipse cx="200" cy="200" rx="260" ry="120" fill="url(#tAtardecer)"/>
+                <path d="M0,172 Q100,146 200,160 T400,152 L400,240 L0,240 Z" fill="#3b0a24"/>
+                <g transform="translate(70,150)">
+                    <path d="M-5,60 C-3,40 -6,22 -2,0 L4,0 C6,22 4,40 7,60 Z" fill="#2a0718"/>
+                    <path d="M0,10 C-8,4 -14,2 -20,-4 M2,6 C10,0 16,-2 22,-8" stroke="#2a0718" stroke-width="3" fill="none"/>
+                    <path d="M0,4 C-34,-14 -46,-34 -40,-50 C-34,-66 -12,-68 0,-50 C12,-68 34,-66 40,-50 C46,-34 34,-14 0,4 Z" fill="url(#tCopaRosa)"/>
+                    <g fill="#fdf2f8" opacity=".75">${Array.from({ length: 16 }, (_, i) => `<circle cx="${(Math.sin(i * 2.4) * 28).toFixed(1)}" cy="${(-30 + Math.cos(i * 1.7) * 18).toFixed(1)}" r="${1.4 + (i % 3) * 0.5}"/>`).join('')}</g>
+                </g>
+                <path d="M0,206 Q100,192 200,202 T400,198 L400,240 L0,240 Z" fill="#1f0414"/>
+                <g transform="translate(232,196)" fill="#12020b">
+                    <rect x="0" y="-14" width="56" height="4" rx="1.5"/><rect x="0" y="-22" width="56" height="3" rx="1.5"/>
+                    <rect x="0" y="-8" width="56" height="4" rx="1.5"/><rect x="4" y="-4" width="3" height="10"/><rect x="49" y="-4" width="3" height="10"/>
+                    <rect x="4" y="-24" width="3" height="16"/><rect x="49" y="-24" width="3" height="16"/>
+                </g>
+                ${[[244, '#f43f5e', 64, 0], [258, '#f472b6', 76, .8], [272, '#fb7185', 60, 1.6]].map(([x, c, h, d]) => `<g><animateTransform attributeName="transform" type="rotate" values="-5 ${x} 186;5 ${x} 186;-5 ${x} 186" dur="4s" begin="${d}s" repeatCount="indefinite"/>
+                    <path d="M${x},186 C${x - 3},${186 - h * 0.4} ${x + 3},${186 - h * 0.7} ${x},${186 - h}" stroke="#fda4af" stroke-width=".8" fill="none"/>
+                    <path transform="translate(${x},${186 - h - 8}) scale(.75)" d="M0,10 C-9,4 -12,-1 -10.5,-5.5 C-9,-10 -3,-10.5 0,-6 C3,-10.5 9,-10 10.5,-5.5 C12,-1 9,4 0,10 Z" fill="${c}"/>
+                    <ellipse cx="${x - 3}" cy="${186 - h - 12}" rx="2" ry="1.2" fill="#fff" opacity=".6"/></g>`).join('')}
+                <g transform="translate(345,200)">
+                    <circle cx="0" cy="-62" r="26" fill="url(#tLuzFarol)"/>
+                    <rect x="-1.8" y="-58" width="3.6" height="58" fill="#12020b"/><rect x="-6" y="-2" width="12" height="4" fill="#12020b"/>
+                    <path d="M-7,-58 L7,-58 L5,-68 L-5,-68 Z" fill="#fde68a"/><path d="M-8,-68 L8,-68 L0,-74 Z" fill="#12020b"/>
+                </g>
+                ${Array.from({ length: 13 }, (_, i) => `<g transform="translate(${i * 32 + 8},${226 + (i % 2) * 6})"><ellipse rx="16" ry="9" fill="#14532d"/>
+                    ${[[-7, -4], [5, -5], [-1, 1]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3.6" fill="#e11d48"/><circle cx="${x}" cy="${y}" r="1.6" fill="#9f1239"/>`).join('')}</g>`).join('')}
+            </svg>`,
             navidad: `<svg class="paisaje" ${NS} viewBox="0 0 400 240" preserveAspectRatio="xMidYMax slice">
                 <path d="M0,150 L50,96 L86,130 L140,70 L196,128 L240,92 L300,140 L350,84 L400,124 L400,240 L0,240 Z" fill="#1e3a5f"/>
                 <path d="M140,70 L156,88 L148,86 L140,94 L132,86 L124,90 Z M50,96 L62,109 L54,107 L46,112 L38,108 Z M350,84 L364,99 L356,97 L348,104 L340,98 Z M240,92 L252,104 L244,103 L236,108 L230,101 Z" fill="#e2e8f0" opacity=".9"/>
@@ -772,6 +861,8 @@
                     <g stroke="#14061d" stroke-width="1.2" fill="none"><path d="M9,12 L1,6 M9,12 L0,12 M9,13 L1,18 M9,14 L3,22 M9,12 L17,6 M9,12 L18,12 M9,13 L17,18 M9,14 L15,22"/></g>
                     <ellipse cx="9" cy="14" rx="4" ry="5" fill="#14061d"/><circle cx="9" cy="9" r="3" fill="#14061d"/>
                     <circle cx="8" cy="8.5" r=".7" fill="#f87171"/><circle cx="10" cy="8.5" r=".7" fill="#f87171"/></g></svg>`,
+            sanvalentin: ROSA('r1') + ROSA('r2') + MONO +
+                ['cz1', 'cz2'].map(c => CORAZON('#f43f5e').replace('<svg ', `<svg class="cz ${c}" `)).join(''),
             muertos: ['f1', 'f2', 'f3', 'f4'].map(c => CEMPASUCHIL.replace('class="flor"', `class="flor ${c}"`)).join(''),
             navidad: `<svg class="nieve-tope" ${NS} viewBox="0 0 300 18" preserveAspectRatio="none">
                 <path d="M0,11 C10,2 22,3 30,9 C40,1 55,2 62,8 C74,0 90,4 98,9 C110,2 126,3 134,8 C146,0 160,4 170,9 C180,2 196,2 204,8 C216,1 232,3 240,9 C252,2 266,3 274,8 C284,2 296,5 300,10 L300,14 C280,18 20,18 0,14 Z" fill="#f8fafc"/>
@@ -840,6 +931,11 @@
                 });
                 for (let i = 0; i < 14; i++) particula(PETALO(['#f59e0b', '#ea580c', '#fbbf24'][i % 3]), 'deco-cae', [azar(7, 12), 0], azar(9, 16), izquierda).style.height = '14px';
                 for (let i = 0; i < 3; i++) particula(MONARCA, 'deco-vuela', [azar(24, 32), 0], azar(18, 26), arriba).style.height = '20px';
+            } else if (tema === 'sanvalentin') {
+                const rosas = ['#f43f5e', '#f472b6', '#fb7185', '#e11d48', '#fda4af'];
+                guirnalda(13, i => { const c = document.createElement('span'); c.className = 'corazon'; c.style.animationDelay = (-i * 0.35) + 's'; c.innerHTML = CORAZON(rosas[i % rosas.length]); return c; });
+                for (let i = 0; i < 12; i++) particula(CORAZON(rosas[i % rosas.length]), 'deco-sube', [azar(12, 24)], azar(9, 16), izquierda).style.opacity = 0.9;
+                for (let i = 0; i < 8; i++) particula(PETALO(['#e11d48', '#be123c', '#fb7185'][i % 3]), 'deco-cae', [azar(7, 11), 0], azar(10, 16), izquierda).style.height = '13px';
             } else if (tema === 'navidad') {
                 const colores = ['#ef4444', '#facc15', '#22c55e', '#3b82f6', '#e879f9'];
                 guirnalda(18, i => { const f = document.createElement('span'); f.className = 'foco'; f.style.background = f.style.color = colores[i % colores.length]; f.style.animationDelay = (i % 5) * 0.32 + 's'; return f; });

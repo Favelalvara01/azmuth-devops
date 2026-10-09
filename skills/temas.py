@@ -1,7 +1,7 @@
 """
 Skill: temas — cambia la temática de Azmuth (colores, animaciones, saludo y sonido).
 
-"temática de Halloween", "pon el modo Navidad", "tema Día de Muertos", "temática normal",
+"temática de Halloween", "pon el modo Navidad", "temática de San Valentín", "tema Día de Muertos", "temática normal",
 "temática automática" (según la fecha), "quita la temática", "qué temáticas tienes".
 En inglés: "Halloween theme", "Christmas mode", "normal theme", "what themes do you have".
 """
@@ -15,6 +15,7 @@ _CLAVES = (
     ("halloween", r"h?[ae]?ll?o[uw]+[ei]+n|jalo[uw]?[ie]n"),
     ("muertos", r"(?:el\s+)?d[ií]a\s+de\s+(?:los\s+)?muertos|muertos|day\s+of\s+the\s+dead|dead"),
     ("navidad", r"navidad|navide[ñn][ao]|christmas|xmas|fiestas"),
+    ("sanvalentin", r"san\s+valent[ií]n|valentine'?s?(?:\s+day)?|(?:d[ií]a\s+del\s+)?amor(?:\s+y\s+(?:la\s+)?amistad)?|amistad|love"),
     ("normal", r"normal|omnitrix|original|cl[aá]sic[ao]|por\s+defecto|default|verde"),
     ("auto", r"autom[aá]tic[ao]|auto|seg[uú]n\s+la\s+fecha|automatic"),
 )
@@ -35,6 +36,8 @@ _RESPUESTAS = {
                 "Day of the Dead theme on! Marigolds and papel picado are up."),
     "navidad": ("¡Temática navideña activada! Ya prendí las luces y empezó a nevar.",
                 "Holiday theme on! The lights are on and it's snowing."),
+    "sanvalentin": ("¡Temática de San Valentín activada! Hay corazones flotando por todos lados.",
+                    "Valentine's theme on! There are hearts floating everywhere."),
     "normal": ("Listo, regresé a mi temática normal de Omnitrix.", "Done, I'm back to my normal Omnitrix theme."),
 }
 
@@ -59,8 +62,8 @@ def _descripcion_actual() -> str:
 def intentar(texto: str):
     t = _limpio(texto)
     if _LISTA.match(t):
-        return idioma.t("Tengo estas temáticas: normal, Halloween, Día de Muertos y Navidad. ",
-                        "I have these themes: normal, Halloween, Day of the Dead and Christmas. ") + \
+        return idioma.t("Tengo estas temáticas: normal, Halloween, Día de Muertos, Navidad y San Valentín. ",
+                        "I have these themes: normal, Halloween, Day of the Dead, Christmas and Valentine's Day. ") + \
             _descripcion_actual() + idioma.t(" Diga, por ejemplo, «temática de Navidad» o «temática automática».",
                                              " Say, for example, \"Christmas theme\" or \"automatic theme\".")
     if _QUITAR.match(t):

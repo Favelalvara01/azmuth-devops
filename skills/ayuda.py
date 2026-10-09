@@ -32,8 +32,8 @@ MANUAL = """## 🟢 Lo que puedo hacer
 Háblame con la palabra clave o escríbeme en este chat. **Lo que no sea un comando lo contesta Claude** con el historial del chat.
 
 ### 🎃 Temáticas de temporada (nuevo)
-- «temática de Halloween» · «temática de Día de Muertos» · «temática de Navidad» · «temática normal»
-- «temática automática» (cambia sola según la fecha) · «qué temáticas tienes» · botón **🎨 TEMA**
+- «temática de Halloween» · «temática de Día de Muertos» · «temática de Navidad» · «temática de San Valentín»
+- «temática normal» · «temática automática» (cambia sola según la fecha) · «qué temáticas tienes» · botón **🎨 TEMA**
 
 ### 🖥️ Pantalla
 - «qué hay en mi pantalla» · «ayúdame con lo que hay en mi pantalla»
@@ -95,7 +95,8 @@ MANUAL_EN = """## 🟢 What I can do (English mode)
 Say your **wake word** before a command, or type here. **Anything that is not a command is answered by Claude.**
 
 ### 🎃 Seasonal themes
-- "Halloween theme" · "Day of the Dead theme" · "Christmas theme" · "normal theme" · "automatic theme"
+- "Halloween theme" · "Day of the Dead theme" · "Christmas theme" · "Valentine's theme"
+- "normal theme" · "automatic theme"
 
 ### 🖥️ Screen
 - "what's on my screen" · "help me with my screen" · "explain what's on my screen" · "translate my screen"

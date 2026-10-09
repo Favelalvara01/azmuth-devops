@@ -18,6 +18,7 @@ TEMAS = {
     "halloween": {"es": "Halloween", "en": "Halloween"},
     "muertos": {"es": "Día de Muertos", "en": "Day of the Dead"},
     "navidad": {"es": "Navidad", "en": "Christmas"},
+    "sanvalentin": {"es": "San Valentín", "en": "Valentine's Day"},
 }
 
 # (mes, día) de inicio y fin de cada temporada; Navidad cruza el año nuevo.
@@ -26,6 +27,7 @@ _TEMPORADAS = (
     ("muertos", (11, 1), (11, 3)),
     ("navidad", (12, 1), (12, 31)),
     ("navidad", (1, 1), (1, 6)),
+    ("sanvalentin", (2, 1), (2, 14)),
 )
 
 _SALUDOS = {
@@ -38,12 +40,15 @@ _SALUDOS = {
                 "Happy Day of the Dead, {trato}! At your service."),
     "navidad": ("Sistema iniciado. Huele a ponche y a luces nuevas. ¡Felices fiestas, {trato}! A sus órdenes.",
                 "System online. Smells like hot punch and fresh lights. Happy holidays, {trato}! At your service."),
+    "sanvalentin": ("Sistema iniciado con el corazón a mil. ¡Feliz Día del Amor y la Amistad, {trato}! A sus órdenes.",
+                    "System online with a full heart. Happy Valentine's Day, {trato}! At your service."),
 }
 
 _TOQUES = {
     "halloween": "Halloween (calabazas, murciélagos, fantasmas) 🎃",
     "muertos": "Día de Muertos (cempasúchil, ofrendas, pan de muerto, calaveritas) 🌼",
     "navidad": "Navidad y fin de año (luces, ponche, posadas, regalos) 🎄",
+    "sanvalentin": "San Valentín, Día del Amor y la Amistad (corazones, rosas, chocolates, cartas) 💘",
 }
 
 _preferencia = None  # "auto" o el nombre de una temática; None = aún no se lee de la BD
@@ -231,7 +236,7 @@ def _jo_jo_jo(muestras, inicio):
 
 
 def _sintetizar(tema: str) -> bytes:
-    dur = {"halloween": 3.0, "muertos": 1.9, "navidad": 3.8}.get(tema)
+    dur = {"halloween": 3.0, "muertos": 1.9, "navidad": 3.8, "sanvalentin": 2.9}.get(tema)
     if not dur:
         return b""
     m = [0.0] * int(dur * _TASA)
@@ -246,6 +251,15 @@ def _sintetizar(tema: str) -> bytes:
             _nota(m, i * 0.14, 0.6, f, vol=0.32, decaimiento=7, parciales=marimba)
         for f in (523.25, 659.25, 783.99):
             _nota(m, 1.0, 0.9, f, vol=0.2, decaimiento=4, parciales=marimba)
+    elif tema == "sanvalentin":
+        for latido in (0.0, 0.75):  # dos latidos de corazón: "pum-pum"
+            _nota(m, latido, 0.25, 58, vol=0.55, decaimiento=18, parciales=((1, 1.0), (2, 0.35)))
+            _nota(m, latido + 0.19, 0.25, 52, vol=0.42, decaimiento=20, parciales=((1, 1.0), (2, 0.3)))
+        cajita = ((1, 1.0), (3.0, 0.22), (5.4, 0.08))  # cajita de música
+        for i, f in enumerate((523.25, 659.25, 783.99, 987.77, 1046.5, 1318.5)):
+            _nota(m, 1.35 + i * 0.13, 1.1, f, vol=0.24, decaimiento=3.2, parciales=cajita)
+        for f in (523.25, 659.25, 783.99, 987.77):
+            _nota(m, 2.15, 0.75, f, vol=0.12, decaimiento=3.5, parciales=cajita)
     elif tema == "navidad":
         _jo_jo_jo(m, 0.0)
         campana = ((1, 1.0), (2.76, 0.4), (5.4, 0.2))
