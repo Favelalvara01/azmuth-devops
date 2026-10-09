@@ -78,3 +78,12 @@ def tematica_normal(monkeypatch):
     monkeypatch.setattr(tematicas, "_hoy", lambda: datetime.date(2026, 6, 15))
     monkeypatch.setattr(tematicas, "_reproducir", mock.MagicMock(name="winsound"))
     yield
+
+
+@pytest.fixture(autouse=True)
+def sin_confirmaciones_pendientes():
+    """Ninguna pregunta "¿Lo envío?" pasa de una prueba a otra."""
+    import confirmaciones
+    confirmaciones.cancelar()
+    yield
+    confirmaciones.cancelar()

@@ -1,4 +1,5 @@
 import pytest
+import skills
 from skills import contactos, web
 
 
@@ -31,9 +32,11 @@ def test_mapas(sin_efectos_externos):
 
 
 def test_whatsapp_a_numero(sin_efectos_externos):
-    resp = web.intentar("mándale un whatsapp al 6561234567 que diga voy en camino")
-    assert "con su mensaje ya escrito" in resp
-    assert sin_efectos_externos[-1] == "https://wa.me/5216561234567?text=voy%20en%20camino"
+    resp = web.intentar("mándale un whatsapp al 6561234567 que diga Voy en camino")
+    assert resp == "Le voy a mandar a 6561234567: «Voy en camino». ¿Lo envío?"
+    assert sin_efectos_externos == []  # todavía no abre nada: primero pregunta
+    assert "presione Enter" in skills.procesar("sí")[0]  # sin WhatsApp de escritorio: lo deja escrito en la web
+    assert sin_efectos_externos[-1] == "https://wa.me/5216561234567?text=Voy%20en%20camino"
 
 
 def test_whatsapp_a_contacto_no_guardado():

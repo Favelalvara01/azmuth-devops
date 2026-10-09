@@ -249,6 +249,9 @@ def procesar_comando(texto: str):
     respuesta, respuesta_hablada = responder_segun_modo(texto)
     estado.set_estado("ejecutando", respuesta)
     voice.hablar(respuesta_hablada)
+    import confirmaciones
+    if confirmaciones.hay_pendiente():
+        return  # preguntó "¿Lo envío?": se escucha la respuesta de inmediato (sin la pausa)
     time.sleep(1.5)
     estado.set_estado("reposo")
 
@@ -335,6 +338,20 @@ def _patron_clave(clave: str):
     return re.compile(r"[\s-]*".join(letras))
 
 
+def _esperar_confirmacion(reconocedor, microfono):
+    """Si Azmuth acaba de preguntar "¿Lo envío?", escucha la respuesta SIN la palabra clave."""
+    import confirmaciones
+    if not confirmaciones.hay_pendiente():
+        return
+    respuesta = escuchar(reconocedor, microfono, marcar_escuchando=True)
+    if respuesta:
+        procesar_comando(respuesta)  # "sí" → se envía; "no" → se cancela; otra cosa → se atiende normal
+    else:
+        confirmaciones.cancelar()
+        voice.hablar(idioma.t("No escuché su respuesta, así que no lo envié.", "I didn't hear an answer, so I didn't send it."))
+    estado.set_estado("reposo")
+
+
 def atender(texto: str, reconocedor, microfono) -> bool:
     """Una vuelta del bucle principal. Devuelve True si la frase era para Azmuth."""
     resto = extraer_comando(texto)
@@ -342,6 +359,7 @@ def atender(texto: str, reconocedor, microfono) -> bool:
         return False
     if len(resto) > 2:
         procesar_comando(resto)
+        _esperar_confirmacion(reconocedor, microfono)
         return True
     estado.set_estado("escuchando", "Dígame...")
     voice.hablar(idioma.t("Dígame.", "Go ahead."))
@@ -349,6 +367,7 @@ def atender(texto: str, reconocedor, microfono) -> bool:
     comando = escuchar(reconocedor, microfono, marcar_escuchando=True)
     if comando:
         procesar_comando(comando)
+        _esperar_confirmacion(reconocedor, microfono)
     else:
         voice.hablar(idioma.t("No escuché ningún comando.", "I didn't hear a command."))
         time.sleep(1.0)

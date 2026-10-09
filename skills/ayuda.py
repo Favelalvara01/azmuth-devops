@@ -59,6 +59,7 @@ Háblame con la palabra clave o escríbeme en este chat. **Lo que no sea un coma
 ### 🌐 Búsquedas, mapas y mensajes
 - «busca gatos» · «llévame a Plaza Sendero»
 - «mándale un whatsapp a Jesús que diga voy en camino» · «abre whatsapp con Jesús»
+- *Le leo el mensaje y le pregunto «¿Lo envío?»: diga «sí» y lo mando yo (con WhatsApp de escritorio), o «no» para cancelar.*
 - Contactos: «guarda el contacto de Jesús como 5512345678» · «mis contactos» · «borra el contacto de Jesús»
 
 ### 🎵 Música y volumen

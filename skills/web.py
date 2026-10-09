@@ -4,13 +4,16 @@ guardado — ver skills/contactos.py).
 """
 import re
 import os
+import time
 import webbrowser
 from urllib.parse import quote
+
+import confirmaciones
 
 from . import contactos
 
 
-def _abrir_whatsapp(numero: str, mensaje: str) -> bool:
+def _abrir_whatsapp(numero: str, mensaje: str):
     """Prioriza abrir DIRECTO en WhatsApp Desktop vía su protocolo
     whatsapp:// — si el navegador es el que abre primero un enlace wa.me,
     esa misma página de WhatsApp intenta relevarte a la app de escritorio
@@ -21,15 +24,52 @@ def _abrir_whatsapp(numero: str, mensaje: str) -> bool:
     uri_escritorio = f"whatsapp://send?phone={numero}" + (f"&text={texto_codificado}" if mensaje else "")
     try:
         os.startfile(uri_escritorio)
-        return True
+        return "app"  # se abrió WhatsApp de escritorio
     except Exception:
         pass
     try:
         url_web = f"https://wa.me/{numero}" + (f"?text={texto_codificado}" if mensaje else "")
         webbrowser.open(url_web)
-        return True
+        return "web"  # WhatsApp Web en el navegador
     except Exception:
+        return None
+
+
+def _ventana_whatsapp_al_frente(segundos: float = 15) -> bool:
+    """Espera a que la ventana de WhatsApp de escritorio quede al frente (la trae si hace
+    falta). Solo así es seguro presionar Enter: nunca se teclea en otro programa."""
+    try:
+        import pygetwindow as gw
+    except ImportError:
         return False
+    fin = time.time() + segundos
+    while time.time() < fin:
+        try:
+            activa = gw.getActiveWindow()
+            if activa is not None and str(activa.title).strip() == "WhatsApp":
+                return True
+            for ventana in gw.getWindowsWithTitle("WhatsApp"):
+                if str(ventana.title).strip() == "WhatsApp":
+                    ventana.activate()
+        except Exception:
+            pass
+        time.sleep(0.4)
+    return False
+
+
+def _enviar_whatsapp(numero: str, mensaje: str, nombre: str) -> str:
+    """Abre el chat con el mensaje escrito y presiona Enter por el usuario (ya confirmó)."""
+    como = _abrir_whatsapp(numero, mensaje)
+    if como is None:
+        return "No pude abrir WhatsApp. Revise que tenga instalada la app o un navegador configurado."
+    if como == "app" and _ventana_whatsapp_al_frente():
+        time.sleep(1.5)  # que cargue el chat y el mensaje en la caja de texto
+        if _ventana_whatsapp_al_frente(segundos=1):
+            import pyautogui
+            pyautogui.press("enter")
+            return f"Listo, le envié el WhatsApp a {nombre}."
+    return (f"Le dejé el mensaje escrito para {nombre}, pero no pude enviarlo yo solo: "
+            "presione Enter en WhatsApp para mandarlo. Si instala WhatsApp de escritorio, lo envío yo.")
 
 
 def _resolver_numero(destinatario: str):
@@ -91,7 +131,9 @@ def intentar(texto: str):
         return "No pude abrir WhatsApp. Revise que tenga instalada la app o un navegador configurado."
 
     # --- WHATSAPP CON MENSAJE (número directo o contacto guardado) ---
-    m = re.match(r"^(?:mándale|manda|escríbele|envíale)\s+(?:un\s+)?whats\s?app\s+(?:al?\s+)?(.+)", t)
+    # Se busca en el texto original (no en minúsculas) para respetar cómo escribió el mensaje
+    m = re.match(r"^(?:m[aá]ndale|manda|escr[ií]bele|env[ií]ale)\s+(?:un\s+)?whats\s?app\s+(?:al?\s+)?(.+)",
+                 texto.strip(), re.IGNORECASE)
     if m:
         resto = m.group(1).strip()
         mensaje = ""
@@ -104,8 +146,16 @@ def intentar(texto: str):
             return error
 
         numero = numero.lstrip("+")
-        if _abrir_whatsapp(numero, mensaje):
-            return f"Le abro WhatsApp para {resto}" + (" con su mensaje ya escrito." if mensaje else ".")
+        if mensaje:
+            # Por voz llega todo en minúsculas: "jesús" → "Jesús", "ya llegué" → "Ya llegué"
+            nombre = resto if resto != resto.lower() else resto.title()
+            mensaje = mensaje[0].upper() + mensaje[1:]
+            # Primero se lo lee y pregunta; solo si dice "sí" se envía (ver confirmaciones.py)
+            confirmaciones.pedir(lambda: _enviar_whatsapp(numero, mensaje, nombre),
+                                 al_cancelar="Listo, no envié el mensaje.")
+            return f"Le voy a mandar a {nombre}: «{mensaje}». ¿Lo envío?"
+        if _abrir_whatsapp(numero, ""):
+            return f"Le abro WhatsApp para {resto}."
         return "No pude abrir WhatsApp. Revise que tenga instalada la app o un navegador configurado."
 
     return None

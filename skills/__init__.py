@@ -61,7 +61,11 @@ _SIN_TRADUCIR = {"idiomas", "temas", "pantalla", "ayuda"}
 def procesar(texto: str):
     """Igual que _procesar_es, pero en modo inglés primero convierte el comando
     al español (skills/ingles.py) y traduce la respuesta de la skill al inglés."""
+    import confirmaciones
     import idioma
+    respuesta = confirmaciones.resolver(texto)  # ¿contesta un "¿lo envío?" pendiente?
+    if respuesta is not None:
+        return (cerebro_traducir(respuesta) if idioma.es_ingles() else respuesta), "confirmacion"
     if not idioma.es_ingles():
         return _procesar_es(texto)
     comando = ingles.a_espanol(texto)
@@ -74,6 +78,11 @@ def procesar(texto: str):
         import cerebro
         respuesta = cerebro.traducir(respuesta, "en")
     return respuesta, skill
+
+
+def cerebro_traducir(texto: str) -> str:
+    import cerebro
+    return cerebro.traducir(texto, "en")
 
 
 def _procesar_es(texto: str, solo=None):
