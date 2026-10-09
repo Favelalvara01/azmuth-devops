@@ -19,7 +19,7 @@
 
 ### 2. Estimación análoga
 
-Proyecto de referencia: Easy Learning (proyecto integrador DSM31, C#/MySQL) — 1800 SLOC en 80 h → 22.5 SLOC/h. Azmuth: 3312 SLOC × factor 1.1 = **161.92 h**.
+Proyecto de referencia: Easy Learning (proyecto integrador DSM31, C#/MySQL) — 1800 SLOC en 80 h → 22.5 SLOC/h. Azmuth: 3732 SLOC × factor 1.1 = **182.45 h**.
 
 ### 3. Tres puntos (PERT)
 
@@ -64,7 +64,7 @@ VAF = 0.65 + 0.01 × 42 = 1.07 → PFA = 325.28 → 325.28 × 0.45 h/PF = **146.
 | Técnica | Horas estimadas |
 |---|---|
 | Juicio de expertos | 110.5 |
-| Análoga | 161.92 |
+| Análoga | 182.45 |
 | Tres puntos (PERT) | 114.68 |
 | Puntos de función | 146.38 |
 | **Real (registro de sprints)** | **122.0** |
