@@ -70,7 +70,8 @@ Háblame con la palabra clave o escríbeme en este chat. **Lo que no sea un coma
 
 ### 🕒 Hora, clima y hábitos
 - «qué hora es» · «qué fecha es» · «qué clima hace»
-- «va a llover hoy» · «cómo estará el día de hoy» · «necesito paraguas» · «hará frío mañana» · «qué me recomiendas llevar hoy» (pronóstico con consejos)
+- «va a llover hoy» · «cómo estará el día de hoy» · «necesito paraguas» · «hará frío mañana»
+- «qué me recomiendas llevar hoy» (pronóstico con consejos)
 - «mis hábitos» (también le sugiero cosas si noto un patrón)
 
 ### 🔁 Modos, idioma y sistema
@@ -111,7 +112,8 @@ Say your **wake word** before a command, or type here. **Anything that is not a 
 
 ### 🗂️ Tabs, modes and more
 - "new tab" · "close tab" · "next tab" · "previous tab" · "tab 3" · "switch window"
-- "what time is it" · "what's the date" · "what's the weather" · "will it rain today" · "do I need an umbrella" · "search for cats" · "my habits"
+- "what time is it" · "what's the date" · "what's the weather" · "will it rain today"
+- "do I need an umbrella" · "search for cats" · "my habits"
 - "desktop mode" / "voice mode" · **"switch to Spanish"** to go back
 
 *Some advanced commands (WhatsApp, maps, contacts, teaching app nicknames) are still Spanish only.*"""
