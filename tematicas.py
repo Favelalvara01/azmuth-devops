@@ -156,16 +156,90 @@ def _cascabeles(muestras, inicio, dur, vol=0.12):
             muestras[i0 + k] += vol * agudo * math.exp(-14 * (t % 0.12))
 
 
+# --- Voz sintetizada por formantes (risa de bruja y "¡jo, jo, jo!" de Santa) ---
+# Fuente: pulso glotal de Rosenberg (como las cuerdas vocales) + ruido para la "j";
+# filtro: resonadores en las frecuencias de cada vocal ("a", "i", "o").
+_VOCAL_A_AGUDA = ((1000, 110, 1.0), (1650, 140, 0.7), (2900, 200, 0.35), (3700, 260, 0.2))
+_VOCAL_I_AGUDA = ((420, 90, 1.0), (2600, 160, 0.8), (3300, 220, 0.4))
+_VOCAL_O_GRAVE = ((480, 80, 1.0), (820, 90, 0.7), (2450, 160, 0.12), (3100, 200, 0.06))
+
+
+def _resonador(x, frec, ancho):
+    r = math.exp(-math.pi * ancho / _TASA)
+    c, d, g = 2 * r * math.cos(2 * math.pi * frec / _TASA), -r * r, 1 - r
+    y1 = y2 = 0.0
+    salida = []
+    for v in x:
+        y = g * v + c * y1 + d * y2
+        salida.append(y)
+        y2, y1 = y1, y
+    return salida
+
+
+def _silaba(dur, f0_ini, f0_fin, vocal, rnd, aire=0.03, vibrato=0.0, ronco=0.0):
+    """Una sílaba: aire al inicio (la "j") y luego la vocal, con el tono de f0_ini a f0_fin."""
+    n = int(dur * _TASA)
+    fuente, fase, previo = [], 0.0, 0.0
+    for k in range(n):
+        t = k / _TASA
+        f0 = (f0_ini + (f0_fin - f0_ini) * t / dur) * (1 + vibrato * math.sin(2 * math.pi * 6.5 * t)
+                                                         + 0.012 * rnd.uniform(-1, 1))
+        fase = (fase + f0 / _TASA) % 1.0
+        if fase < 0.6:
+            flujo = 0.5 * (1 - math.cos(math.pi * fase / 0.6))
+        elif fase < 0.75:
+            flujo = math.cos(math.pi * (fase - 0.6) / 0.3)
+        else:
+            flujo = 0.0
+        pulso = (flujo - previo) * _TASA / max(f0, 1) * 0.15
+        previo = flujo
+        ruido = rnd.uniform(-1, 1)
+        fuente.append(ruido * 0.6 * t / aire if t < aire else pulso + ronco * ruido)
+    voz = [0.0] * n
+    for frec, ancho, ganancia in vocal:
+        for i, v in enumerate(_resonador(fuente, frec, ancho)):
+            voz[i] += ganancia * v
+    return [v * min(1.0, k / _TASA / 0.012) * min(1.0, (dur - k / _TASA) / 0.04) for k, v in enumerate(voz)]
+
+
+def _mezclar(muestras, inicio, sonido, vol):
+    i0 = int(inicio * _TASA)
+    pico = max((abs(v) for v in sonido), default=1.0) or 1.0
+    for k, v in enumerate(sonido):
+        if 0 <= i0 + k < len(muestras):
+            muestras[i0 + k] += vol * v / pico
+
+
+def _risa_de_bruja(muestras, inicio):
+    """ "Jiiii... ja-ja-ja-ja-jaaa": chillona, rasposa y bajando de tono."""
+    rnd = random.Random(3)
+    _mezclar(muestras, inicio, _silaba(0.45, 520, 1150, _VOCAL_I_AGUDA, rnd, aire=0.05, vibrato=0.04, ronco=0.25), 0.6)
+    t = inicio + 0.5
+    for i in range(13):
+        f = 980 - i * 32 + rnd.uniform(-25, 25)
+        ultima = i == 12
+        _mezclar(muestras, t, _silaba(0.42 if ultima else 0.095, f * 1.05, f * (0.7 if ultima else 0.92), _VOCAL_A_AGUDA, rnd,
+                                      aire=0.028, vibrato=0.06 if ultima else 0.03, ronco=0.3), 0.8 - i * 0.025)
+        t += 0.125
+
+
+def _jo_jo_jo(muestras, inicio):
+    """ "¡Jo, jo, jo!" grave y alegre, cada "jo" un poco más bajo."""
+    rnd = random.Random(5)
+    for t, dur, f_ini, f_fin in ((0.0, 0.42, 128, 104), (0.55, 0.42, 124, 100), (1.1, 0.75, 120, 88)):
+        _mezclar(muestras, inicio + t, _silaba(dur, f_ini, f_fin, _VOCAL_O_GRAVE, rnd, aire=0.09, vibrato=0.02, ronco=0.02), 0.85)
+
+
 def _sintetizar(tema: str) -> bytes:
-    dur = {"halloween": 2.6, "muertos": 1.9, "navidad": 2.2}.get(tema)
+    dur = {"halloween": 3.0, "muertos": 1.9, "navidad": 3.8}.get(tema)
     if not dur:
         return b""
     m = [0.0] * int(dur * _TASA)
     if tema == "halloween":
         organo = ((1, 1.0), (2, 0.5), (3, 0.3), (4, 0.15))
-        for f in (146.83, 174.61, 220.0, 277.18):  # acorde menor tenebroso (con séptima)
-            _nota(m, 0.0, 1.2, f, vol=0.18, decaimiento=1.2, parciales=organo)
-        _nota(m, 0.9, 1.7, 620, vol=0.35, decaimiento=0.6, vibrato=0.025, glide_a=260)  # "uuuuh" de teremín
+        for f in (73.42, 87.31, 110.0):  # acorde de órgano grave y bajito, de fondo
+            _nota(m, 0.0, 3.0, f, vol=0.05, decaimiento=0.5, parciales=organo)
+        _risa_de_bruja(m, 0.05)
     elif tema == "muertos":
         marimba = ((1, 1.0), (4, 0.25), (10, 0.05))
         for i, f in enumerate((523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5, 1318.5)):
@@ -173,11 +247,12 @@ def _sintetizar(tema: str) -> bytes:
         for f in (523.25, 659.25, 783.99):
             _nota(m, 1.0, 0.9, f, vol=0.2, decaimiento=4, parciales=marimba)
     elif tema == "navidad":
+        _jo_jo_jo(m, 0.0)
         campana = ((1, 1.0), (2.76, 0.4), (5.4, 0.2))
         ritmo = ((0, .22), (.25, .22), (.5, .45), (1.0, .22), (1.25, .22), (1.5, .6))
-        for inicio, d in ritmo:  # "jingle bells, jingle bells"
-            _nota(m, inicio, d + 0.3, 659.25, vol=0.3, decaimiento=5, parciales=campana)
-        _cascabeles(m, 0.0, dur)
+        for inicio, d in ritmo:  # luego "jingle bells, jingle bells" con cascabeles
+            _nota(m, 2.0 + inicio * 0.8, d + 0.3, 659.25, vol=0.22, decaimiento=5, parciales=campana)
+        _cascabeles(m, 1.9, dur - 1.9, vol=0.08)
     pico = max(abs(x) for x in m) or 1.0
     salida = io.BytesIO()
     with wave.open(salida, "wb") as w:
@@ -193,12 +268,22 @@ def _reproducir(datos: bytes):
     winsound.PlaySound(datos, winsound.SND_MEMORY)
 
 
+def archivo_propio(tema: str):
+    """Si el usuario puso su propio sonido en datos/sonidos/<tema>.wav, se usa ese."""
+    import os
+    import rutas
+    ruta = os.path.join(rutas.CARPETA_DATOS, "sonidos", f"{tema}.wav")
+    return ruta if os.path.isfile(ruta) else None
+
+
 def reproducir_sonido(tema: str = None) -> bool:
     """Toca el sonido de la temática (espera a que termine). False si no hay o no se pudo."""
-    datos = _sintetizar(tema or obtener())
-    if not datos:
-        return False
+    tema = tema or obtener()
     try:
+        propio = archivo_propio(tema)
+        datos = open(propio, "rb").read() if propio else _sintetizar(tema)
+        if not datos:
+            return False
         _reproducir(datos)
         return True
     except Exception:

@@ -96,7 +96,7 @@ def test_toque_de_temporada_en_la_ia():
 def test_sonidos_son_wav_validos(tema):
     datos = tematicas._sintetizar(tema)
     with wave.open(io.BytesIO(datos)) as w:
-        assert w.getnchannels() == 1 and 1.5 < w.getnframes() / w.getframerate() < 3
+        assert w.getnchannels() == 1 and 1.5 < w.getnframes() / w.getframerate() < 4
     assert tematicas._sintetizar("normal") == b""
 
 
@@ -112,3 +112,12 @@ def test_letras_de_las_tematicas_van_incluidas(fuente):
     assert f"/imagenes/fuentes/{fuente}" in cliente.get("/").text
     r = cliente.get(f"/imagenes/fuentes/{fuente}")
     assert r.status_code == 200 and r.content[:4] == b"wOF2"
+
+
+def test_sonido_propio_tiene_prioridad(tmp_path, monkeypatch):
+    import rutas
+    monkeypatch.setattr(rutas, "CARPETA_DATOS", str(tmp_path))
+    (tmp_path / "sonidos").mkdir()
+    (tmp_path / "sonidos" / "halloween.wav").write_bytes(b"RIFF-mi-risa")
+    assert tematicas.reproducir_sonido("halloween") is True
+    tematicas._reproducir.assert_called_with(b"RIFF-mi-risa")
