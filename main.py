@@ -364,6 +364,7 @@ def iniciar():
 
     estado.log("=" * 40)
     estado.log("A.Z.M.U.T.H. — sistema iniciado")
+    estado.log(f"IA: {cerebro.descripcion_ia()}")
     estado.set_estado("ejecutando", "Calibrando micrófono")
     _UMBRAL_VOZ = calibrar_umbral()
     estado.log(f'Diga "{config.PALABRA_CLAVE}" seguido de su comando')

@@ -58,10 +58,15 @@ _cliente = None
 _historial = []
 
 
-SIN_CLAVE = ("No tengo configurada ninguna clave de IA todavía. Ponga ANTHROPIC_API_KEY, "
+SIN_CLAVE = ("No tengo configurada ninguna clave de IA todavía. Ponga ANTHROPIC_API_KEY, DEEPSEEK_API_KEY, "
              "GROQ_API_KEY o GEMINI_API_KEY (las dos últimas son gratis) en su archivo .env, por favor.")
 SIN_VISION = ("Para ver la pantalla necesito una clave de Anthropic o de Gemini; "
-              "Groq solo sirve para conversar. Agregue GEMINI_API_KEY (gratis) a su .env.")
+              "DeepSeek y Groq solo sirven para conversar. Agregue GEMINI_API_KEY (gratis) a su .env.")
+
+# Orden de preferencia: Claude > DeepSeek (de pago) > Groq (gratis y rápida) > Gemini (gratis, ve imágenes)
+_TEXTO = (("claude", "ANTHROPIC_API_KEY"), ("deepseek", "DEEPSEEK_API_KEY"), ("groq", "GROQ_API_KEY"), ("gemini", "GEMINI_API_KEY"))
+_VISION = (("claude", "ANTHROPIC_API_KEY"), ("gemini", "GEMINI_API_KEY"))
+NOMBRES = {"claude": "Claude", "deepseek": "DeepSeek", "groq": "Groq", "gemini": "Gemini"}
 
 
 def _tiene_imagen(mensajes) -> bool:
@@ -69,37 +74,61 @@ def _tiene_imagen(mensajes) -> bool:
                for m in mensajes)
 
 
+def proveedores(con_imagen: bool = False) -> list:
+    """Las IA con clave en el .env, de la preferida a la de respaldo."""
+    return [n for n, clave in (_VISION if con_imagen else _TEXTO) if getattr(config, clave, "")]
+
+
 def proveedor(con_imagen: bool = False):
-    """Qué IA usar: Claude si hay clave; si no, Groq (rápida) para texto y Gemini para
-    imágenes o como respaldo. None si no hay ninguna clave que sirva."""
-    if config.ANTHROPIC_API_KEY:
-        return "claude"
-    groq, gemini_ = getattr(config, "GROQ_API_KEY", ""), getattr(config, "GEMINI_API_KEY", "")
-    if con_imagen:
-        return "gemini" if gemini_ else None
-    return "groq" if groq else ("gemini" if gemini_ else None)
+    """La IA que se usa primero (None si no hay ninguna clave que sirva)."""
+    lista = proveedores(con_imagen)
+    return lista[0] if lista else None
+
+
+def descripcion_ia() -> str:
+    """Para la consola al arrancar: "DeepSeek → Groq → Gemini (pantalla: Gemini)"."""
+    texto = " → ".join(NOMBRES[n] for n in proveedores()) or "ninguna (falta clave en .env)"
+    vision = proveedor(con_imagen=True)
+    return texto + (f" (pantalla: {NOMBRES[vision]})" if vision else "")
+
+
+def _con(nombre, system, mensajes, max_tokens):
+    if nombre == "claude":
+        respuesta = _obtener_cliente().messages.create(
+            model=config.MODELO_CLAUDE, max_tokens=max_tokens, system=system, messages=mensajes)
+        return "".join(b.text for b in respuesta.content if b.type == "text").strip()
+    if nombre == "deepseek":
+        import deepseek_ia
+        return deepseek_ia.completar(system, mensajes, max_tokens)
+    if nombre == "groq":
+        import groq_ia
+        return groq_ia.completar(system, mensajes, max_tokens)
+    import gemini
+    return gemini.completar(system, mensajes, max_tokens)
 
 
 def completar(system: str, mensajes: list, max_tokens: int) -> str:
-    """Punto único para hablar con la IA (Claude, Groq o Gemini). Lanza excepción si falla."""
+    """Punto único para hablar con la IA. Si la preferida falla (clave mala, sin saldo,
+    límite...), se intenta con la siguiente que tenga clave. Lanza excepción si fallan todas."""
     con_imagen = _tiene_imagen(mensajes)
-    elegido = proveedor(con_imagen)
-    if elegido is None and con_imagen and proveedor():
+    lista = proveedores(con_imagen)
+    if not lista and con_imagen and proveedores():
         raise RuntimeError(SIN_VISION)
-    if elegido == "groq":
-        import groq_ia as groq
+    errores = []
+    for nombre in lista:
         try:
-            return groq.completar(system, mensajes, max_tokens)
-        except Exception:
-            if not getattr(config, "GEMINI_API_KEY", ""):
-                raise
-        elegido = "gemini"  # Groq falló: se intenta con Gemini si hay clave
-    if elegido == "gemini":
-        import gemini
-        return gemini.completar(system, mensajes, max_tokens)
-    respuesta = _obtener_cliente().messages.create(
-        model=config.MODELO_CLAUDE, max_tokens=max_tokens, system=system, messages=mensajes)
-    return "".join(b.text for b in respuesta.content if b.type == "text").strip()
+            return _con(nombre, system, mensajes, max_tokens)
+        except Exception as e:
+            errores.append((nombre, e))
+            if len(lista) > 1:
+                try:
+                    import estado
+                    estado.log(f"{NOMBRES[nombre]} falló ({str(e)[:70]}); pruebo con otra IA")
+                except Exception:
+                    pass
+    if len(errores) == 1:
+        raise errores[0][1]
+    raise RuntimeError("; ".join(f"{NOMBRES[n]}: {e}" for n, e in errores) or SIN_CLAVE)
 
 
 def _obtener_cliente():
