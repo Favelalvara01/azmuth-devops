@@ -87,3 +87,29 @@ def sin_confirmaciones_pendientes():
     confirmaciones.cancelar()
     yield
     confirmaciones.cancelar()
+
+
+@pytest.hookimpl(trylast=True)
+def pytest_terminal_summary(terminalreporter, exitstatus, config):
+    """Debajo de la tabla de cobertura: qué significa y si el porcentaje está bien (metricas/explicaciones.py)."""
+    import json
+    if not getattr(config.option, "cov_source", None):
+        return
+    reportes = getattr(config.option, "cov_report", None) or {}
+    ruta = reportes.get("json") if isinstance(reportes, dict) else None
+    if not ruta:  # solo si se pidió el reporte JSON (--cov-report=json:reports/coverage.json)
+        return
+    ruta = ruta if os.path.isabs(ruta) else os.path.join(str(config.invocation_params.dir), ruta)
+    if not os.path.exists(ruta):
+        return
+    try:
+        from metricas.explicaciones import interpretar_cobertura
+        stats = terminalreporter.stats
+        aprobadas = len(stats.get("passed", []))
+        total = aprobadas + len(stats.get("failed", [])) + len(stats.get("error", []))
+        lineas = interpretar_cobertura(json.load(open(ruta, encoding="utf-8")), aprobadas, total,
+                                       len(stats.get("warnings", [])))
+    except Exception:
+        return
+    for linea in lineas:
+        terminalreporter.write_line(linea, bold=linea.startswith("¿"))

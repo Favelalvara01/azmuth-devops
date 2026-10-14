@@ -104,7 +104,7 @@ _TEXTOS = {
         "por eso sobreestimó.",
     ),
     "Tres puntos (PERT)": (
-        "La más precisa: combina un escenario optimista, uno probable y uno pesimista, E = (O + 4M + P) / 6.",
+        "La más precisa: dar más peso al valor probable, sin ignorar los riesgos, la acercó a las horas reales.",
         "Error mayor al 15 %: los tres escenarios no reflejaron bien el riesgo.",
     ),
     "Puntos de función": (
@@ -138,3 +138,117 @@ def explicar(metrica: str, cumple):
     if cumple is None:
         return bien or None
     return (bien if cumple else mal) or None
+
+
+# ---------------------------------------------------------------------------
+# Interpretaciones que se muestran debajo de cada comando
+# ---------------------------------------------------------------------------
+def _marca(ok):
+    return {True: "✔", False: "✘", None: "—"}[ok]
+
+
+def interpretar_cobertura(cov: dict, pruebas_ok=None, total_pruebas=None, warnings=0) -> list:
+    """Líneas de texto para después de la tabla de cobertura de pytest."""
+    total = round(cov["totals"]["percent_covered"], 2)
+    archivos = {f.replace("\\", "/"): round(d["summary"]["percent_covered"], 1) for f, d in cov["files"].items()}
+    bajos = sorted((p, f) for f, p in archivos.items() if p < 70)
+    completos = sum(1 for p in archivos.values() if p >= 100)
+    L = ["", "¿Qué significa esta tabla de cobertura?",
+         "  Stmts = líneas ejecutables del archivo · Miss = líneas que ninguna prueba ejecutó · Cover = % cubierto.",
+         f"  {_marca(total >= 70)} TOTAL {total} %: {explicar('Cobertura total', total >= 70)}",
+         f"  ✔ {completos} de {len(archivos)} archivos tienen 100 %: cada una de sus líneas la ejecuta alguna prueba."]
+    for pct, f in bajos:
+        L.append(f"  ✘ {f} ({pct} %): {explicar(f, False)}")
+    if not bajos:
+        L.append("  ✔ Ningún archivo queda por debajo de 70 %.")
+    if total_pruebas is not None:
+        ok = pruebas_ok == total_pruebas
+        L.append(f"  {_marca(ok)} {pruebas_ok}/{total_pruebas} pruebas aprobadas: {explicar('Pruebas aprobadas', ok)}")
+    if warnings:
+        L.append(f"  — {warnings} warnings: son avisos de librerías (cosas que cambiarán en versiones futuras de Python o "
+                 "de una librería). NO son errores ni hacen fallar nada.")
+    return L
+
+
+def interpretar_metricas(m: dict) -> str:
+    """Markdown con el significado de la salida de calcular_metricas.py."""
+    p, pr, pj = m["producto"], m["proceso"], m["proyecto"]
+    c, cov, dd = p["complejidad"], p["cobertura"]["total"], p["densidad_defectos"]
+    ef, d = pr["eficacia_pruebas"], pj["desviacion"]
+    filas = [
+        ("Complejidad promedio", c["promedio"] <= 5, f"{c['promedio']} (meta ≤ 5)"),
+        ("Complejidad máxima", c["maxima"] <= 15, f"{c['maxima']} (meta ≤ 15)"),
+        ("Funciones en rango A-B", c["porcentaje_A_B"] >= 85, f"{c['porcentaje_A_B']} % (meta ≥ 85 %)"),
+        ("Cobertura total", cov >= 70, f"{cov} % (meta ≥ 70 %)"),
+        ("Densidad de defectos", None, f"{dd['por_kloc']} defectos/KLOC"),
+        ("Defectos abiertos por KLOC", dd["abiertos_por_kloc"] < 2, f"{dd['abiertos_por_kloc']} (meta < 2)"),
+        ("Índice de mantenibilidad", p["mantenibilidad_promedio"] >= 65, f"{p['mantenibilidad_promedio']} (meta ≥ 65)"),
+        ("MTTD (detección)", pr["mttd_horas"] <= 48, f"{pr['mttd_dias']} días (meta ≤ 2 días)"),
+        ("MTTR (reparación)", pr["mttr_horas"] < 1, f"{pr['mttr_horas']} h (meta < 1 h)"),
+        ("DRE (antes de producción)", ef["dre_porcentaje"] >= 85, f"{ef['dre_porcentaje']} % (meta ≥ 85 %)"),
+        ("Eficacia de la revisión", pj["eficacia_revision"]["porcentaje"] >= 20,
+         f"{pj['eficacia_revision']['porcentaje']} % (meta ≥ 20 %)"),
+        ("Desviación de tiempo", abs(d["desviacion_porcentaje"]) <= 20, f"{d['desviacion_porcentaje']} % (meta ≤ 20 %)"),
+        ("Velocidad (Scrum)", None, f"{d['velocidad_puntos_por_sprint']} puntos/sprint"),
+    ]
+    L = ["", "### ¿Qué significan estos números?", ""]
+    L += [f"- {_marca(ok)} **{n}** = {valor}: {explicar(n, ok)}" for n, ok, valor in filas]
+    fases = pr.get("defectos_por_fase") or {}
+    if fases:
+        L.append(f"- — **Defectos por fase** {fases}: en qué momento se encontró cada defecto. Lo ideal es que la mayoría "
+                 "salgan en revisión o pruebas, no en producción (usando el asistente).")
+    modulos = [x for x in d.get("por_modulo", []) if x.get("horas_estimadas")]
+    if modulos:
+        mas = sorted(modulos, key=lambda x: x["desviacion_porcentaje"], reverse=True)[:2]
+        dens = sorted((x for x in modulos if x.get("densidad_defectos_kloc")), key=lambda x: x["densidad_defectos_kloc"],
+                      reverse=True)[:2]
+        L += ["", "**Tabla de sprints:**", "",
+              "- **Desv. %** = (horas reales − estimadas) / estimadas × 100. Positivo: tardó más de lo planeado; "
+              "negativo: terminó antes.",
+              "- **Def/KLOC** = defectos de ese módulo entre su tamaño en miles de líneas. **N/A**: el sprint no agregó "
+              "código propio (DevOps o corrección de defectos).",
+              f"- Los que más se desviaron fueron **{mas[0]['modulo']}** ({mas[0]['desviacion_porcentaje']} %)"
+              + (f" y **{mas[1]['modulo']}** ({mas[1]['desviacion_porcentaje']} %)" if len(mas) > 1 else "")
+              + ": integran hardware y servicios externos, lo más difícil de estimar."]
+        if dens:
+            L.append("- Los de más defectos por KLOC: " + " y ".join(
+                f"**{x['modulo']}** ({x['densidad_defectos_kloc']})" for x in dens)
+                + ". Coinciden con los más desviados: los defectos consumieron el tiempo extra.")
+    return "\n".join(L) + "\n"
+
+
+def interpretar_estimacion(r: dict) -> str:
+    """Markdown con el significado de la salida de estimacion.py."""
+    real = r.get("horas_reales")
+    que_es = {
+        "Juicio de expertos": "personas con experiencia (el alumno y la IA) estiman cada módulo y se promedia.",
+        "Análoga": "se compara con un proyecto anterior parecido ya terminado y se ajusta con un factor.",
+        "Tres puntos (PERT)": "para cada módulo se da un valor optimista (O), probable (M) y pesimista (P); "
+                              "E = (O + 4M + P) / 6 y σ = (P − O) / 6.",
+        "Puntos de función": "se mide el tamaño por las funciones que ve el usuario (entradas, salidas, consultas, "
+                             "archivos) y se convierte a horas.",
+    }
+    L = ["", "### ¿Qué significan estas estimaciones?", ""]
+    for nombre, clave in (("Juicio de expertos", "juicio_expertos"), ("Análoga", "analoga"),
+                          ("Tres puntos (PERT)", "tres_puntos"), ("Puntos de función", "puntos_funcion")):
+        horas = r[clave]["total_horas"]
+        if real:
+            error = round((horas - real) / real * 100, 1)
+            ok = abs(error) <= 15
+            L.append(f"- {_marca(ok)} **{nombre}** = {horas} h (error {error:+} % contra {real} h reales; meta ≤ 15 %). "
+                     f"Qué es: {que_es[nombre]} {explicar(nombre, ok)}")
+        else:
+            L.append(f"- **{nombre}** = {horas} h. Qué es: {que_es[nombre]}")
+    r1, r2 = r["tres_puntos"]["rango_95"]
+    L.append(f"- **Intervalo de PERT** [{r1}, {r2}] h: con 95 % de confianza el proyecto debía durar entre esas horas "
+             "(E ± 2σ).")
+    L.append("- **Triangular** = (O + M + P) / 3: otra forma de promediar los tres escenarios, sin darle más peso al probable.")
+    if real:
+        dentro = r1 <= real <= r2
+        L.append(f"- {_marca(dentro)} **Real dentro del intervalo PERT**: {explicar('Real dentro del intervalo PERT', dentro)}")
+        tecnicas = {n: r[k]["total_horas"] for n, k in (("Juicio de expertos", "juicio_expertos"), ("Análoga", "analoga"),
+                                                        ("Tres puntos (PERT)", "tres_puntos"),
+                                                        ("Puntos de función", "puntos_funcion"))}
+        mejor = min(tecnicas, key=lambda n: abs(tecnicas[n] - real))
+        L.append(f"- **Conclusión:** la técnica más cercana a las {real} h reales fue **{mejor}**.")
+    return "\n".join(L) + "\n"

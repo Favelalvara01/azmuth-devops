@@ -293,7 +293,8 @@ def main():
     md = a_markdown(resultado)
     with open(os.path.join(args.reportes, "metricas.md"), "w", encoding="utf-8") as f:
         f.write(md)
-    mostrar(md)
+    from explicaciones import interpretar_metricas
+    mostrar(md + interpretar_metricas(resultado))  # en pantalla también el "¿qué significan?"
 
 
 if __name__ == "__main__":

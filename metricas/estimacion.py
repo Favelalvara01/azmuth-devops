@@ -124,7 +124,8 @@ def main():
     json.dump(r, open(os.path.join(args.reportes, "estimacion.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     md = a_markdown(r)
     open(os.path.join(args.reportes, "estimacion.md"), "w", encoding="utf-8").write(md)
-    mostrar(md)
+    from explicaciones import interpretar_estimacion
+    mostrar(md + interpretar_estimacion(r))  # en pantalla también el "¿qué significan?"
 
 
 if __name__ == "__main__":
