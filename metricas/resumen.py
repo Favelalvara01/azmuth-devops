@@ -11,8 +11,10 @@ import os
 
 try:
     from consola import mostrar
+    from explicaciones import explicar
 except ImportError:  # pragma: no cover
     from metricas.consola import mostrar
+    from metricas.explicaciones import explicar
 
 
 def _leer(ruta):
@@ -59,6 +61,11 @@ def tabla_markdown(filas):
     evaluadas = [ok for *_, ok in filas if ok is not None]
     md += ["", f"**Cumple {sum(evaluadas)} de {len(evaluadas)} metas.** "
            "Las que dicen «No cumple» son las prioridades del plan de mejora."]
+    md += ["", "### ¿Por qué?", ""]
+    for _g, n, _v, _meta, ok in filas:
+        texto = explicar(n, ok)
+        if texto:
+            md.append(f"- {marca[ok].split()[0] if ok is not None else '—'} **{n}**: {texto}")
     return "\n".join(md)
 
 

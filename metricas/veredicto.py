@@ -14,6 +14,11 @@ RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REP = os.path.join(RAIZ, "reports")
 EXCLUIR = "tests/*,metricas/*"
 
+try:
+    from explicaciones import explicar
+except ImportError:  # pragma: no cover
+    from metricas.explicaciones import explicar
+
 
 def _leer(nombre):
     ruta = os.path.join(REP, nombre)
@@ -37,6 +42,7 @@ def _tabla(titulo, filas, nota=""):
             print(f"  {m}: {v}  (meta {meta})  -> {'BIEN' if ok else 'MAL' if ok is False else 'info'}")
         if nota:
             print("  " + nota)
+        _por_que(filas, print)
         return
     t = Table(title=f"Veredicto: {titulo}", title_justify="left", header_style="bold")
     for col in ("Métrica", "Valor", "Meta", "Estado"):
@@ -51,6 +57,21 @@ def _tabla(titulo, filas, nota=""):
         c.print(f"[{color}]Cumple {sum(evaluadas)} de {len(evaluadas)}.[/] {nota}")
     elif nota:
         c.print(nota)
+    _por_que(filas, c.print, color=True)
+
+
+def _por_que(filas, imprimir, color=False):
+    """Debajo de la tabla: por qué cada métrica salió BIEN o MAL."""
+    lineas = [(m.strip(), ok, explicar(m, ok)) for m, _v, _meta, ok in filas]
+    lineas = [x for x in lineas if x[2]]
+    if not lineas:
+        return
+    imprimir("")
+    imprimir("[bold]¿Por qué?[/]" if color else "¿Por qué?")
+    for nombre, ok, texto in lineas:
+        marca = {True: "[green]✔[/]", False: "[red]✘[/]", None: "[dim]—[/]"}[ok] if color else \
+            {True: "BIEN", False: "MAL", None: "info"}[ok]
+        imprimir(f"  {marca} [bold]{nombre}[/]: {texto}" if color else f"  {marca} {nombre}: {texto}")
 
 
 def ruff():
