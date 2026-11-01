@@ -1,6 +1,6 @@
 # Imagen de Azmuth para CI/CD: corre las pruebas y levanta la API
 # FastAPI (servidor.py) sin necesidad de micrófono ni pantalla.
-FROM python:3.13-slim
+FROM python:3.15-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
