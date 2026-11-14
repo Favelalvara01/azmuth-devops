@@ -24,7 +24,7 @@ import re
 import json
 from datetime import datetime, timedelta
 
-from basedatos import conectar
+from basedatos import conectar, patron_like
 
 _HORA_RE = re.compile(
     r"^(.*?)\s+a\s+la[s]?\s+(\d{1,2})(?::(\d{2}))?\s*"
@@ -108,7 +108,7 @@ def intentar(texto: str):
     if m:
         clave = m.group(1).strip()
         with conectar() as con:
-            cur = con.execute("DELETE FROM recordatorios WHERE lower(texto) LIKE ?", (f"%{clave}%",))
+            cur = con.execute("DELETE FROM recordatorios WHERE lower(texto) LIKE ? ESCAPE '\\'", (patron_like(clave),))
             if cur.rowcount == 0:
                 return f'No encontré ningún recordatorio que mencione "{clave}".'
         return f'Borré el recordatorio sobre "{clave}".'

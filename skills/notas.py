@@ -7,7 +7,7 @@ solo queda guardada para consultarla después ("mis notas").
 import re
 from datetime import datetime
 
-from basedatos import conectar
+from basedatos import conectar, patron_like
 
 
 def intentar(texto: str):
@@ -25,7 +25,7 @@ def intentar(texto: str):
     if m:
         clave = m.group(1).strip()
         with conectar() as con:
-            cur = con.execute("DELETE FROM notas WHERE lower(texto) LIKE ?", (f"%{clave}%",))
+            cur = con.execute("DELETE FROM notas WHERE lower(texto) LIKE ? ESCAPE '\\'", (patron_like(clave),))
             if cur.rowcount == 0:
                 return f'No encontré ninguna nota que mencione "{clave}".'
         return f'Borré la nota sobre "{clave}".'

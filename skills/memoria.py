@@ -18,7 +18,7 @@ import re
 from datetime import datetime
 
 import idioma
-from basedatos import conectar
+from basedatos import conectar, patron_like
 
 
 def _parecidos(a: str, b: str) -> bool:
@@ -74,7 +74,7 @@ def intentar(texto: str):
     if m:
         clave = m.group(1).strip()
         with conectar() as con:
-            cur = con.execute("DELETE FROM memoria WHERE lower(texto) LIKE ?", (f"%{clave}%",))
+            cur = con.execute("DELETE FROM memoria WHERE lower(texto) LIKE ? ESCAPE '\\'", (patron_like(clave),))
             if cur.rowcount == 0:
                 return f'No tengo nada guardado sobre "{clave}".'
         return f'Listo, olvidé lo de "{clave}".'
@@ -94,7 +94,7 @@ def intentar(texto: str):
         with conectar() as con:
             if clave:
                 filas = con.execute(
-                    "SELECT texto FROM memoria WHERE lower(texto) LIKE ? ORDER BY id", (f"%{clave}%",)
+                    "SELECT texto FROM memoria WHERE lower(texto) LIKE ? ESCAPE '\\' ORDER BY id", (patron_like(clave),)
                 ).fetchall()
             else:
                 filas = con.execute("SELECT texto FROM memoria ORDER BY id").fetchall()

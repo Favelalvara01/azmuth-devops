@@ -95,8 +95,16 @@ def _procesar_es(texto: str, solo=None):
     # de pasar a la siguiente (así "siguiente pestana" llega a pestanas y no a
     # multimedia), y siempre recibe primero el texto tal cual se escribió.
     for skill in (solo or SKILLS):
+        nombre = skill.__name__.rsplit(".", 1)[-1]
         for version in versiones:
-            resultado = skill.intentar(version)
+            try:
+                resultado = skill.intentar(version)
+            except Exception as error:
+                # DEF-022: una skill que falla (ej. sin teclado en la VM) ya no tumba
+                # el chat con un error 500: se registra y se avisa al usuario.
+                import monitoreo
+                monitoreo.registrar_error(f"skill {nombre}", error)
+                return f"No pude completar eso aquí ({error}).", nombre
             if resultado is not None:
-                return resultado, skill.__name__.rsplit(".", 1)[-1]
+                return resultado, nombre
     return None, None

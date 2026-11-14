@@ -57,6 +57,9 @@ NGROK_DOMINIO = _clave("NGROK_DOMINIO")
 # llegue por Ngrok (celular / reloj) debe traer ese token. Abre una vez
 # https://<tu-dominio>/reloj?token=TU_TOKEN y el celular lo recuerda.
 TOKEN_REMOTO = os.getenv("TOKEN_REMOTO", "").strip()
+# En una VM / contenedor (hiperconvergencia) la API queda abierta a toda la red:
+# con EXIGIR_TOKEN_EN_RED=1 también se pide el token a los equipos de la red local.
+EXIGIR_TOKEN_EN_RED = os.getenv("EXIGIR_TOKEN_EN_RED", "0").strip() == "1"
 
 if not ANTHROPIC_API_KEY and (DEEPSEEK_API_KEY or GROQ_API_KEY or GEMINI_API_KEY):
     print("ℹ️  Sin ANTHROPIC_API_KEY: se usará "

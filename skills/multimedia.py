@@ -8,7 +8,10 @@ es la ventana que está al frente — por eso ahí sí enfocamos Edge primero.
 """
 import re
 import time
-import pyautogui
+
+from ._compat import cargar_pyautogui
+
+pyautogui = cargar_pyautogui()  # DEF-022: en la VM/Docker no hay pyautogui
 
 try:
     import pygetwindow as gw

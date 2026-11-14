@@ -17,6 +17,14 @@ import rutas
 _RUTA_DB = os.path.join(rutas.CARPETA_DATOS, "azmuth.db")
 
 
+def patron_like(texto: str) -> str:
+    """Patrón seguro para "LIKE ? ESCAPE '\\'": busca el texto tal cual, en
+    cualquier parte. DEF-019 (pruebas de seguridad): "borra la nota de %"
+    borraba TODAS las notas porque % y _ son comodines de SQL LIKE."""
+    limpio = (texto or "").replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+    return f"%{limpio}%"
+
+
 def conectar():
     """Regresa una conexión nueva, con las tablas ya creadas si hacía
     falta (CREATE TABLE IF NOT EXISTS, así que nunca truena si ya

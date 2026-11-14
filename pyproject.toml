@@ -1,6 +1,22 @@
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+# Tipos de prueba (reporte de Pruebas de Software). Ejemplo: pytest -m humo -v
+markers = [
+    "unitaria: prueba una sola función aislada",
+    "componente: prueba un módulo completo (skill, chats, monitoreo) aislado",
+    "integracion: prueba que varios módulos trabajan juntos",
+    "sistema: prueba el sistema completo de punta a punta por su API",
+    "aceptacion: criterios de aceptación de las historias de usuario",
+    "exploratoria: exploración automática con entradas aleatorias (fuzzing)",
+    "usabilidad: facilidad de uso de la interfaz y de las respuestas",
+    "funcional: técnica funcional (caja negra: entrada -> salida esperada)",
+    "no_funcional: rendimiento, carga, fiabilidad y portabilidad",
+    "humo: verificación rápida de que lo esencial arranca",
+    "interfaz: contrato de la API y elementos de la interfaz gráfica",
+    "seguridad: autenticación, inyección, secretos y exposición de datos",
+    "api_remota: API corriendo en la VM de VirtualBox (hiperconvergencia)",
+]
 
 [tool.coverage.run]
 source = ["."]

@@ -10,7 +10,10 @@ _enfocar_navegador().
 """
 import re
 import time
-import pyautogui
+
+from ._compat import cargar_pyautogui
+
+pyautogui = cargar_pyautogui()  # DEF-022: en la VM/Docker no hay pyautogui
 
 try:
     import pygetwindow as gw

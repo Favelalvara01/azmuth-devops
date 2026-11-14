@@ -1,0 +1,83 @@
+# =====================================================================
+#  Nodo HIPERCONVERGENTE de Azmuth (corre dentro de la VM Ubuntu Server
+#  de VirtualBox). Un solo nodo junta, definidos por software:
+#    - CÓMPUTO        -> contenedor azmuth-api con CPU y RAM asignadas
+#    - ALMACENAMIENTO -> volumen azmuth-datos (SQLite persistente)
+#    - RED            -> red virtual red-hci con su propia subred y DNS
+#    - GESTIÓN        -> healthcheck + Portainer (consola web opcional)
+#
+#  Uso (en la VM):   docker compose up -d --build
+#  Pruebas internas: docker compose --profile pruebas run --rm probador
+#  Consola gestión:  docker compose --profile gestion up -d   (https://<ip>:9443)
+# =====================================================================
+name: azmuth-hci
+
+services:
+  azmuth-api:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: azmuth:hci
+    container_name: azmuth-api
+    hostname: nodo-azmuth-01
+    restart: unless-stopped
+    ports:
+      - "8080:8080"                 # VirtualBox reenvía 127.0.0.1:8081 (Windows) -> 8080 (VM)
+    environment:
+      TOKEN_REMOTO: ${TOKEN_REMOTO:?Falta TOKEN_REMOTO en hiperconvergencia/.env}
+      EXIGIR_TOKEN_EN_RED: "1"      # DEF-020: la red local también necesita token
+    volumes:
+      - azmuth-datos:/app/datos     # almacenamiento definido por software
+    networks:
+      red-hci:
+        ipv4_address: 172.30.0.10
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"               # cómputo asignado al servicio
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/salud')"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+
+  # Pruebas de API servicio-a-servicio dentro de la red del nodo
+  probador:
+    image: azmuth:hci
+    profiles: ["pruebas"]
+    depends_on:
+      azmuth-api:
+        condition: service_healthy
+    environment:
+      AZMUTH_URL: http://azmuth-api:8080      # DNS interno de la red definida por software
+      AZMUTH_TOKEN: ${TOKEN_REMOTO}
+    command: ["pytest", "tests/api_remota", "-v", "-p", "no:cacheprovider"]
+    networks:
+      - red-hci
+
+  # Consola de gestión del nodo (opcional)
+  portainer:
+    image: portainer/portainer-ce:2.21.4
+    profiles: ["gestion"]
+    container_name: portainer
+    restart: unless-stopped
+    ports:
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-datos:/data
+    networks:
+      - red-hci
+
+volumes:
+  azmuth-datos:
+  portainer-datos:
+
+networks:
+  red-hci:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+          gateway: 172.30.0.1

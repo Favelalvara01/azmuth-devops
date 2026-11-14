@@ -2,6 +2,7 @@
 servidor.py — El ÚNICO servidor web de A.Z.M.U.T.H.
 """
 import os
+import platform
 import threading
 
 from fastapi import FastAPI, HTTPException, Request
@@ -37,9 +38,18 @@ _JS_TOKEN = """<script>
 </script>"""
 
 
+_LOCALES = ("127.0.0.1", "::1", "localhost")
+
+
 def _viene_de_internet(request) -> bool:
-    """Ngrok reenvía a 127.0.0.1 pero agrega X-Forwarded-For; la ventana local no."""
-    return "x-forwarded-for" in request.headers or "ngrok-trace-id" in request.headers
+    """Ngrok reenvía a 127.0.0.1 pero agrega X-Forwarded-For; la ventana local no.
+    DEF-020 (pruebas de seguridad): en una máquina virtual o contenedor la API
+    escucha en 0.0.0.0 y cualquier equipo de la red llegaba sin token. Con
+    EXIGIR_TOKEN_EN_RED=1 todo cliente que no sea la propia máquina lo necesita."""
+    if "x-forwarded-for" in request.headers or "ngrok-trace-id" in request.headers:
+        return True
+    host = request.client.host if request.client else ""
+    return config.EXIGIR_TOKEN_EN_RED and host not in _LOCALES
 
 
 def _token_valido(request) -> bool:
@@ -138,7 +148,9 @@ def cambiar_tematica(datos: CambioTematica):
 @app.get("/salud")
 def salud():
     """Monitoreo: tiempo activo y últimos errores registrados."""
-    return {"status": "ok", "control_remoto_protegido": bool(config.TOKEN_REMOTO), **monitoreo.resumen()}
+    # nodo/sistema: en la VM (hiperconvergencia) muestran qué contenedor respondió
+    return {"status": "ok", "control_remoto_protegido": bool(config.TOKEN_REMOTO),
+            "nodo": platform.node(), "sistema": platform.system(), **monitoreo.resumen()}
 
 
 # ====================== MODO ESCRITORIO (chat escrito) ======================

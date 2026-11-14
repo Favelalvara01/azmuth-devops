@@ -103,6 +103,25 @@ O todo de una vez en Windows: `pipeline_local.bat`.
 Las gráficas y métricas también se regeneran **solas en cada push**: GitHub Actions las
 recalcula y las sube a `metricas/resultados/` (haz `git pull` para verlas en tu compu).
 
+## Pruebas de software (por tipo)
+
+Las pruebas nuevas están en `tests/tipos_de_prueba/` y se ejecutan por tipo con marcadores de pytest
+(`pytest -m humo -v`). En Windows, `ejecutar_pruebas.bat` corre cada tipo con una pausa para capturar la pantalla.
+
+| Marcador | Archivo | Qué valida |
+|---|---|---|
+| `unitaria` | test_unitarias.py | funciones aisladas |
+| `componente` | test_componentes.py | módulos completos (skills, chats, monitoreo) |
+| `integracion` | test_integracion.py | API → núcleo → skills → SQLite / IA |
+| `sistema` | test_sistema.py | servidor real por HTTP, de punta a punta |
+| `aceptacion` | test_aceptacion.py | historias de usuario (Dado / Cuando / Entonces) |
+| `exploratoria` | test_exploratorias.py | fuzzing con semilla |
+| `usabilidad` | test_usabilidad.py | heurísticas de Nielsen y WCAG |
+| `funcional` / `no_funcional` | test_funcionales.py / test_no_funcionales.py | caja negra / rendimiento, carga, fiabilidad |
+| `humo` / `interfaz` | test_humo.py / test_interfaz.py | arranque / contratos de la API y la interfaz |
+| `seguridad` | test_seguridad.py | OWASP Top 10 |
+| `api_remota` | tests/api_remota/ | API en la VM de VirtualBox ([hiperconvergencia/](hiperconvergencia/README.md)) |
+
 ## Defectos conocidos
 
 Las pruebas marcadas `xfail` documentan defectos detectados por las pruebas automatizadas

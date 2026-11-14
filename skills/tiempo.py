@@ -148,6 +148,17 @@ _PRONOSTICO = re.compile(
     r"|(?:hay\s+)?probabilidad(?:es)?\s+de\s+lluvia)")
 
 
+_DIAS = ("lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo")
+_MESES = ("enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto",
+          "septiembre", "octubre", "noviembre", "diciembre")
+
+
+def fecha_en_espanol(fecha) -> str:
+    """DEF-021 (pruebas exploratorias): strftime("%A %B") usa el idioma del sistema
+    operativo y Azmuth decía "Hoy es Thursday 12 de November". Ahora siempre en español."""
+    return f"{_DIAS[fecha.weekday()]} {fecha.day:02d} de {_MESES[fecha.month - 1]} de {fecha.year}"
+
+
 def intentar(texto: str):
     t = texto.lower().strip()
     t_limpio = re.sub(r"[¿?¡!.,]", "", t).strip()
@@ -156,7 +167,7 @@ def intentar(texto: str):
         return "Son las " + datetime.now().strftime("%H:%M") + "."
 
     if re.match(r"^(qué (día|fecha) es|dime la fecha|fecha de hoy)", t):
-        return "Hoy es " + datetime.now().strftime("%A %d de %B de %Y") + "."
+        return "Hoy es " + fecha_en_espanol(datetime.now()) + "."
 
     if re.match(r"^(qué clima hace|cómo está el clima|dime el clima|clima de hoy|qué temperatura hace|cuántos grados hace)", t):
         return _obtener_clima()
