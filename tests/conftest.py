@@ -21,9 +21,25 @@ if RAIZ not in sys.path:
     sys.path.insert(0, RAIZ)
 
 # --- Librerías exclusivas de Windows / hardware: se reemplazan por dobles ---
+class _ModuloSimulado(types.ModuleType):
+    """Módulo falso: cada atributo que se pide (pyautogui.press, sd.InputStream…)
+    se crea como MagicMock y se GUARDA en el __dict__ del módulo.
+
+    Antes era un MagicMock directo, pero desde pytest 9.2 monkeypatch.setattr()
+    solo restaura lo que está en __dict__: al terminar la prueba BORRABA
+    pyautogui.press y las siguientes fallaban con "has no attribute 'press'"."""
+
+    def __getattr__(self, nombre):
+        if nombre.startswith("__"):
+            raise AttributeError(nombre)
+        valor = mock.MagicMock(name=f"{self.__name__}.{nombre}")
+        setattr(self, nombre, valor)
+        return valor
+
+
 for nombre in ("pyautogui", "pygetwindow", "speech_recognition", "sounddevice", "webview", "pyttsx3"):
     if nombre not in sys.modules:
-        sys.modules[nombre] = mock.MagicMock(name=nombre)
+        sys.modules[nombre] = _ModuloSimulado(nombre)
 
 # Sin claves reales durante las pruebas (nunca se llama a la API de verdad)
 os.environ.setdefault("ANTHROPIC_API_KEY", "")
