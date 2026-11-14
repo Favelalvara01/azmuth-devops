@@ -7,7 +7,7 @@ numpy
 fastapi
 httpx
 uvicorn
-pytest>=8
+pytest>=9.2.0
 pytest-cov
 radon
 matplotlib
