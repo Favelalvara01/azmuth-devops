@@ -1,6 +1,6 @@
 ## 📊 Métricas de calidad — Azmuth
 
-_Generado: 2026-11-14 03:24_
+_Generado: 2026-11-15 01:15_
 
 ### Métricas de producto
 
@@ -9,7 +9,7 @@ _Generado: 2026-11-14 03:24_
 | Complejidad ciclomática promedio | 3.59 (298 funciones) |
 | Complejidad máxima | 16 |
 | Funciones en rango A-B (simples) | 94.63 % |
-| Cobertura de código | 87.9 % |
+| Cobertura de código | 87.87 % |
 | Tamaño | 4005 SLOC (4.0 KLOC) |
 | Densidad de defectos | 5.74 defectos/KLOC |
 | Defectos abiertos | 0 (0.0/KLOC) |

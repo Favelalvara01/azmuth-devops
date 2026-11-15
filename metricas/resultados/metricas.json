@@ -1,5 +1,5 @@
 {
-  "generado": "2026-11-14 03:24",
+  "generado": "2026-11-15 01:15",
   "producto": {
     "complejidad": {
       "funciones_analizadas": 298,
@@ -349,7 +349,7 @@
       }
     },
     "cobertura": {
-      "total": 87.9,
+      "total": 87.87,
       "por_archivo": {
         "acciones_remotas.py": 100.0,
         "app_desktop.py": 0.0,
@@ -390,10 +390,10 @@
         "skills/temas.py": 97.44,
         "skills/tiempo.py": 94.5,
         "skills/web.py": 75.0,
-        "tematicas.py": 96.41,
+        "tematicas.py": 95.9,
         "voice.py": 72.88
       },
-      "lineas_cubiertas": 2463,
+      "lineas_cubiertas": 2462,
       "lineas_ejecutables": 2802
     },
     "densidad_defectos": {
@@ -443,7 +443,7 @@
       "aprobadas": 567,
       "fallidas": 0,
       "defectos_conocidos_xfail": 9,
-      "tiempo_seg": 23.19
+      "tiempo_seg": 19.07
     }
   },
   "proyecto": {

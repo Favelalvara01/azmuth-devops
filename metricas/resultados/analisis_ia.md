@@ -1,13 +1,13 @@
 ## 🤖 Análisis de calidad con IA (claude-sonnet-4-6)
 
 # Auditoría de Calidad — Proyecto Azmuth
-**ISO/IEC 25010 · ISO/IEC 25023 | Generado: 2026-11-14 03:24**
+**Norma:** ISO/IEC 25010 · ISO/IEC 25023 | **Fecha del reporte:** 2026-11-15
 
 ---
 
 ## Dictamen general
 
-El proyecto Azmuth alcanza una calificación de **78 / 100**, sustentada en una cobertura de pruebas del 87,9 %, cero defectos abiertos, análisis estático sin hallazgos (Ruff) y una complejidad ciclomática predominantemente en rangos A-B (94,63 %). El proyecto **puede liberarse condicionalmente**, siempre que se atienda la cobertura crítica de `app_desktop.py` (0 %), se reduzca la complejidad de las diez funciones en rango C y se mejore la eficacia de detección de defectos (DRE = 52,17 %), que revela una brecha significativa de pruebas preventivas antes de producción.
+El proyecto **Azmuth** alcanza una calificación de **76 / 100**, posicionándose en un nivel de calidad **aceptable con reservas**. Sus fortalezas son la cobertura de pruebas (87,87 %), la ausencia de defectos abiertos y un análisis estático limpio (Ruff sin hallazgos); sin embargo, la DRE del 52,17 % y un MTTD de ~14 días revelan que el proceso de detección temprana es insuficiente para una liberación sin riesgo residual. **Se recomienda liberación condicionada** a la resolución de los cinco puntos del plan de mejora, con especial atención a la DRE antes del siguiente ciclo de producción.
 
 ---
 
@@ -16,85 +16,87 @@ El proyecto Azmuth alcanza una calificación de **78 / 100**, sustentada en una 
 ### Completitud funcional
 | Indicador | Valor | Referencia |
 |---|---|---|
-| Pruebas totales ejecutadas | 576 | — |
-| Pruebas aprobadas | 567 (98,44 %) | Umbral recomendado ≥ 95 % ✅ |
-| Defectos conocidos (xfail) | 9 | Documentados, no bloqueantes |
-| Defectos abiertos | 0 | ✅ |
-| Cobertura global | 87,9 % | Umbral recomendado ≥ 80 % ✅ |
+| Pruebas totales | 576 | — |
+| Pruebas aprobadas | 567 | — |
+| Defectos `xfail` conocidos | 9 | Funcionalidad pendiente/limitada |
+| Defectos abiertos | **0** | ✅ |
+| Cobertura global | **87,87 %** | Umbral recomendado ≥ 85 % ✅ |
 
-La funcionalidad declarada está cubierta en un nivel aceptable. Los 9 casos `xfail` representan comportamientos conocidos y controlados, no funciones faltantes. El único módulo sin cobertura es `app_desktop.py` (0 %), lo que implica que su funcionalidad **no está verificada** en absoluto.
+La suite cubre 567 escenarios exitosamente. Los 9 `xfail` representan comportamientos conocidos que el equipo decidió diferir; no constituyen fallos bloqueantes pero sí indican funcionalidad **incompleta en bordes del sistema**.
 
 ### Corrección funcional
-De los 23 defectos históricos, **todos fueron corregidos** (0 abiertos). Sin embargo, 10 defectos llegaron a producción antes de ser detectados, lo que indica que la corrección ocurrió de forma reactiva en varios casos. La distribución por archivo muestra concentración en `main.py` (4), `servidor.py` (3) y `estado.py` (3).
+- **23 defectos históricos, 0 abiertos**: toda la deuda técnica de defectos está saldada al momento de la auditoría.
+- Densidad histórica de **5,74 defectos/KLOC**; en módulos tempranos como "Núcleo de voz" y "Skills básicas" la densidad fue de 12,5 y 10,68/KLOC respectivamente, lo que indica que la corrección se realizó de forma reactiva.
+- Los archivos `app_desktop.py` (0 % cobertura), `voice.py` (72,88 %), `skills/multimedia.py` (74,55 %), `skills/web.py` (75 %) y `deepseek_ia.py` (75 %) presentan zonas funcionales **sin validación automatizada**, lo que compromete la certeza de corrección en esos módulos.
 
 ### Pertinencia funcional
-Las skills implementadas (tiempo, recordatorios, multimedia, pestañas, web, apps, contactos, hábitos, notas, idiomas) corresponden a un asistente de voz funcional y completo para Windows. La integración con Deepseek, Gemini y Groq amplía la pertinencia del producto para su propósito declarado.
+El sistema cubre los dominios esperados para un asistente de voz con IA: reconocimiento de voz, skills de sistema, integración con múltiples LLM (Gemini, Groq, DeepSeek), persistencia SQLite, servidor remoto y modo escritorio. La arquitectura de skills desacopladas es pertinente al dominio. Sin embargo, la ausencia total de pruebas en `app_desktop.py` deja una superficie funcional sin verificar.
 
 ---
 
 ## Fiabilidad
 
-### Métricas clave
+### Madurez y disponibilidad
 | Métrica | Valor | Interpretación |
 |---|---|---|
-| MTTD | 334,65 h (13,94 días) | Los defectos tardan ~2 semanas en detectarse; refleja que 10/23 llegaron a producción |
-| MTTR | 3,08 h (185 min) | Excelente capacidad de corrección una vez detectado el defecto ✅ |
-| DRE (Defect Removal Efficiency) | 52,17 % | **Crítico** ⚠️ — menos de la mitad de los defectos se eliminaron antes de producción |
-| Defectos graves detectados en pruebas | 3 de 7 (42,86 %) | Solo 4 defectos graves llegaron a producción, pero es un riesgo real |
+| MTTD | **334,65 h (≈ 13,94 días)** | ⚠️ Muy alto: los defectos tardan ~2 semanas en detectarse |
+| MTTR | **3,08 h (185 min)** | ✅ Excelente: una vez detectado, se corrige con rapidez |
+| Defectos reparados | 23 / 23 | ✅ 100 % de cierre |
+| DRE (Defect Removal Efficiency) | **52,17 %** | 🔴 Crítico: menos de la mitad de los defectos graves se detectaron antes de producción |
 
-### Madurez
-Con 0 defectos abiertos y 576 pruebas ejecutadas sin fallas, el producto muestra señales de madurez al momento del cierre. No obstante, el MTTD elevado sugiere que los ciclos de retroalimentación de pruebas son lentos o que la observabilidad en etapas tempranas es insuficiente.
+**Cálculo DRE aplicado:**
+```
+DRE = Defectos detectados en pruebas / (Defectos en pruebas + Defectos en producción)
+    = 9 / (9 + 10) × 100 = 47,37 %
 
-### Disponibilidad y tolerancia a fallos
-El pipeline de GitHub Actions y la contenedorización con Docker proveen una base de disponibilidad y aislamiento aceptable. La presencia del módulo `monitoreo.py` (88,89 % cobertura) es positiva. No se reportan métricas de uptime en los datos, por lo que no es posible calcular disponibilidad operacional.
+DRE (graves) = Graves detectados en pruebas / Graves totales
+             = 3 / 7 × 100 = 42,86 %
 
-### Recuperabilidad
-El MTTR de 3,08 h es un indicador sólido de recuperabilidad del proceso de desarrollo. Para el sistema en ejecución, `confirmaciones.py` y `nucleo.py` tienen cobertura del 100 %, lo que refuerza la confianza en los flujos críticos de recuperación de estado.
+DRE reportado (incluye revisión) = (3 + 9) / 23 × 100 = 52,17 %
+```
+
+La DRE del 52,17 % es el indicador más preocupante del proyecto: **casi la mitad de los defectos (10/23) llegaron a producción**, incluyendo 4 defectos graves que escaparon a las pruebas. La industria considera aceptable ≥ 85 % y excelente ≥ 95 %.
+
+### Tolerancia a fallos y recuperabilidad
+- El MTTR de 3,08 h sugiere buena capacidad de recuperación operativa, apoyada por el pipeline CI/CD (GitHub Actions + Docker).
+- La eficacia de revisión del 13,04 % (3/23 defectos detectados en revisión) indica que las revisiones de código son poco sistemáticas: se recomienda fortalecer el proceso de code review antes de merge.
+- Los 9 `xfail` actúan como registro controlado de comportamientos no resueltos; es positivo que estén documentados en lugar de ignorados.
 
 ---
 
 ## Mantenibilidad
 
 ### Índice de mantenibilidad
-El índice promedio es **68,56 / 100**, ubicándose en la categoría **moderada** (rango típico aceptable: 65–85). No es preocupante, pero tampoco holgado; el margen de degradación antes de volverse difícil de mantener es reducido.
+El **índice de mantenibilidad promedio de 68,56** (escala 0–100) se clasifica como **moderado**, justo por encima del umbral de alerta (< 65). Proyectos orientados a larga vida útil deberían aspirar a ≥ 75.
 
-### Complejidad ciclomática — Distribución
-| Rango | Significado | Cantidad | % |
+### Complejidad ciclomática
+| Rango | Significado | Funciones | % |
 |---|---|---|---|
-| **A** (1–5) | Excelente, bajo riesgo | 245 | 82,21 % |
-| **B** (6–10) | Moderada, manejable | 37 | 12,42 % |
-| **C** (11–15) | Alta, refactorización recomendada | 16 | 5,37 % |
-| **D** (16–20) | Muy alta, refactorización urgente | 0 | 0 % |
-| **E** (21–25) | Crítica | 0 | 0 % |
-| **F** (> 25) | Inmanejable | 0 | 0 % |
+| **A** (1–5) | Excelente | 245 | 82,21 % |
+| **B** (6–10) | Buena | 37 | 12,42 % |
+| **C** (11–15) | Moderada — refactorizar | 16 | 5,37 % |
+| **D** (16–20) | Alta — refactorizar urgente | 0 | 0 % |
+| **E** (21–25) | Muy alta | 0 | 0 % |
+| **F** (> 25) | Extrema | 0 | 0 % |
 
-> **94,63 % en rangos A-B** es un resultado muy positivo. El riesgo se concentra en el 5,37 % restante (rango C).
+✅ El **94,63 % de las funciones** están en rango A o B, lo que es un resultado muy positivo para un proyecto de 4 KLOC.
 
-### Funciones prioritarias a refactorizar (rango C)
+### Funciones a refactorizar (Rango C — complejidad ≥ 11)
 
-| # | Archivo | Función | Línea | CC | Acción sugerida |
+| Prioridad | Archivo | Función | Línea | CC | Acción sugerida |
 |---|---|---|---|---|---|
-| 1 | `tematicas.py` | `_sintetizar` | 238 | 16 | Extraer ramas de síntesis en métodos especializados por tipo de tema |
-| 2 | `skills/tiempo.py` | `_pronostico` | 100 | 16 | Separar lógica de parsing, formateo y condiciones climáticas |
-| 3 | `skills/apps_instaladas.py` | `intentar` | 210 | 15 | Aplicar patrón *Command* o tabla de despacho para reducir condicionales |
-| 4 | `skills/recordatorios.py` | `intentar` | 96 | 14 | Extraer validaciones de fecha/hora a funciones auxiliares |
-| 5 | `skills/apps_instaladas.py` | `resolver` | 166 | 13 | Dividir resolución por categoría de aplicación |
-| 6 | `skills/multimedia.py` | `intentar` | 34 | 13 | Separar control de reproducción, volumen y búsqueda |
-| 7 | `skills/pestanas.py` | `intentar` | 36 | 13 | Descomponer por acción de pestaña (abrir, cerrar, navegar) |
-| 8 | `skills/tiempo.py` | `_recomendaciones` | 71 | 13 | Externalizar reglas de recomendación a estructura de datos |
-| 9 | `skills/web.py` | `intentar` | 93 | 13 | Aplicar despacho por intención detectada |
-| 10 | `deepseek_ia.py` | `completar` | 82 | 12 | Separar construcción de prompt, llamada HTTP y manejo de errores |
+| 🔴 1 | `tematicas.py` | `_sintetizar` | 238 | **16** | Extraer ramas de síntesis en métodos especializados por tipo |
+| 🔴 2 | `skills/tiempo.py` | `_pronostico` | 100 | **16** | Separar lógica de parsing, cálculo y formato de respuesta |
+| 🟠 3 | `skills/apps_instaladas.py` | `intentar` | 210 | 15 | Tabla de despacho (`dict`) en lugar de cadena if/elif |
+| 🟠 4 | `skills/recordatorios.py` | `intentar` | 96 | 14 | Extraer validación de fecha/hora y persistencia |
+| 🟠 5 | `skills/apps_instaladas.py` | `resolver` | 166 | 13 | Separar resolución por tipo de aplicación |
+| 🟡 6 | `skills/multimedia.py` | `intentar` | 34 | 13 | Dividir por acción (play/pause/stop/volumen) |
+| 🟡 7 | `skills/pestanas.py` | `intentar` | 36 | 13 | Mismo patrón: tabla de despacho |
+| 🟡 8 | `skills/tiempo.py` | `_recomendaciones` | 71 | 13 | Extraer lógica por condición meteorológica |
+| 🟡 9 | `skills/web.py` | `intentar` | 93 | 13 | Separar por tipo de búsqueda/acción web |
+| 🟢 10 | `deepseek_ia.py` | `completar` | 82 | 12 | Extraer manejo de errores HTTP y reintentos |
 
-### Archivos con baja cobertura y alta deuda técnica
-
-| Archivo | Cobertura | Riesgo |
-|---|---|---|
-| `app_desktop.py` | 0,0 % | 🔴 Crítico — ninguna prueba |
-| `voice.py` | 72,88 % | 🟡 Moderado |
-| `skills/multimedia.py` | 74,55 % | 🟡 Moderado — también alta CC |
-| `skills/web.py` | 75,0 % | 🟡 Moderado — también alta CC |
-| `deepseek_ia.py` | 75,0 % | 🟡 Moderado — también alta CC |
-| `skills/_compat.py` | 53,85 % | 🟠 Alto |
+> **Nota:** El patrón dominante en las funciones `intentar` de múltiples skills sugiere que el diseño base del dispatcher de intenciones debería revisarse arquitectónicamente para reducir la complejidad estructural de forma sistémica, en lugar de refactorizar skill por skill.
 
 ---
 
@@ -102,68 +104,91 @@ El índice promedio es **68,56 / 100**, ubicándose en la categoría **moderada*
 
 | Riesgo | Probabilidad | Impacto | Acción preventiva |
 |---|---|---|---|
-| `app_desktop.py` sin cobertura (0 %) puede ocultar defectos críticos en la GUI | Alta | Alto | Crear suite de pruebas con `pytest-qt` o mocks de la interfaz; meta mínima: 70 % antes del próximo sprint |
-| DRE del 52,17 % implica que ~48 % de defectos escapan a producción | Alta | Alto | Implementar revisiones de código obligatorias (PR reviews) y ampliar pruebas de integración para skills con lógica compleja |
-| MTTD de ~14 días indica detección tardía de defectos | Media | Alto | Habilitar alertas automáticas en el pipeline (fallos de smoke tests en cada merge a `main`) y añadir pruebas de regresión |
-| 10 funciones en rango C incrementan el costo de cambio futuro | Media | Medio | Incluir refactorización de las top-10 funciones como tarea técnica en el backlog del próximo sprint |
-| Baja cobertura en `skills/_compat.py` (53,85 %) puede afectar compatibilidad en distintas versiones de Windows | Media | Medio | Añadir pruebas parametrizadas que simulen distintos entornos; usar `tox` para matrices de versión |
-| Desviación de estimación del 19,61 % (20 h extra) puede generar déficit en proyectos futuros | Media | Medio | Adoptar estimación de tres puntos (PERT) como estándar, que acotó el real dentro de su intervalo del 95 % |
-| Sprint 5 (Interfaz y servidor) con desviación del 60 % y 7 defectos concentra la mayor deuda | Media | Alto | Realizar retrospectiva de estimación y asignar spike técnico en futuros módulos de interfaz |
-| `deepseek_ia.py` con CC=12 y cobertura del 75 % expone fallos silenciosos en el modelo de IA | Baja | Alto | Implementar pruebas de contrato (mocks de API) y manejo explícito de errores HTTP 4xx/5xx |
+| **DRE baja (52,17 %)**: defectos graves escapan a producción | Alta | Alto | Implementar pruebas de regresión específicas para los 7 defectos graves; añadir pruebas de integración end-to-end para flujos críticos de voz e IA |
+| **MTTD elevado (~14 días)**: la detección tardía incrementa el costo de corrección | Alta | Medio | Activar alertas automáticas en el pipeline CI/CD y monitoreo de errores en runtime (p. ej. Sentry) para reducir el tiempo de detección |
+| **Cobertura cero en `app_desktop.py`** y baja en `voice.py`, `multimedia.py`, `web.py` | Media | Alto | Crear suite de pruebas dedicada para la interfaz de escritorio (mocking de GUI) y los módulos con cobertura < 80 % antes del siguiente release |
+| **MTTD largo + sprints tempranos con alta densidad de defectos** (12,5/KLOC en Sprint 1): riesgo de deuda técnica encubierta en módulo de voz | Media | Alto | Auditoría de código enfocada en `nucleo.py`, `voice.py` y `main.py`; incrementar cobertura de esos módulos al 95 % |
+| **Eficacia de revisión baja (13,04 %)**: las revisiones de código no filtran defectos eficazmente | Alta | Medio | Formalizar checklist de code review (seguridad, manejo de excepciones, tipos de retorno); exigir ≥ 1 revisor externo por PR |
+| **Desviación de estimación del 19,61 %** (20 h extra): riesgo de subestimación en próximos proyectos con APIs externas | Media | Medio | Usar Three-Point / PERT como técnica estándar; añadir factor de ajuste ≥ 1,2 para módulos con integraciones de terceros |
+| **Funciones con CC ≥ 13** sin pruebas suficientes (`multimedia.py` 74,55 %, `web.py` 75 %) | Media | Medio | Exigir cobertura de rama (branch coverage) ≥ 85 % en funciones Rango C antes de merge a main |
 
 ---
 
 ## Plan de mejora
 
-> Las acciones están ordenadas por **prioridad descendente** (impacto en calidad × urgencia).
+> Las acciones están ordenadas por **impacto en calidad / urgencia**.
 
-### 🥇 Acción 1 — Cubrir `app_desktop.py` con pruebas
-**Prioridad: Crítica**
-Crear pruebas unitarias e integración para `app_desktop.py` usando mocks o `pytest-qt`. Establecer una cobertura mínima del 70 % como *quality gate* en el pipeline (GitHub Actions rechaza merge si no se alcanza).
-- **Métrica que mejora:** Cobertura global (87,9 % → ~89–90 %) y DRE (reduce defectos que escapan a producción).
+### Acción 1 — Elevar la DRE mediante pruebas de integración para defectos graves 🔴
+**Prioridad:** Crítica | **Sprint objetivo:** Inmediato
 
-### 🥈 Acción 2 — Incrementar el DRE mediante pruebas de integración ampliadas
-**Prioridad: Alta**
-Diseñar pruebas de integración que simulen flujos completos usuario→skill→respuesta para los módulos con más defectos en producción (`main.py`, `servidor.py`, `estado.py`). Integrar revisiones de pares obligatorias en PRs.
-- **Métrica que mejora:** DRE (52,17 % → objetivo ≥ 75 %) y reducción de defectos en producción.
+- Crear casos de prueba específicos que reproduzcan los 7 defectos graves identificados (4 que escaparon a producción).
+- Integrar pruebas de flujo completo voz → procesamiento → respuesta en el pipeline CI.
+- **Métrica que mejora:** `DRE` (objetivo: de 52,17 % → ≥ 80 %) y `defectos_por_fase.produccion` (objetivo: reducir de 10 a ≤ 3 en el próximo ciclo).
 
-### 🥉 Acción 3 — Refactorizar las 10 funciones en rango C
-**Prioridad: Alta**
-Iniciar con `_sintetizar` y `_pronostico` (CC=16) aplicando extracción de métodos y tablas de despacho. Añadir como criterio de *done* en el Definition of Done que ninguna función nueva supere CC=10 (rango B).
-- **Métrica que mejora:** Complejidad ciclomática máxima (16 → ≤ 10), índice de mantenibilidad (68,56 → objetivo ≥ 75).
+---
 
-### 4️⃣ Acción 4 — Mejorar cobertura de `skills/_compat.py`, `voice.py`, `skills/web.py` y `deepseek_ia.py`
-**Prioridad: Media**
-Añadir pruebas parametrizadas para `_compat.py` con distintas versiones de dependencias. Para `voice.py` y `deepseek_ia.py`, usar mocks de las APIs externas (ElevenLabs, Deepseek) a fin de cubrir ramas de error actualmente sin prueba.
-- **Métrica que mejora:** Cobertura por archivo (todos por encima del 80 %) y fiabilidad ante fallos de APIs externas.
+### Acción 2 — Cubrir módulos críticos sin pruebas (`app_desktop.py`, `voice.py`, `multimedia.py`) 🔴
+**Prioridad:** Alta | **Sprint objetivo:** Próximo sprint
 
-### 5️⃣ Acción 5 — Reducir el MTTD con observabilidad proactiva
-**Prioridad: Media**
-Configurar *smoke tests* automáticos que se ejecuten en cada push a `main` (no solo en PRs) y agregar logging estructurado con alertas en `monitoreo.py`. Evaluar integrar Sentry o equivalente para captura de excepciones en tiempo real.
-- **Métrica que mejora:** MTTD (334,65 h → objetivo ≤ 72 h), disponibilidad percibida del sistema.
+- `app_desktop.py`: diseñar pruebas con mocking de la interfaz gráfica (p. ej. `pytest-qt` o mocks de `tkinter`).
+- `voice.py` (72,88 %), `skills/multimedia.py` (74,55 %), `skills/web.py` (75 %), `deepseek_ia.py` (75 %): añadir pruebas unitarias hasta alcanzar ≥ 85 % en cada archivo.
+- **Métrica que mejora:** `cobertura.total` (objetivo: de 87,87 % → ≥ 92 %) y `cobertura.por_archivo` para los 5 archivos críticos.
+
+---
+
+### Acción 3 — Refactorizar las 10 funciones Rango C para mejorar mantenibilidad 🟠
+**Prioridad:** Alta | **Sprint objetivo:** Próximos 2 sprints
+
+- Comenzar por `_sintetizar` (CC=16) y `_pronostico` (CC=16) aplicando el principio de responsabilidad única.
+- Para las funciones `intentar` repetidas en múltiples skills: diseñar un patrón de despacho centralizado (p. ej. diccionario de handlers) reutilizable.
+- Verificar que la cobertura no retroceda tras la refactorización (gate en CI: cobertura ≥ 87 %).
+- **Métrica que mejora:** `complejidad.maxima` (objetivo: de 16 → ≤ 10), `mantenibilidad_promedio` (objetivo: de 68,56 → ≥ 75) y `porcentaje_A_B` (objetivo: de 94,63 % → ≥ 98 %).
+
+---
+
+### Acción 4 — Formalizar el proceso de revisión de código para elevar la eficacia de revisión 🟠
+**Prioridad:** Media-Alta | **Sprint objetivo:** Implementar como proceso permanente desde ya
+
+- Crear un checklist de PR obligatorio: manejo de excepciones, tipado estático (`mypy`), cobertura de ramas, ausencia de lógica de negocio en la capa de presentación.
+- Exigir al menos un revisor diferente al autor para todo PR que toque módulos con CC ≥ 10 o cobertura < 85 %.
+- Registrar defectos encontrados en revisión para medir la mejora.
+- **Métrica que mejora:** `eficacia_revision.porcentaje` (objetivo: de 13,04 % → ≥ 30 %) y `defectos_por_fase.revision` (objetivo: capturar ≥ 7/23 defectos en revisión en el próximo ciclo).
+
+---
+
+### Acción 5 — Reducir el MTTD con monitoreo activo en runtime 🟡
+**Prioridad:** Media | **Sprint objetivo:** Próximos 2 sprints
+
+- Integrar una herramienta de observabilidad (p. ej. Sentry, OpenTelemetry + Grafana) para capturar excepciones no controladas en producción en tiempo real.
+- Configurar alertas automáticas en GitHub Actions ante fallos de cualquier paso del pipeline.
+- Revisar los 9 `xfail` y convertir en issues con criterio de aceptación para el siguiente ciclo.
+- **Métrica que mejora:** `mttd_horas` (objetivo: de 334,65 h → ≤ 48 h), lo que a su vez mejorará el costo de corrección al detectar antes.
 
 ---
 
 ## Estimación (juicio experto de la IA)
 
-### Comparativa de técnicas vs. horas reales (122 h)
+### Comparativa de técnicas
 
-| Técnica | Estimación (h) | Error absoluto | Error % |
-|---|---|---|---|
-| Juicio experto — Alumno desarrollador | 102,0 | 20,0 h | 16,39 % |
-| Juicio experto — IA (Claude) | 119,0 | 3,0 h | 2,46 % |
-| **Juicio experto — Promedio combinado** | **110,5** | **11,5 h** | **9,43 %** |
-| **Tres puntos (PERT)** | **114,68** | **7,32 h** | **6,00 %** |
-| Puntos de función | 146,38 | 24,38 h | 19,98 % |
-| Analogía | 195,8 | 73,8 h | 60,49 % |
+| Técnica | Estimado (h) | Real (h) | Error absoluto | Error % |
+|---|---|---|---|---|
+| Juicio de expertos — Alumno | 102,0 | 122,0 | 20,0 h | 16,39 % |
+| Juicio de expertos — IA (Claude) | 119,0 | 122,0 | 3,0 h | 2,46 % |
+| **Juicio de expertos — Promedio** | **110,5** | **122,0** | **11,5 h** | **9,43 %** |
+| **Tres puntos (PERT)** | **114,68** | **122,0** | **7,32 h** | **6,00 %** |
+| Puntos de función | 146,38 | 122,0 | 24,38 h | 19,98 % |
+| Análoga | 195,8 | 122,0 | 73,8 h | 60,49 % |
 
-### Técnica más acertada: **Juicio experto de la IA (Claude) — 119 h**
+### Técnica más cercana: **Tres Puntos / PERT** (error 6,00 %)
 
-La estimación individual del asistente de IA fue la que más se acercó a las 122 horas reales, con apenas **3 horas de diferencia (2,46 %)**, por delante incluso del PERT (6 %) y del promedio combinado (9,43 %). Esto se explica por varios factores:
+La estimación por **Tres Puntos PERT** fue la más precisa, con solo **7,32 horas de desviación** sobre las 122 reales. Esto se explica por varias razones:
 
-1. **Acceso al código fuente real**: La IA analizó el repositorio módulo por módulo, estimando con base en SLOC proyectado, dependencias de APIs externas y complejidad de integración, en lugar de basarse únicamente en la experiencia subjetiva o en analogías de proyectos distintos.
-2. **Corrección sistemática al alza**: En todos los módulos donde el alumno subestimó (Núcleo de voz, Control del sistema, Interfaz y servidor), la IA estimó valores superiores y más cercanos al real.
-3. **El PERT también fue robusto**: Con un rango del 95 % de [104,03 h – 125,33 h], el valor real de 122 h queda **dentro del intervalo**, lo que confirma que como técnica formal para futuros proyectos, **PERT es la opción más confiable y replicable**, ya que cuantifica la incertidumbre de forma explícita.
-4. **La analogía sobrestimó gravemente** (195,8 h, error del 60 %) porque el factor de ajuste del +10 % fue insuficiente para compensar que la referencia (Easy Learning, 1 800 SLOC, CRUD) es cualitativamente muy diferente a Azmuth (4 005 SLOC, voz, IA, APIs externas).
+1. **Captura la asimetría del esfuerzo real**: al incorporar escenarios optimista (O), más probable (M) y pesimista (P), el PERT modela naturalmente la tendencia de los proyectos de software a desviarse hacia el exceso (todos los sprints se desviaron positivamente excepto los de corrección y calidad, que son más predecibles). La fórmula `(O + 4M + P) / 6` pondera el caso más probable sin ignorar los extremos.
 
-> **Recomendación para proyectos futuros**: combinar el juicio de la IA con la técnica de tres puntos (PERT). El juicio da la ancla más precisa módulo a módulo; el PERT aporta el intervalo de confianza estadístico para negociar plazos y buffers con el equipo.
+2. **El rango del 95 % (104–125 h) contenía el valor real (122 h)**: esto valida estadísticamente el modelo; el valor real cayó en el percentil ~86 del intervalo estimado, coherente con un proyecto que sistemáticamente subestimó en sus sprints tempranos.
+
+3. **Contraste con la estimación análoga**: la técnica análoga sobreestimó un 60 % porque el factor de ajuste (+10 %) aplicado sobre el proyecto de referencia Easy Learning fue insuficiente para capturar la diferencia cualitativa real entre un CRUD C#/MySQL y un sistema de voz con múltiples LLMs externos; el factor real habría sido cercado a 1,7× en SLOC y complejidad.
+
+4. **El juicio de la IA (Claude) fue excepcionalmente preciso** (2,46 % de error), pero se trata de un único experto con visibilidad del código fuente; en contextos reales sin esa visibilidad, el PERT es la técnica reproducible y robusta recomendada para proyectos con integraciones externas de alta incertidumbre como Azmuth.
+
+> **Recomendación para futuros proyectos:** usar Three-Point PERT como técnica base, complementada con juicio experto para validar los valores M y P de módulos con APIs de terceros, donde la incertidumbre tiende a ser subestimada sistemáticamente.
