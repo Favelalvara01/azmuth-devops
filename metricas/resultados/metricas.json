@@ -1,5 +1,5 @@
 {
-  "generado": "2026-11-14 01:58",
+  "generado": "2026-11-14 03:24",
   "producto": {
     "complejidad": {
       "funciones_analizadas": 298,
@@ -349,7 +349,7 @@
       }
     },
     "cobertura": {
-      "total": 87.87,
+      "total": 87.9,
       "por_archivo": {
         "acciones_remotas.py": 100.0,
         "app_desktop.py": 0.0,
@@ -390,15 +390,15 @@
         "skills/temas.py": 97.44,
         "skills/tiempo.py": 94.5,
         "skills/web.py": 75.0,
-        "tematicas.py": 95.9,
+        "tematicas.py": 96.41,
         "voice.py": 72.88
       },
-      "lineas_cubiertas": 2462,
+      "lineas_cubiertas": 2463,
       "lineas_ejecutables": 2802
     },
     "densidad_defectos": {
-      "defectos_totales": 22,
-      "por_kloc": 5.49,
+      "defectos_totales": 23,
+      "por_kloc": 5.74,
       "abiertos": 0,
       "abiertos_por_kloc": 0.0,
       "por_archivo": {
@@ -414,17 +414,18 @@
         "servidor.py": 3,
         "skills/idiomas.py": 1,
         "skills/notas.py": 1,
-        "skills/tiempo.py": 1
+        "skills/tiempo.py": 1,
+        "tests/conftest.py": 1
       }
     },
     "mantenibilidad_promedio": 68.56
   },
   "proceso": {
-    "mttd_horas": 348.25,
-    "mttd_dias": 14.51,
-    "mttr_horas": 3.21,
-    "mttr_minutos": 193,
-    "defectos_reparados": 22,
+    "mttd_horas": 334.65,
+    "mttd_dias": 13.94,
+    "mttr_horas": 3.08,
+    "mttr_minutos": 185,
+    "defectos_reparados": 23,
     "defectos_por_fase": {
       "revision": 3,
       "pruebas": 9,
@@ -434,7 +435,7 @@
       "detectados_en_pruebas": 9,
       "graves_detectados_en_pruebas": 3,
       "graves_totales": 7,
-      "dre_porcentaje": 54.55,
+      "dre_porcentaje": 52.17,
       "porcentaje_pruebas_vs_produccion": 47.37
     },
     "ejecucion_pruebas": {
@@ -442,14 +443,14 @@
       "aprobadas": 567,
       "fallidas": 0,
       "defectos_conocidos_xfail": 9,
-      "tiempo_seg": 15.89
+      "tiempo_seg": 23.19
     }
   },
   "proyecto": {
     "eficacia_revision": {
       "defectos_en_revision": 3,
-      "defectos_totales": 22,
-      "porcentaje": 13.64
+      "defectos_totales": 23,
+      "porcentaje": 13.04
     },
     "desviacion": {
       "horas_estimadas": 102.0,

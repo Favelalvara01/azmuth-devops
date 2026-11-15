@@ -1,6 +1,6 @@
 ## 📊 Métricas de calidad — Azmuth
 
-_Generado: 2026-11-14 01:58_
+_Generado: 2026-11-14 03:24_
 
 ### Métricas de producto
 
@@ -9,9 +9,9 @@ _Generado: 2026-11-14 01:58_
 | Complejidad ciclomática promedio | 3.59 (298 funciones) |
 | Complejidad máxima | 16 |
 | Funciones en rango A-B (simples) | 94.63 % |
-| Cobertura de código | 87.87 % |
+| Cobertura de código | 87.9 % |
 | Tamaño | 4005 SLOC (4.0 KLOC) |
-| Densidad de defectos | 5.49 defectos/KLOC |
+| Densidad de defectos | 5.74 defectos/KLOC |
 | Defectos abiertos | 0 (0.0/KLOC) |
 | Índice de mantenibilidad promedio | 68.56 |
 
@@ -34,10 +34,10 @@ _Generado: 2026-11-14 01:58_
 
 | Métrica | Valor |
 |---|---|
-| Tiempo medio de detección (MTTD) | 348.25 h (14.51 días) |
-| Tiempo medio de reparación (MTTR) | 3.21 h (193 min) |
+| Tiempo medio de detección (MTTD) | 334.65 h (13.94 días) |
+| Tiempo medio de reparación (MTTR) | 3.08 h (185 min) |
 | Defectos detectados en pruebas | 9 |
-| Eficiencia de remoción antes de producción (DRE) | 54.55 % |
+| Eficiencia de remoción antes de producción (DRE) | 52.17 % |
 | Defectos por fase | {'revision': 3, 'pruebas': 9, 'produccion': 10} |
 | Pruebas automatizadas | 567/576 aprobadas, 0 fallidas, 9 defectos conocidos (xfail) |
 
@@ -45,7 +45,7 @@ _Generado: 2026-11-14 01:58_
 
 | Métrica | Valor |
 |---|---|
-| Eficacia de la revisión | 13.64 % (3/22) |
+| Eficacia de la revisión | 13.04 % (3/23) |
 | Desviación total de tiempo | 19.61 % (122.0 h reales vs 102.0 h) |
 | Velocidad promedio | 7.45 puntos/sprint |
 
